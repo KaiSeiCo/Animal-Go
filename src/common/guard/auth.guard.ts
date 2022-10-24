@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { FastifyRequest } from 'fastify';
 import { isEmpty } from 'lodash';
-import { AUTHORIZE_KEY_METADATA } from '../constant/auth.constant';
+import { OPEN_API_KEY_METADATA } from '../constant/auth.constant';
 import { ApiException } from '../exception/api.exception';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // @Authorize skip token validation
     const authorize = this.reflector.get<boolean>(
-      AUTHORIZE_KEY_METADATA,
+      OPEN_API_KEY_METADATA,
       context.getHandler(),
     );
     if (authorize) {

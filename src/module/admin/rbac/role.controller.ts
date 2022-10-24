@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post, Put } from '@nestjs/common';
-import { Delete, Param, Query } from '@nestjs/common/decorators';
+import { Delete, Query } from '@nestjs/common/decorators';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
-import { Authorize } from 'src/common/decorator/auth.decorator';
-import { CreateRoleDto, UpdateRoleDto } from 'src/model/dto/role.dto';
+import { OpenApi } from 'src/common/decorator/auth.decorator';
+import { CreateRoleDto, UpdateRoleDto } from 'src/model/dto/sys/role.dto';
 import { Role } from 'src/model/entity/sys/role.entity';
 import { RoleService } from './role.service';
 
@@ -17,7 +17,7 @@ export class RoleController {
    * 获取角色列表接口
    * @returns 
    */
-  @Authorize()
+  @OpenApi()
   @ApiOperation({ summary: '获取所有角色' })
   @Get('list')
   async list(): Promise<Result<Role[]>> {

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl, Length } from 'class-validator';
-import { PageOptionsDto } from './page.dto';
+import { PageOptionsDto } from '../page.dto';
 
 export class UserLoginDto {
   @ApiProperty({ description: '用户名', required: true })

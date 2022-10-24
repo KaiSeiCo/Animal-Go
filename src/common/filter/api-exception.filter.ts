@@ -20,7 +20,6 @@ export class ApiExceptionFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-    console.log(exception);
 
     response.header('Content-Type', 'application/json; charset=utf-8');
     const code =

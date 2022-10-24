@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiException } from 'src/common/exception/api.exception';
-import { CreateMenuDto, UpdateMenuDto } from 'src/model/dto/menu.dto';
+import { CreateMenuDto, UpdateMenuDto } from 'src/model/dto/sys/menu.dto';
 import { Menu } from 'src/model/entity/sys/menu.entity';
 import { Repository } from 'typeorm';
 

@@ -2,8 +2,8 @@ import { Controller } from '@nestjs/common';
 import { Body, Post } from '@nestjs/common/decorators';
 import { ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
-import { Authorize } from 'src/common/decorator/auth.decorator';
-import { UserLoginDto, UserRegisterDto } from 'src/model/dto/user.dto';
+import { OpenApi } from 'src/common/decorator/auth.decorator';
+import { UserLoginDto, UserRegisterDto } from 'src/model/dto/sys/user.dto';
 import { LoginVo } from 'src/model/vo/user.vo';
 import { UserService } from 'src/module/admin/user/user.service';
 
@@ -19,7 +19,7 @@ export class AuthController {
    * @desc login user
    * @returns userinfo
    */
-  @Authorize()
+  @OpenApi()
   @Post('login')
   async login(@Body() loginDto: UserLoginDto): Promise<Result<LoginVo>> {
     const token = await this.userService.login(loginDto);
@@ -30,7 +30,7 @@ export class AuthController {
    * @desc register user
    * @returns true|false
    */
-  @Authorize()
+  @OpenApi()
   @Post('register')
   async register(@Body() waitToReg: UserRegisterDto): Promise<Result<boolean>> {
     await this.userService.register(waitToReg);

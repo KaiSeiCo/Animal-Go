@@ -57,7 +57,7 @@ export default class User extends BaseEntity {
   intro: string;
 
   @Column({
-    type: 'tinyint',
+    type: 'boolean',
     nullable: true,
     comment: '1正常 0禁用',
   })
