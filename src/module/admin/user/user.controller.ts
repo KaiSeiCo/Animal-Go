@@ -17,8 +17,8 @@ export class UserController {
 
   /**
    * 获取用户列表接口
-   * @param query 
-   * @returns 
+   * @param query
+   * @returns
    */
   @ApiOperation({
     summary: '分页获取用户列表',
@@ -40,13 +40,11 @@ export class UserController {
   }
 
   @ApiOperation({
-    summary: '管理员更新用户信息'
+    summary: '管理员更新用户信息',
   })
   @Put('update')
-  async update(
-    @Body() dto: UpdateUserDto
-  ): Promise<Result<void>> {
-    await this.userService.update(dto)
-    return Result.success()
+  async update(@Body() dto: UpdateUserDto): Promise<Result<void>> {
+    await this.userService.update(dto);
+    return Result.success();
   }
 }

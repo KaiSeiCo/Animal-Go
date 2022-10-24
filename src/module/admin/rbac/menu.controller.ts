@@ -34,8 +34,8 @@ export class MenuController {
 
   /**
    * 添加菜单接口
-   * @param dto 
-   * @returns 
+   * @param dto
+   * @returns
    */
   @ApiOperation({ summary: '添加菜单' })
   @Post('add')
@@ -46,8 +46,8 @@ export class MenuController {
 
   /**
    * 删除菜单接口
-   * @param id 
-   * @returns 
+   * @param id
+   * @returns
    */
   @ApiOperation({ summary: '删除菜单' })
   @Delete('delete')
@@ -58,8 +58,8 @@ export class MenuController {
 
   /**
    * 修改菜单信息接口
-   * @param dto 
-   * @returns 
+   * @param dto
+   * @returns
    */
   @ApiOperation({ summary: '修改菜单' })
   @Put('update')

@@ -15,5 +15,5 @@ export class ForumCreateDto {
 export class ForumQueryDto {
   @ApiProperty({ description: '板块类型', required: false })
   @IsOptional()
-  forum_type?: ForumType
+  forum_type?: ForumType;
 }

@@ -28,11 +28,11 @@ export class AuthGuard implements CanActivate {
     if (isEmpty(token)) {
       throw new ApiException(40001);
     }
-    // [TODO-RECORD-221023] 
+    // [TODO-RECORD-221023]
     // may check menu path resource in decoded token
     const decodeInfo = this.jwtService.verify(token.replace('Bearer ', ''));
 
-    // [TODO-RECORD-221023] 
+    // [TODO-RECORD-221023]
     // check token in redis
 
     /**

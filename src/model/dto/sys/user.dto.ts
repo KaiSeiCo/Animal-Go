@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl, Length } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Length,
+} from 'class-validator';
 import { PageOptionsDto } from '../page.dto';
 
 export class UserLoginDto {
@@ -61,10 +68,9 @@ export class UserQueryDto extends PageOptionsDto {
 }
 
 export class UpdateUserDto {
-
   @ApiProperty({ description: '用户id', required: true })
   @IsNotEmpty()
-  id?: number
+  id?: number;
 
   @ApiProperty({ description: '用户名', required: false })
   @IsOptional()

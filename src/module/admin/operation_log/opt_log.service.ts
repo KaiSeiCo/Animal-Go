@@ -31,8 +31,7 @@ export class OperationLogService {
 
   async deleteLog(id: number) {
     await this.operationLogRepo.delete({
-      id
+      id,
     });
   }
-
 }

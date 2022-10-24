@@ -1,26 +1,25 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { BaseEntity } from "../base.entity";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity } from '../base.entity';
 
 @Entity({ name: 'tb_article_tag' })
 export class ArticleTag extends BaseEntity {
-
   @PrimaryGeneratedColumn({
     type: 'int',
-    unsigned: true
+    unsigned: true,
   })
-  id: number
+  id: number;
 
   @Column({
     type: 'int',
     unsigned: true,
-    comment: '文章id'
+    comment: '文章id',
   })
-  article_id: number
+  article_id: number;
 
   @Column({
     type: 'int',
     unsigned: true,
-    comment: '标签id'
+    comment: '标签id',
   })
-  tag_id: number
+  tag_id: number;
 }

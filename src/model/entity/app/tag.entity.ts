@@ -12,7 +12,7 @@ export class Tag extends BaseEntity {
   @Column({
     type: 'varchar',
     length: 64,
-    comment: '标签名'
+    comment: '标签名',
   })
   tag_name: string;
 }
