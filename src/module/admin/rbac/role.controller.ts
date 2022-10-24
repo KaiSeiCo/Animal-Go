@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post, Put } from '@nestjs/common';
-import { Delete, Param, Query } from '@nestjs/common/decorators';
+import { Delete, Query } from '@nestjs/common/decorators';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
-import { Authorize } from 'src/common/decorator/auth.decorator';
-import { CreateRoleDto, UpdateRoleDto } from 'src/model/dto/role.dto';
+import { OpenApi } from 'src/common/decorator/auth.decorator';
+import { CreateRoleDto, UpdateRoleDto } from 'src/model/dto/sys/role.dto';
 import { Role } from 'src/model/entity/sys/role.entity';
 import { RoleService } from './role.service';
 
@@ -15,9 +15,9 @@ export class RoleController {
 
   /**
    * 获取角色列表接口
-   * @returns 
+   * @returns
    */
-  @Authorize()
+  @OpenApi()
   @ApiOperation({ summary: '获取所有角色' })
   @Get('list')
   async list(): Promise<Result<Role[]>> {
@@ -27,8 +27,8 @@ export class RoleController {
 
   /**
    * 添加角色接口
-   * @param dto 
-   * @returns 
+   * @param dto
+   * @returns
    */
   @ApiOperation({ summary: '添加角色' })
   @Post('add')
@@ -39,20 +39,20 @@ export class RoleController {
 
   /**
    * 删除角色接口
-   * @param id 
-   * @returns 
+   * @param id
+   * @returns
    */
   @ApiOperation({ summary: '删除角色' })
   @Delete('delete')
   async delete(@Query('id') id: number): Promise<Result<void>> {
     await this.roleService.delete(id);
-    return Result.success()
+    return Result.success();
   }
 
   /**
    * 更新角色信息接口
-   * @param dto 
-   * @returns 
+   * @param dto
+   * @returns
    */
   @ApiOperation({ summary: '更新角色权限资源' })
   @Put('update')

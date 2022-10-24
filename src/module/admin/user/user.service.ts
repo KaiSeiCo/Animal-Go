@@ -7,7 +7,7 @@ import {
   UserLoginDto,
   UserQueryDto,
   UserRegisterDto,
-} from 'src/model/dto/user.dto';
+} from 'src/model/dto/sys/user.dto';
 import { ApiException } from 'src/common/exception/api.exception';
 import { bcryptPassword, comparePassword } from 'src/util/bcrypt.util';
 import { Snowflake } from 'nodejs-snowflake';
@@ -43,7 +43,7 @@ export class UserService {
     if (!comparePassword(loginDto.password, user.password)) {
       throw new ApiException(41005);
     }
-    // [TODO-RECORD-221023] 
+    // [TODO-RECORD-221023]
     // you may sign token with role and menu resource path, then check them in auth guard
     const token = this.jwtService.sign({
       ...user,
@@ -152,7 +152,7 @@ export class UserService {
         };
     await this.userRoleRepo.save(userRole);
 
-    // [TODO-RECORD-221023] 
+    // [TODO-RECORD-221023]
     // flush token in redis
     return;
   }

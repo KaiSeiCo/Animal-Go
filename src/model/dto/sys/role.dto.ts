@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, Matches, MinLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+  MinLength,
+} from 'class-validator';
 
 export class CreateRoleDto {
   @ApiProperty({
@@ -26,13 +32,12 @@ export class CreateRoleDto {
 }
 
 export class UpdateRoleDto {
-
   @ApiProperty({
     description: '角色id',
     required: true,
   })
   @IsNotEmpty()
-  id: number
+  id: number;
 
   @ApiProperty({
     description: '角色名称',
@@ -61,8 +66,8 @@ export class UpdateRoleDto {
   remark: string;
 
   @ApiProperty({
-    description: ''
+    description: '',
   })
   @IsOptional()
-  menus: number[]
+  menus: number[];
 }

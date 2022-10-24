@@ -9,8 +9,8 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
-import { Authorize } from 'src/common/decorator/auth.decorator';
-import { CreateMenuDto, UpdateMenuDto } from 'src/model/dto/menu.dto';
+import { OpenApi } from 'src/common/decorator/auth.decorator';
+import { CreateMenuDto, UpdateMenuDto } from 'src/model/dto/sys/menu.dto';
 import { Menu } from 'src/model/entity/sys/menu.entity';
 import { MenuService } from './menu.service';
 
@@ -24,7 +24,7 @@ export class MenuController {
    * 获取所有菜单接口
    * @returns Menu[]
    */
-  @Authorize()
+  @OpenApi()
   @ApiOperation({ summary: '获取所有菜单' })
   @Get('list')
   async list(): Promise<Result<Menu[]>> {
@@ -34,8 +34,8 @@ export class MenuController {
 
   /**
    * 添加菜单接口
-   * @param dto 
-   * @returns 
+   * @param dto
+   * @returns
    */
   @ApiOperation({ summary: '添加菜单' })
   @Post('add')
@@ -46,8 +46,8 @@ export class MenuController {
 
   /**
    * 删除菜单接口
-   * @param id 
-   * @returns 
+   * @param id
+   * @returns
    */
   @ApiOperation({ summary: '删除菜单' })
   @Delete('delete')
@@ -58,8 +58,8 @@ export class MenuController {
 
   /**
    * 修改菜单信息接口
-   * @param dto 
-   * @returns 
+   * @param dto
+   * @returns
    */
   @ApiOperation({ summary: '修改菜单' })
   @Put('update')

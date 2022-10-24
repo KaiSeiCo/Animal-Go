@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { difference, filter, includes } from 'lodash';
-import { CreateRoleDto, UpdateRoleDto } from 'src/model/dto/role.dto';
+import { CreateRoleDto, UpdateRoleDto } from 'src/model/dto/sys/role.dto';
 import { Role } from 'src/model/entity/sys/role.entity';
 import { RoleMenu } from 'src/model/entity/sys/role_menu.entity';
 import { EntityManager, Repository } from 'typeorm';
@@ -19,7 +19,7 @@ export class RoleService {
 
   /**
    * find all roles
-   * @returns 
+   * @returns
    */
   async list(): Promise<Role[]> {
     return await this.roleRepo.find();
@@ -27,7 +27,7 @@ export class RoleService {
 
   /**
    * create a role
-   * @param dto 
+   * @param dto
    */
   async save(dto: CreateRoleDto) {
     await this.roleRepo.save(dto);
@@ -35,7 +35,7 @@ export class RoleService {
 
   /**
    * delete role by id
-   * @param id 
+   * @param id
    */
   async delete(id: number) {
     await this.roleRepo.delete({
@@ -45,8 +45,8 @@ export class RoleService {
 
   /**
    * update role and role_menu
-   * @param dto 
-   * @returns 
+   * @param dto
+   * @returns
    */
   async update(dto: UpdateRoleDto) {
     const { id, role_name, role_label, remark, menus } = dto;
@@ -93,7 +93,7 @@ export class RoleService {
           : null,
       ]);
     });
-    // [TODO-RECORD-221023] 
+    // [TODO-RECORD-221023]
     // should force logout relavant user
 
     return role;

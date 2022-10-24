@@ -14,7 +14,11 @@ import {
 import { TypeORMLoggerService } from './share/logger/typeorm-logger.service';
 import { LOGGER_MODULE_OPTIONS } from './common/constant/logger.constants';
 import { RouterModule } from '@nestjs/core';
-import { ADMIN_ROUTER_PREFIX } from './common/constant/router-prefix.constants';
+import {
+  ADMIN_ROUTER_PREFIX,
+  API_V1_ROUTER_PREFIX,
+} from './common/constant/router-prefix.constants';
+import { ApiModule } from './module/api/api.module';
 
 @Module({
   imports: [
@@ -23,6 +27,10 @@ import { ADMIN_ROUTER_PREFIX } from './common/constant/router-prefix.constants';
       {
         path: ADMIN_ROUTER_PREFIX,
         children: [AdminModule],
+      },
+      {
+        path: API_V1_ROUTER_PREFIX,
+        children: [ApiModule],
       },
     ]),
     // Apply Config
@@ -83,7 +91,7 @@ import { ADMIN_ROUTER_PREFIX } from './common/constant/router-prefix.constants';
     // cms api
     AdminModule,
     // common api
-
+    ApiModule,
     // websocket
   ],
 })

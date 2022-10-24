@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiException } from 'src/common/exception/api.exception';
-import { CreateMenuDto, UpdateMenuDto } from 'src/model/dto/menu.dto';
+import { CreateMenuDto, UpdateMenuDto } from 'src/model/dto/sys/menu.dto';
 import { Menu } from 'src/model/entity/sys/menu.entity';
 import { Repository } from 'typeorm';
 
@@ -14,7 +14,7 @@ export class MenuService {
 
   /**
    * find all menus
-   * @returns 
+   * @returns
    */
   async list(): Promise<Menu[]> {
     return await this.menuRepo.find();
@@ -22,7 +22,7 @@ export class MenuService {
 
   /**
    * create a menu
-   * @param menu 
+   * @param menu
    */
   async save(menu: CreateMenuDto) {
     await this.menuRepo.save(menu);
@@ -30,7 +30,7 @@ export class MenuService {
 
   /**
    * delete menu by id
-   * @param id 
+   * @param id
    */
   async delete(id: number) {
     await this.menuRepo.delete({
@@ -40,7 +40,7 @@ export class MenuService {
 
   /**
    * update menu
-   * @param dto 
+   * @param dto
    */
   async update(dto: UpdateMenuDto) {
     // check parent id exists
