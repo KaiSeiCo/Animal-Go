@@ -17,8 +17,8 @@ export type ArticleDetailVo = {
   favor_count: number;
   article_tags: TagVo[];
   article_forum: ArticleForumVo;
-  publish_time: Date;
-  edit_time: Date;
+  publish_at: Date;
+  edit_at: Date;
 };
 
 export type ArticleListVo = {
@@ -32,6 +32,6 @@ export type ArticleListVo = {
   view_count: number;
   like_count: number;
   comment_count: number;
-  publish_time: Date;
-  edit_time: Date;
+  publish_at: Date;
+  edit_at: Date;
 };

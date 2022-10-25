@@ -2,7 +2,7 @@ import { SetMetadata } from '@nestjs/common';
 import {
   OPEN_API_KEY_METADATA,
   ONLY_REQUIRE_LOGIN_KEY_METADATA,
-} from '../constant/auth.constant';
+} from '../constant/system.constant';
 
 /**
  * not need token and auth

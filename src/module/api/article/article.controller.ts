@@ -7,6 +7,7 @@ import {
   ArticleQueryDto,
 } from 'src/model/dto/app/article.dto';
 import { Article } from 'src/model/entity/app/article.entity';
+import { ArticleListVo } from 'src/model/vo/article.vo';
 import { ArticleService } from './article.service';
 
 @ApiTags('猫料模块')
@@ -20,9 +21,11 @@ export class ArticleController {
   })
   @OpenApi()
   @Get('')
-  async catfoods(@Param() dto: ArticleQueryDto): Promise<Result<Article[]>> {
-    const articles = await this.articleService.queryArticle(dto);
-    return Result.success();
+  async catfoods(
+    @Param() dto: ArticleQueryDto,
+  ): Promise<Result<ArticleListVo[]>> {
+    const articles = await this.articleService.listArticles(dto);
+    return Result.success(articles);
   }
 
   @ApiOperation({

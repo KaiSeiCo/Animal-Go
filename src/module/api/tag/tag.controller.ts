@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Delete, Param } from '@nestjs/common/decorators';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
 import { OpenApi } from 'src/common/decorator/auth.decorator';
@@ -29,6 +30,16 @@ export class TagController {
   @Post('')
   async addNewTag(@Body() dto: TagCreateDto): Promise<Result<void>> {
     await this.tagService.add(dto);
+    return Result.success();
+  }
+
+  @ApiOperation({
+    summary: '删除标签',
+  })
+  @OpenApi()
+  @Delete('/:id')
+  async deleteTagById(@Param('id') id: number): Promise<Result<void>> {
+    await this.tagService.deleteById(id);
     return Result.success();
   }
 }

@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { doNothing } from 'src/main';
 import {
+  ArticleListSqlResult,
   ArticlePublishDto,
   ArticleQueryDto,
 } from 'src/model/dto/app/article.dto';
 import { Article } from 'src/model/entity/app/article.entity';
 import { ArticleTag } from 'src/model/entity/app/article_tag.entity';
+import { Forum } from 'src/model/entity/app/forum.entity';
 import { Tag } from 'src/model/entity/app/tag.entity';
+import { ArticleListVo } from 'src/model/vo/article.vo';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -17,6 +21,75 @@ export class ArticleService {
     @InjectRepository(ArticleTag)
     private articleTagRepository: Repository<Tag>,
   ) {}
+
+  async listArticles(dto: ArticleQueryDto) {
+    // find article
+    const result: ArticleListSqlResult[] = await this.articleRepository
+      .createQueryBuilder('a')
+      .select(
+        `
+        a.id as article_id,
+        a.article_title as article_title,
+        a.article_desc as article_desc,
+        a.created_at as publish_at,
+        a.updated_at as edit_at,
+        a.pinned as pinned,
+        a.deleted as deleted,
+        t.id as tag_id,
+        t.tag_name as tag_name,
+        f.id as forum_id,
+        f.forum_name as forum_name
+      `,
+      )
+      .leftJoin(Forum, 'f', 'f.id = a.forum_id')
+      .leftJoin(ArticleTag, 'at', 'at.article_id = a.id')
+      .leftJoin(Tag, 't', 't.id = at.tag_id')
+      .getRawMany();
+
+    // build article vo list
+    const articleEntries: Record<number, ArticleListVo> = {};
+    result
+      .filter((row) => !!row)
+      .forEach((row) => {
+        const relevantEntry = articleEntries[row.article_id];
+        if (relevantEntry) {
+          row.tag_id
+            ? articleEntries[row.article_id].article_tags.push({
+                tag_id: row.tag_id,
+                tag_name: row.tag_name,
+              })
+            : doNothing;
+        } else {
+          articleEntries[row.article_id] = {
+            article_id: row.article_id,
+            article_title: row.article_title,
+            article_desc: row.article_desc,
+            article_tags: [
+              {
+                tag_id: row.tag_id,
+                tag_name: row.tag_name,
+              },
+            ],
+            article_forum: {
+              forum_id: row.forum_id,
+              forum_name: row.forum_name,
+            },
+            pinned: row.pinned,
+            deleted: row.deleted,
+            view_count: 0,
+            like_count: 0,
+            comment_count: 0,
+            publish_at: row.publish_at,
+            edit_at: row.edit_at,
+          };
+        }
+      });
+
+    const res = Object.values(articleEntries).map((v) => {
+      return v;
+    });
+    return res;
+  }
 
   async queryArticle(dto: ArticleQueryDto) {
     this.articleRepository.createQueryBuilder('article').select();

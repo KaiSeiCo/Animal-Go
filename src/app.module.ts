@@ -19,6 +19,7 @@ import {
   API_V1_ROUTER_PREFIX,
 } from './common/constant/router-prefix.constants';
 import { ApiModule } from './module/api/api.module';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -39,6 +40,8 @@ import { ApiModule } from './module/api/api.module';
       load: [Config],
       envFilePath: ['.env', `.env.${process.env.NODE_ENV}`],
     }),
+    // task queue
+    BullModule.forRoot({}),
     // db
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule, LoggerModule],
@@ -56,6 +59,7 @@ import { ApiModule } from './module/api/api.module';
         database: config.get<string>('database.database'),
         synchronize: config.get<boolean>('database.synchronize'),
         logging: config.get('database.logging'),
+        // custom sql logger
         logger: new TypeORMLoggerService(
           config.get('database.logging'),
           loggerOptions,

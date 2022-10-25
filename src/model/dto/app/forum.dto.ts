@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
-import { ForumType } from 'src/common/constant/article.constants';
+import { ForumType } from 'src/common/constant/app.constants';
 
 export class ForumCreateDto {
   @ApiProperty({ description: '板块名称' })

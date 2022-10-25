@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { FastifyRequest } from 'fastify';
 import { isEmpty } from 'lodash';
-import { OPEN_API_KEY_METADATA } from '../constant/auth.constant';
+import { OPEN_API_KEY_METADATA } from '../constant/system.constant';
 import { ApiException } from '../exception/api.exception';
 
 @Injectable()

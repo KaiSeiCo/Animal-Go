@@ -13,6 +13,7 @@ import { ApiExceptionFilter } from './common/filter/api-exception.filter';
 import { setupSwagger } from './config/swagger.config';
 import { LoggerService } from './share/logger/logger.service';
 
+export const doNothing = undefined;
 const PORT = process.env.PORT;
 
 async function bootstrap() {
