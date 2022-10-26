@@ -7,6 +7,7 @@ import {
   SYSTEM_TASK_QUEUE_PREFIX,
 } from 'src/common/constant/system.constant';
 import Task from 'src/model/entity/sys/task.entity';
+import { TaskController } from './task/task.controller';
 import { TaskService } from './task/task.service';
 
 @Module({
@@ -27,7 +28,7 @@ import { TaskService } from './task/task.service';
       inject: [ConfigService],
     }),
   ],
-  controllers: [],
+  controllers: [TaskController],
   providers: [TaskService],
   exports: [],
 })

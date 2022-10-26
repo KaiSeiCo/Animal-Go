@@ -1,18 +1,15 @@
 import { HttpException } from '@nestjs/common';
-import {
-  HttpCodeMap,
-  HttpCodeMapType,
-} from '../constant/http-res-code.constants';
+import { toString } from 'lodash';
 
 export class ApiException extends HttpException {
-  private errorCode: HttpCodeMapType;
+  private errorCode: number;
 
-  constructor(code: HttpCodeMapType) {
-    super(HttpCodeMap[code], 200);
+  constructor(code: number) {
+    super(toString(code), 200);
     this.errorCode = code;
   }
 
-  getErrorCode(): HttpCodeMapType {
+  getErrorCode(): number {
     return this.errorCode;
   }
 }

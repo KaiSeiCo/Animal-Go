@@ -1,16 +1,22 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, OnModuleInit } from '@nestjs/common';
+import { ModuleRef, Reflector } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import type { Job } from 'bull';
 import { Queue } from 'bull';
 import {
+  SYSTEM_MISSION_KEY,
   SYSTEM_TASK_QUEUE_NAME,
   SYSTEM_TASK_QUEUE_PREFIX,
 } from 'src/common/constant/system.constant';
+import { UnknownElementException } from '@nestjs/core/errors/exceptions/unknown-element.exception';
+import { ApiException } from 'src/common/exception/api.exception';
+import { CreateTaskDto, UpdateTaskDto } from 'src/model/dto/sys/task.dto';
 import Task from 'src/model/entity/sys/task.entity';
 import { LoggerService } from 'src/share/logger/logger.service';
 import { RedisService } from 'src/share/service/redis.service';
 import { Repository } from 'typeorm';
+import { isEmpty } from 'lodash';
 
 @Injectable()
 export class TaskService implements OnModuleInit {
@@ -19,6 +25,8 @@ export class TaskService implements OnModuleInit {
     private taskRepository: Repository<Task>,
     @InjectQueue(SYSTEM_TASK_QUEUE_NAME)
     private queue: Queue,
+    private moduleRef: ModuleRef,
+    private reflector: Reflector,
     private redisService: RedisService,
     private logger: LoggerService,
   ) {}
@@ -161,6 +169,10 @@ export class TaskService implements OnModuleInit {
     return job_ids.includes(jobId);
   }
 
+  /**
+   * get all status tasks in queue
+   * @returns
+   */
   async getAllStatusOfTasks(): Promise<Job<any>[]> {
     return await this.queue.getJobs([
       'active',
@@ -170,5 +182,182 @@ export class TaskService implements OnModuleInit {
       'waiting',
       'completed',
     ]);
+  }
+
+  /**
+   * page query
+   * @param page
+   * @param count
+   */
+  async page(page: number, count: number): Promise<Task[]> {
+    const result = await this.taskRepository.find({
+      order: {
+        id: 'ASC',
+      },
+      take: count,
+      skip: page * count,
+    });
+    return result;
+  }
+
+  /**
+   * task count
+   * @returns
+   */
+  async count() {
+    return await this.taskRepository.count();
+  }
+
+  /**
+   * task detail
+   * @param id
+   * @returns
+   */
+  async getTaskDetailById(id: number): Promise<Task> {
+    return await this.taskRepository.findOne({
+      where: { id },
+    });
+  }
+
+  /**
+   * delete task
+   * @param task
+   */
+  async delete(id: number): Promise<void> {
+    const task = await this.getTaskDetailById(id);
+    if (!task) {
+      throw new Error('Task is empty');
+    }
+    await this.stop(task);
+    await this.taskRepository.delete(task.id);
+  }
+
+  /**
+   * run once
+   * @param task
+   */
+  async once(id: number): Promise<void | never> {
+    const task = await this.getTaskDetailById(id);
+    if (task) {
+      await this.queue.add(
+        { id: task.id, service: task.service, args: task.data },
+        { jobId: task.id, removeOnComplete: true, removeOnFail: true },
+      );
+    } else {
+      throw new Error('Task is empty');
+    }
+  }
+
+  /**
+   * add task, start or stop according to task status
+   * @param param
+   */
+  async addOrUpdate(param: CreateTaskDto | UpdateTaskDto): Promise<void> {
+    const result = await this.taskRepository.save(param);
+    const task = await this.getTaskDetailById(result.id);
+    if (result.status === 0) {
+      await this.stop(task);
+    } else if (result.status === 1) {
+      await this.start(task);
+    }
+  }
+
+  /**
+   * queue task done, stop and remove task
+   * @param task_id
+   */
+  async updateTaskCompleteStatus(task_id: number): Promise<void> {
+    const jobs = await this.queue.getRepeatableJobs();
+    const task = await this.taskRepository.findOne({
+      where: { id: task_id },
+    });
+    for (const job of jobs) {
+      const currentTime = new Date().getTime();
+      if (job.id === task_id.toString() && job.next < currentTime) {
+        await this.stop(task);
+        break;
+      }
+    }
+  }
+
+  /**
+   * check service has @Misson
+   * @param nameOrInstance
+   * @param exec
+   */
+  async checkHasMission(
+    nameOrInstance: string | unknown,
+    exec: string,
+  ): Promise<void | never> {
+    try {
+      let service: any;
+      if (typeof nameOrInstance === 'string') {
+        service = await this.moduleRef.get(nameOrInstance, { strict: false });
+      } else {
+        service = nameOrInstance;
+      }
+      // task not exists
+      if (!service || !(exec in service)) {
+        throw new ApiException(50000);
+      }
+      // check @Mission
+      const hasMission = this.reflector.get<boolean>(
+        SYSTEM_MISSION_KEY,
+        service.constructor,
+      );
+      if (!hasMission) {
+        throw new ApiException(50000);
+      }
+    } catch (e) {
+      // task not exist
+      if (e instanceof UnknownElementException) {
+        throw new ApiException(50000);
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  /**
+   * 根据 serviceName 调用 service
+   * @param serviceName
+   * @param args
+   */
+  async callService(serviceName: string, args: string) {
+    if (serviceName) {
+      const arr = serviceName.split('.');
+      if (arr.length < 1) {
+        throw new Error('serviceName define error');
+      }
+      const methodName = arr[1];
+      const service = await this.moduleRef.get(arr[0], { strict: false });
+      // security save
+      await this.checkHasMission(service, methodName);
+      if (isEmpty(args)) {
+        await service[methodName]();
+      } else {
+        // args parse to json
+        const parseArgs = this.safeParse(args);
+        // method callback
+        if (Array.isArray(parseArgs)) {
+          await service[methodName](...parseArgs)
+        } else {
+          await service[methodName](parseArgs)
+        }
+      }
+    }
+  }
+
+  /**
+   * parse to JSON
+   * @param args 
+   * @returns 
+   */
+  safeParse(args: string): unknown | string {
+    try {
+      return JSON.parse(args)
+    } catch (e) {
+      return args
+    }
   }
 }

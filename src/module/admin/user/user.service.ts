@@ -38,7 +38,7 @@ export class UserService {
     });
 
     if (isEmpty(user)) {
-      throw new ApiException(41004);
+      throw new ApiException(41006);
     }
     if (!comparePassword(loginDto.password, user.password)) {
       throw new ApiException(41005);
