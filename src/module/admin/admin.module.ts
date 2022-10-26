@@ -17,6 +17,7 @@ import { RoleService } from './rbac/role.service';
 import { RoleController } from './rbac/role.controller';
 import { RoleMenu } from 'src/model/entity/sys/role_menu.entity';
 import { UserRole } from 'src/model/entity/sys/user_role.entity';
+import { SystemModule } from './system/system.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { UserRole } from 'src/model/entity/sys/user_role.entity';
       RoleMenu,
       UserRole,
     ]),
+    SystemModule,
   ],
   providers: [
     UserService,
@@ -40,7 +42,7 @@ import { UserRole } from 'src/model/entity/sys/user_role.entity';
     },
   ],
   controllers: [AuthController, UserController, MenuController, RoleController],
-  exports: [OperationLogService],
+  exports: [OperationLogService, SystemModule],
 })
 export class AdminModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

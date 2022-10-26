@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
-import { ArticleStatus } from 'src/common/constant/article.constants';
+import { ArticleStatus } from 'src/common/constant/app.constants';
 
 /**
  * 发布猫料dto
@@ -84,4 +84,38 @@ export class ArticleQueryDto {
   @ApiProperty({ description: '标题', required: false })
   @IsOptional()
   article_title?: string;
+
+  @ApiProperty({ description: '置顶', required: false })
+  @IsOptional()
+  pinned?: boolean;
+
+  @ApiProperty({ description: '删除', required: false })
+  @IsOptional()
+  deleted?: boolean;
+
+  @ApiProperty({ description: '状态(0公开 1私密)', required: false })
+  @IsOptional()
+  status?: number;
+
+  @ApiProperty({ description: '板块id', required: false })
+  @IsOptional()
+  forum_id?: number;
+
+  @ApiProperty({ description: '标签', required: false })
+  @IsOptional()
+  tag_ids?: number[];
 }
+
+export type ArticleListSqlResult = {
+  article_id?: number;
+  article_title?: string;
+  article_desc?: string;
+  publish_at?: Date;
+  edit_at?: Date;
+  pinned?: boolean;
+  deleted?: boolean;
+  tag_id?: number;
+  tag_name?: string;
+  forum_id?: number;
+  forum_name?: string;
+};

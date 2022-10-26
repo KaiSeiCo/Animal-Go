@@ -20,4 +20,10 @@ export class TagService {
       tag_name: dto.tag_name,
     });
   }
+
+  async deleteById(id: number) {
+    await this.tagRepostiory.delete({
+      id,
+    });
+  }
 }
