@@ -10,6 +10,7 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { isEmpty } from 'lodash';
 import { PageResult, Result } from 'src/common/class/result.class';
+import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
 import { OpenApi } from 'src/common/decorator/auth.decorator';
 import { ApiException } from 'src/common/exception/api.exception';
 import { PageOptionsDto } from 'src/model/dto/page.dto';
@@ -73,34 +74,34 @@ export class TaskController {
   @ApiOperation({ summary: '手动执行一次任务' })
   @Post('once')
   async once(@Body() dto: CheckIdTaskDto): Promise<void> {
-    await this.taskService.once(dto.id)
+    await this.taskService.once(dto.id);
   }
 
   @ApiOperation({ summary: '停止任务' })
   @Post('stop')
   async stop(@Body() dto: CheckIdTaskDto) {
-    const task = await this.taskService.getTaskDetailById(dto.id)
+    const task = await this.taskService.getTaskDetailById(dto.id);
     if (!isEmpty(task)) {
-      await this.taskService.stop(task)
+      await this.taskService.stop(task);
     } else {
-      throw new ApiException(50000)
+      throw new ApiException(HttpResponseKeyMap.TASK_NOT_EXISTS);
     }
   }
 
   @ApiOperation({ summary: '启动任务' })
   @Post('start')
   async start(@Body() dto: CheckIdTaskDto) {
-    const task = await this.taskService.getTaskDetailById(dto.id)
+    const task = await this.taskService.getTaskDetailById(dto.id);
     if (!isEmpty(task)) {
-      await this.taskService.start(task)
+      await this.taskService.start(task);
     } else {
-      throw new ApiException(50000)
+      throw new ApiException(HttpResponseKeyMap.TASK_NOT_EXISTS);
     }
   }
 
   @ApiOperation({ summary: '删除任务' })
   @Delete('delete')
   async delete(@Body() dto: CheckIdTaskDto) {
-    await this.taskService.delete(dto.id)
+    await this.taskService.delete(dto.id);
   }
 }

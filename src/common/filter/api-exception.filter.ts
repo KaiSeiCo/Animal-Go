@@ -10,6 +10,11 @@ import { isDev } from 'src/config/env/env';
 import { Result } from '../class/result.class';
 import { ApiException } from '../exception/api.exception';
 
+/**
+ * Exception Filter:
+ * if is Internal Server Error, use ==> throw new Error()
+ * if is Http Server Error, use ==> throw new ApiException()
+ */
 @Catch()
 export class ApiExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
@@ -30,11 +35,13 @@ export class ApiExceptionFilter implements ExceptionFilter {
     let message = 'Internal Server Error';
     if (isDev() || status < 500) {
       message =
-        exception instanceof HttpException ? exception.message : `${exception}`;
+        exception instanceof HttpException
+          ? (exception as ApiException).getErrorMessage()
+          : `${exception}`;
     }
 
     if (status >= 500) {
-      // record log
+      // record error log
     }
     const result = new Result(null, message, code);
     response.status(status).send(result);

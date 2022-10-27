@@ -3,6 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { FastifyRequest } from 'fastify';
 import { isEmpty } from 'lodash';
+import { HttpResponseKeyMap } from '../constant/http/http-res-map.constants';
 import { OPEN_API_KEY_METADATA } from '../constant/system.constant';
 import { ApiException } from '../exception/api.exception';
 
@@ -26,7 +27,7 @@ export class AuthGuard implements CanActivate {
     const token = request.headers['authorization'] ?? '';
 
     if (isEmpty(token)) {
-      throw new ApiException(40001);
+      throw new ApiException(HttpResponseKeyMap.NOT_LOGIN);
     }
     // [TODO-RECORD-221023]
     // may check menu path resource in decoded token

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
 import { ApiException } from 'src/common/exception/api.exception';
 import { CreateMenuDto, UpdateMenuDto } from 'src/model/dto/sys/menu.dto';
 import { Menu } from 'src/model/entity/sys/menu.entity';
@@ -49,7 +50,7 @@ export class MenuService {
     });
 
     if (!parent_menu) {
-      throw new ApiException(41004);
+      throw new ApiException(HttpResponseKeyMap.PARAMETER_INVALID);
     }
 
     // update
