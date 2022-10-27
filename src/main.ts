@@ -11,7 +11,7 @@ import { ValidationError } from 'class-validator';
 import { AppModule } from './app.module';
 import { ApiExceptionFilter } from './common/filter/api-exception.filter';
 import { setupSwagger } from './config/swagger.config';
-import { LoggerService } from './share/logger/logger.service';
+import { LoggerService } from './global/logger/logger.service';
 
 export const doNothing = undefined;
 const PORT = process.env.PORT;

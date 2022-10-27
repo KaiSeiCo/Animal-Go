@@ -13,10 +13,10 @@ import { UnknownElementException } from '@nestjs/core/errors/exceptions/unknown-
 import { ApiException } from 'src/common/exception/api.exception';
 import { CreateTaskDto, UpdateTaskDto } from 'src/model/dto/sys/task.dto';
 import Task from 'src/model/entity/sys/task.entity';
-import { LoggerService } from 'src/share/logger/logger.service';
-import { RedisService } from 'src/share/service/redis.service';
+import { LoggerService } from 'src/global/logger/logger.service';
+import { RedisService } from 'src/global/service/redis.service';
 import { Repository } from 'typeorm';
-import { isEmpty } from 'lodash';
+import { every, isEmpty } from 'lodash';
 import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
 
 @Injectable()
@@ -117,9 +117,9 @@ export class TaskService implements OnModuleInit {
     let repeat: any;
     // if type === 1, repeat every millis
     if (task.type === 1) {
-      repeat: {
-        cron: task.every;
-      }
+      repeat = {
+        every: task.every,
+      };
     }
     // else, repeat by cron expression
     else {
@@ -335,6 +335,7 @@ export class TaskService implements OnModuleInit {
       // security save
       await this.checkHasMission(service, methodName);
       if (isEmpty(args)) {
+        console.log(service[methodName]);
         await service[methodName]();
       } else {
         // args parse to json

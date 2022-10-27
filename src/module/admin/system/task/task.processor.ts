@@ -17,6 +17,7 @@ export class TaskConsumer {
   async handle(job: Job<ExecuteData>) {
     // const startTime = Date.now()
     const { data } = job;
+    console.log(data);
     try {
       // task done
       await this.taskService.callService(data.service, data.args);

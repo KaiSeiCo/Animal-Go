@@ -33,11 +33,10 @@ export class ApiExceptionFilter implements ExceptionFilter {
         : status;
     // message
     let message = 'Internal Server Error';
+    console.log(exception);
     if (isDev() || status < 500) {
       message =
-        exception instanceof HttpException
-          ? (exception as ApiException).getErrorMessage()
-          : `${exception}`;
+        exception instanceof HttpException ? exception.message : `${exception}`;
     }
 
     if (status >= 500) {

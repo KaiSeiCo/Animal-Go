@@ -5,13 +5,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AdminModule } from './module/admin/admin.module';
 import Config from './config/env/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ShareModule } from './share/share.module';
-import { LoggerModule } from './share/logger/logger.module';
+import { GlobalModule } from './global/global.module';
+import { LoggerModule } from './global/logger/logger.module';
 import {
   LoggerModuleOptions,
   WinstonLogLevel,
-} from './share/logger/logger.interface';
-import { TypeORMLoggerService } from './share/logger/typeorm-logger.service';
+} from './global/logger/logger.interface';
+import { TypeORMLoggerService } from './global/logger/typeorm-logger.service';
 import { LOGGER_MODULE_OPTIONS } from './common/constant/logger.constants';
 import { RouterModule } from '@nestjs/core';
 import {
@@ -20,6 +20,7 @@ import {
 } from './common/constant/router-prefix.constants';
 import { ApiModule } from './module/api/api.module';
 import { BullModule } from '@nestjs/bull';
+import { MissionModule } from './mission/misson.module';
 
 @Module({
   imports: [
@@ -90,8 +91,10 @@ import { BullModule } from '@nestjs/bull';
       true,
     ),
     // Module
-    // custom
-    ShareModule,
+    // global
+    GlobalModule,
+    // mission
+    MissionModule.forRoot(),
     // cms api
     AdminModule,
     // common api

@@ -1,4 +1,4 @@
-import { LoggerModuleOptions as LoggerConfigOptions } from 'src/share/logger/logger.interface';
+import { LoggerModuleOptions as LoggerConfigOptions } from 'src/global/logger/logger.interface';
 import { LoggerOptions } from 'typeorm';
 
 export function defineConfig(config: IConfig): IConfig {

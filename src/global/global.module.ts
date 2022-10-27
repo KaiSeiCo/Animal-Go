@@ -5,7 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { RedisModule } from './redis/redis.module';
 import { RedisService } from './service/redis.service';
 
-// share service providers
+// global service providers
 const providers = [RedisService];
 
 /**
@@ -44,4 +44,4 @@ const providers = [RedisService];
   providers: [...providers],
   exports: [HttpModule, CacheModule, ...providers, JwtModule],
 })
-export class ShareModule {}
+export class GlobalModule {}

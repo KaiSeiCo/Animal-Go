@@ -1,9 +1,9 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, NextFunction } from 'express';
-import { OperationLogService } from 'src/module/admin/operation_log/opt_log.service';
+import { OperationLogService } from 'src/module/admin/system/log/opt_log.service';
 import geoip, { Lookup } from 'geoip-lite';
 import { FastifyReply } from 'fastify/types/reply';
-import { LoggerService } from 'src/share/logger/logger.service';
+import { LoggerService } from 'src/global/logger/logger.service';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
