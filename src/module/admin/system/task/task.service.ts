@@ -17,6 +17,7 @@ import { LoggerService } from 'src/share/logger/logger.service';
 import { RedisService } from 'src/share/service/redis.service';
 import { Repository } from 'typeorm';
 import { isEmpty } from 'lodash';
+import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
 
 @Injectable()
 export class TaskService implements OnModuleInit {
@@ -298,7 +299,7 @@ export class TaskService implements OnModuleInit {
       }
       // task not exists
       if (!service || !(exec in service)) {
-        throw new ApiException(50000);
+        throw new ApiException(HttpResponseKeyMap.TASK_NOT_EXISTS);
       }
       // check @Mission
       const hasMission = this.reflector.get<boolean>(
@@ -306,12 +307,12 @@ export class TaskService implements OnModuleInit {
         service.constructor,
       );
       if (!hasMission) {
-        throw new ApiException(50000);
+        throw new ApiException(HttpResponseKeyMap.SERVICE_NOT_MISSION);
       }
     } catch (e) {
       // task not exist
       if (e instanceof UnknownElementException) {
-        throw new ApiException(50000);
+        throw new ApiException(HttpResponseKeyMap.SERVICE_NOT_MISSION);
       } else {
         throw e;
       }
@@ -340,9 +341,9 @@ export class TaskService implements OnModuleInit {
         const parseArgs = this.safeParse(args);
         // method callback
         if (Array.isArray(parseArgs)) {
-          await service[methodName](...parseArgs)
+          await service[methodName](...parseArgs);
         } else {
-          await service[methodName](parseArgs)
+          await service[methodName](parseArgs);
         }
       }
     }
@@ -350,14 +351,14 @@ export class TaskService implements OnModuleInit {
 
   /**
    * parse to JSON
-   * @param args 
-   * @returns 
+   * @param args
+   * @returns
    */
   safeParse(args: string): unknown | string {
     try {
-      return JSON.parse(args)
+      return JSON.parse(args);
     } catch (e) {
-      return args
+      return args;
     }
   }
 }

@@ -1,7 +1,7 @@
 import { ModuleMetadata } from '@nestjs/common/interfaces';
 import { Redis, ClusterNode, RedisOptions } from 'ioredis';
 import { ClusterOptions } from 'ioredis/built/cluster/ClusterOptions';
-import { TypeOfArrayOrNot, TypeOfPromiseOrNot } from 'src/common/type/type';
+import { TypeOfArrayOrNot, TypeOfPromiseOrNot } from 'src/common/type/typings';
 
 export interface RedisModuleOptions extends RedisOptions {
   /**

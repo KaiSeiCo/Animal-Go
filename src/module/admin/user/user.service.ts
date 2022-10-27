@@ -16,6 +16,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginVo, UserListVo } from 'src/model/vo/user.vo';
 import { buildDynamicSqlAppendWhere } from 'src/util/typeorm.util';
 import { UserRole } from 'src/model/entity/sys/user_role.entity';
+import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
 
 @Injectable()
 export class UserService {
@@ -38,10 +39,10 @@ export class UserService {
     });
 
     if (isEmpty(user)) {
-      throw new ApiException(41006);
+      throw new ApiException(HttpResponseKeyMap.USER_NOT_EXISTS);
     }
     if (!comparePassword(loginDto.password, user.password)) {
-      throw new ApiException(41005);
+      throw new ApiException(HttpResponseKeyMap.WRONG_PASSWORD);
     }
     // [TODO-RECORD-221023]
     // you may sign token with role and menu resource path, then check them in auth guard
@@ -63,7 +64,7 @@ export class UserService {
     });
 
     if (user) {
-      throw new ApiException(41006);
+      throw new ApiException(HttpResponseKeyMap.USER_ALREADY_EXISTS);
     }
 
     waitToReg.password = bcryptPassword(waitToReg.password);
