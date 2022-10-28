@@ -8,6 +8,7 @@ import {
 } from 'src/common/constant/system.constant';
 import Task from 'src/model/entity/sys/task.entity';
 import { TaskController } from './task/task.controller';
+import { TaskConsumer } from './task/task.processor';
 import { TaskService } from './task/task.service';
 
 @Module({
@@ -29,7 +30,7 @@ import { TaskService } from './task/task.service';
     }),
   ],
   controllers: [TaskController],
-  providers: [TaskService],
+  providers: [TaskService, TaskConsumer],
   exports: [],
 })
 export class SystemModule {}

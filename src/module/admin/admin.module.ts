@@ -5,7 +5,7 @@ import { AuthGuard } from 'src/common/guard/auth.guard';
 import { LoggerMiddleware } from 'src/common/middleware/logger.middleware';
 import { OperationLog } from 'src/model/entity/sys/opt_log.entity';
 import User from 'src/model/entity/sys/user.entity';
-import { OperationLogService } from 'src/module/admin/operation_log/opt_log.service';
+import { OperationLogService } from 'src/module/admin/system/log/opt_log.service';
 import { UserService } from 'src/module/admin/user/user.service';
 import { AuthController } from './auth/auth.controller';
 import { UserController } from './user/user.controller';

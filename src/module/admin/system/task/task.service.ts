@@ -13,10 +13,10 @@ import { UnknownElementException } from '@nestjs/core/errors/exceptions/unknown-
 import { ApiException } from 'src/common/exception/api.exception';
 import { CreateTaskDto, UpdateTaskDto } from 'src/model/dto/sys/task.dto';
 import Task from 'src/model/entity/sys/task.entity';
-import { LoggerService } from 'src/share/logger/logger.service';
-import { RedisService } from 'src/share/service/redis.service';
+import { LoggerService } from 'src/global/logger/logger.service';
+import { RedisService } from 'src/global/service/redis.service';
 import { Repository } from 'typeorm';
-import { isEmpty } from 'lodash';
+import { toString, isEmpty } from 'lodash';
 import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
 
 @Injectable()
@@ -117,9 +117,9 @@ export class TaskService implements OnModuleInit {
     let repeat: any;
     // if type === 1, repeat every millis
     if (task.type === 1) {
-      repeat: {
-        cron: task.every;
-      }
+      repeat = {
+        every: task.every,
+      };
     }
     // else, repeat by cron expression
     else {
@@ -274,7 +274,7 @@ export class TaskService implements OnModuleInit {
     });
     for (const job of jobs) {
       const currentTime = new Date().getTime();
-      if (job.id === task_id.toString() && job.next < currentTime) {
+      if (job.id === toString(task_id) && job.next < currentTime) {
         await this.stop(task);
         break;
       }

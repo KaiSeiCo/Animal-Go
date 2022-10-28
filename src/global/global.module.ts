@@ -2,10 +2,11 @@ import { HttpModule } from '@nestjs/axios';
 import { CacheModule, Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { KafkaModule } from './kafka/kafka.module';
 import { RedisModule } from './redis/redis.module';
 import { RedisService } from './service/redis.service';
 
-// share service providers
+// global service providers
 const providers = [RedisService];
 
 /**
@@ -40,8 +41,9 @@ const providers = [RedisService];
       }),
       inject: [ConfigService],
     }),
+    KafkaModule,
   ],
   providers: [...providers],
-  exports: [HttpModule, CacheModule, ...providers, JwtModule],
+  exports: [HttpModule, CacheModule, ...providers, JwtModule, KafkaModule],
 })
-export class ShareModule {}
+export class GlobalModule {}
