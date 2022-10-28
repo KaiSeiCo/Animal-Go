@@ -16,7 +16,7 @@ import Task from 'src/model/entity/sys/task.entity';
 import { LoggerService } from 'src/global/logger/logger.service';
 import { RedisService } from 'src/global/service/redis.service';
 import { Repository } from 'typeorm';
-import { every, isEmpty } from 'lodash';
+import { toString, isEmpty } from 'lodash';
 import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
 
 @Injectable()
@@ -274,7 +274,7 @@ export class TaskService implements OnModuleInit {
     });
     for (const job of jobs) {
       const currentTime = new Date().getTime();
-      if (job.id === task_id.toString() && job.next < currentTime) {
+      if (job.id === toString(task_id) && job.next < currentTime) {
         await this.stop(task);
         break;
       }
@@ -335,7 +335,6 @@ export class TaskService implements OnModuleInit {
       // security save
       await this.checkHasMission(service, methodName);
       if (isEmpty(args)) {
-        console.log(service[methodName]);
         await service[methodName]();
       } else {
         // args parse to json

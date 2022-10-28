@@ -12,6 +12,8 @@ import { ForumController } from './forum/forum.controller';
 import { ForumService } from './forum/forum.service';
 import { TagController } from './tag/tag.controller';
 import { TagService } from './tag/tag.service';
+import { TestConsumer } from './test/test.consumer';
+import { TestController } from './test/test.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Article, Tag, ArticleTag, Forum])],
@@ -19,12 +21,17 @@ import { TagService } from './tag/tag.service';
     ArticleService,
     ForumService,
     TagService,
+    TestConsumer,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
   ],
-  controllers: [ArticleController, ForumController, TagController],
-  exports: [],
+  controllers: [
+    ArticleController,
+    ForumController,
+    TagController,
+    TestController,
+  ],
 })
 export class ApiModule {}
