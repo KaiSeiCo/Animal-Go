@@ -12,7 +12,7 @@ import { ForumController } from './forum/forum.controller';
 import { ForumService } from './forum/forum.service';
 import { TagController } from './tag/tag.controller';
 import { TagService } from './tag/tag.service';
-import { TestConsumer } from './test/test.consumer';
+// import { TestConsumer } from './test/test.consumer';
 import { TestController } from './test/test.controller';
 
 @Module({
@@ -21,7 +21,7 @@ import { TestController } from './test/test.controller';
     ArticleService,
     ForumService,
     TagService,
-    TestConsumer,
+    // TestConsumer,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,

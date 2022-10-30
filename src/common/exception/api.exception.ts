@@ -1,5 +1,4 @@
 import { HttpException } from '@nestjs/common';
-import { toString } from 'lodash';
 import { HttpResponse } from '../constant/http/http-res-map.constants';
 
 export class ApiException extends HttpException {
