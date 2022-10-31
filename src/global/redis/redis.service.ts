@@ -3,7 +3,7 @@ import { Cluster } from 'cluster';
 import {
   REDIS_CLIENT,
   REDIS_DEFAULT_CLIENT_KEY,
-} from 'src/common/constant/redis.constants';
+} from 'src/common/constant/module.constants';
 import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()

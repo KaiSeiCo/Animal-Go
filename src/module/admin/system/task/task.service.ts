@@ -14,7 +14,7 @@ import { ApiException } from 'src/common/exception/api.exception';
 import { CreateTaskDto, UpdateTaskDto } from 'src/model/dto/sys/task.dto';
 import Task from 'src/model/entity/sys/task.entity';
 import { LoggerService } from 'src/global/logger/logger.service';
-import { RedisService } from 'src/global/service/redis.service';
+import { RedisService } from 'src/global/redis/redis.service';
 import { Repository } from 'typeorm';
 import { toString, isEmpty } from 'lodash';
 import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';

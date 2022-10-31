@@ -30,6 +30,11 @@ export interface IConfig {
    * Swagger api文档设置
    */
   swagger?: SwaggerConfigOptions;
+
+  /**
+   * kafka 配置
+   */
+  kafka?: KafkaConfigOptions;
 }
 
 export interface JwtConfigOptions {
@@ -60,4 +65,9 @@ export interface SwaggerConfigOptions {
   title?: string;
   desc?: string;
   version?: string;
+}
+
+export interface KafkaConfigOptions {
+  brokers?: string;
+  groupId?: string;
 }

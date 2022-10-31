@@ -1,12 +1,11 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
-import { OnlyRequireLogin, OpenApi } from 'src/common/decorator/auth.decorator';
+import { OpenApi } from 'src/common/decorator/auth.decorator';
 import {
   ArticlePublishDto,
   ArticleQueryDto,
 } from 'src/model/dto/app/article.dto';
-import { Article } from 'src/model/entity/app/article.entity';
 import { ArticleListVo } from 'src/model/vo/article.vo';
 import { ArticleService } from './article.service';
 
@@ -35,6 +34,16 @@ export class ArticleController {
   @Post('publish')
   async publish(@Body() dto: ArticlePublishDto): Promise<Result<void>> {
     await this.articleService.publishArticle(dto);
+    return Result.success();
+  }
+
+  @ApiOperation({
+    summary: '点赞',
+  })
+  @OpenApi()
+  @Post('like/:id')
+  async likeOrUnlike(@Param('id') id: number): Promise<Result<void>> {
+    await this.articleService.likeOrUnlike(id);
     return Result.success();
   }
 }

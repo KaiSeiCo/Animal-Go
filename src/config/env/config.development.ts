@@ -20,4 +20,8 @@ export default {
   jwt: {
     secret: process.env.JWT_SECRET,
   },
+  kafka: {
+    brokers: process.env.KAFKA_BROKERS.split(','),
+    groupId: process.env.KAFKA_CONSUMER_GROUP_ID,
+  },
 };

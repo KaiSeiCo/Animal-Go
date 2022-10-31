@@ -2,9 +2,10 @@ import { HttpModule } from '@nestjs/axios';
 import { CacheModule, Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { ConsumerModule } from './kafka/consumer/consumer.module';
 import { KafkaModule } from './kafka/kafka.module';
 import { RedisModule } from './redis/redis.module';
-import { RedisService } from './service/redis.service';
+import { RedisService } from './redis/redis.service';
 
 // global service providers
 const providers = [RedisService];
@@ -41,7 +42,16 @@ const providers = [RedisService];
       }),
       inject: [ConfigService],
     }),
-    KafkaModule,
+    // kafka
+    KafkaModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => ({
+        brokers: config.get<string[]>('kafka.brokers'),
+        groupId: config.get<string>('kafka.groupId'),
+      }),
+      inject: [ConfigService],
+    }),
+    ConsumerModule,
   ],
   providers: [...providers],
   exports: [HttpModule, CacheModule, ...providers, JwtModule, KafkaModule],

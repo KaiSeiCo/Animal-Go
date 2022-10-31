@@ -10,7 +10,7 @@ import {
   REDIS_CLIENT,
   REDIS_DEFAULT_CLIENT_KEY,
   REDIS_MODULE_OPTIONS,
-} from 'src/common/constant/redis.constants';
+} from 'src/common/constant/module.constants';
 import { TypeOfArrayOrNot } from 'src/common/type/typings';
 import { RedisModuleAsyncOptions, RedisModuleOptions } from './redis.interface';
 
