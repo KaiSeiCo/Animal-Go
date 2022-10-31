@@ -7,17 +7,17 @@ import { OperationLog } from 'src/model/entity/sys/opt_log.entity';
 import User from 'src/model/entity/sys/user.entity';
 import { OperationLogService } from 'src/module/admin/system/log/opt_log.service';
 import { UserService } from 'src/module/admin/user/user.service';
-import { AuthController } from './auth/auth.controller';
+import { AuthController } from './user/auth.controller';
 import { UserController } from './user/user.controller';
-import { MenuService } from './rbac/menu.service';
-import { MenuController } from './rbac/menu.controller';
+import { MenuService } from './system/menu/menu.service';
 import { Menu } from 'src/model/entity/sys/menu.entity';
 import { Role } from 'src/model/entity/sys/role.entity';
-import { RoleService } from './rbac/role.service';
-import { RoleController } from './rbac/role.controller';
+import { RoleController } from './system/role/role.controller';
 import { RoleMenu } from 'src/model/entity/sys/role_menu.entity';
 import { UserRole } from 'src/model/entity/sys/user_role.entity';
 import { SystemModule } from './system/system.module';
+import { MenuController } from './system/menu/menu.controller';
+import { RoleService } from './system/role/role.service';
 
 @Module({
   imports: [

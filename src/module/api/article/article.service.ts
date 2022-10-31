@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RedisService } from 'src/global/redis/redis.service';
 import { doNothing } from 'src/main';
 import {
   ArticleListSqlResult,
@@ -15,11 +16,13 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class ArticleService {
+
   constructor(
     @InjectRepository(Article)
-    private articleRepository: Repository<Article>,
+    private readonly articleRepository: Repository<Article>,
     @InjectRepository(ArticleTag)
-    private articleTagRepository: Repository<Tag>,
+    private readonly articleTagRepository: Repository<Tag>,
+    private readonly redisService: RedisService,
   ) {}
 
   async listArticles(dto: ArticleQueryDto) {
@@ -128,5 +131,12 @@ export class ArticleService {
         } as Partial<Tag>;
       });
     await this.articleTagRepository.insert(articleTag);
+  }
+
+  /**
+   * like or unlike
+   * @param id article_id
+   */
+  async likeOrUnlike(id: number) {
   }
 }
