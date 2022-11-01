@@ -2,13 +2,16 @@ import { HttpModule } from '@nestjs/axios';
 import { CacheModule, Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { ClsModule } from 'nestjs-cls';
+import { JwtUtil } from 'src/util/jwt.util';
+import { UserContext } from './context/user.context';
 import { ConsumerModule } from './kafka/consumer/consumer.module';
 import { KafkaModule } from './kafka/kafka.module';
 import { RedisModule } from './redis/redis.module';
 import { RedisService } from './redis/redis.service';
 
 // global service providers
-const providers = [RedisService];
+const providers = [RedisService, UserContext, JwtUtil];
 
 /**
  * 全局 Module
@@ -52,8 +55,19 @@ const providers = [RedisService];
       inject: [ConfigService],
     }),
     ConsumerModule,
+    // ctx
+    ClsModule.forRoot({
+      middleware: { mount: true },
+    }),
   ],
   providers: [...providers],
-  exports: [HttpModule, CacheModule, ...providers, JwtModule, KafkaModule],
+  exports: [
+    HttpModule,
+    CacheModule,
+    ...providers,
+    JwtModule,
+    ClsModule,
+    KafkaModule,
+  ],
 })
 export class GlobalModule {}

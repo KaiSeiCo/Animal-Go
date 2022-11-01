@@ -6,7 +6,7 @@ import {
   ArticleListSqlResult,
   ArticlePublishDto,
   ArticleQueryDto,
-} from 'src/model/dto/app/article.dto';
+} from 'src/module/api/article/article.dto';
 import { Article } from 'src/model/entity/app/article.entity';
 import { ArticleTag } from 'src/model/entity/app/article_tag.entity';
 import { Forum } from 'src/model/entity/app/forum.entity';
@@ -16,7 +16,6 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class ArticleService {
-
   constructor(
     @InjectRepository(Article)
     private readonly articleRepository: Repository<Article>,
@@ -135,8 +134,8 @@ export class ArticleService {
 
   /**
    * like or unlike
-   * @param id article_id
+   * @param user_id
+   * @param article_id
    */
-  async likeOrUnlike(id: number) {
-  }
+  async likeOrUnlike(user_id: number, article_id: number) {}
 }

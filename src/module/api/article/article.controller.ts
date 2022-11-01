@@ -2,10 +2,11 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
 import { OpenApi } from 'src/common/decorator/auth.decorator';
+import { UserContext } from 'src/global/context/user.context';
 import {
   ArticlePublishDto,
   ArticleQueryDto,
-} from 'src/model/dto/app/article.dto';
+} from 'src/module/api/article/article.dto';
 import { ArticleListVo } from 'src/model/vo/article.vo';
 import { ArticleService } from './article.service';
 
@@ -13,7 +14,10 @@ import { ArticleService } from './article.service';
 @ApiBearerAuth()
 @Controller('article')
 export class ArticleController {
-  constructor(private articleService: ArticleService) {}
+  constructor(
+    private articleService: ArticleService,
+    private userCtx: UserContext,
+  ) {}
 
   @ApiOperation({
     summary: '猫料列表',
@@ -40,10 +44,10 @@ export class ArticleController {
   @ApiOperation({
     summary: '点赞',
   })
-  @OpenApi()
   @Post('like/:id')
-  async likeOrUnlike(@Param('id') id: number): Promise<Result<void>> {
-    await this.articleService.likeOrUnlike(id);
+  async likeOrUnlike(@Param('id') article_id: number): Promise<Result<void>> {
+    const user = this.userCtx.get('user');
+    await this.articleService.likeOrUnlike(user.id, article_id);
     return Result.success();
   }
 }

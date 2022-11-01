@@ -17,6 +17,10 @@ import { LoginVo, UserListVo } from 'src/model/vo/user.vo';
 import { buildDynamicSqlAppendWhere } from 'src/util/typeorm.util';
 import { UserRole } from 'src/model/entity/sys/user_role.entity';
 import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
+import { RoleMenu } from 'src/model/entity/sys/role_menu.entity';
+import { Menu } from 'src/model/entity/sys/menu.entity';
+import { Role } from 'src/model/entity/sys/role.entity';
+import { JwtUtil } from 'src/util/jwt.util';
 
 @Injectable()
 export class UserService {
@@ -25,7 +29,13 @@ export class UserService {
     private userRepo: Repository<User>,
     @InjectRepository(UserRole)
     private userRoleRepo: Repository<UserRole>,
-    private jwtService: JwtService,
+    @InjectRepository(Role)
+    private roleRepository: Repository<Role>,
+    @InjectRepository(RoleMenu)
+    private roleMenuRepository: Repository<RoleMenu>,
+    @InjectRepository(Menu)
+    private menuRepository: Repository<Menu>,
+    private jwtUtil: JwtUtil,
   ) {}
 
   /**
@@ -41,13 +51,47 @@ export class UserService {
     if (isEmpty(user)) {
       throw new ApiException(HttpResponseKeyMap.USER_NOT_EXISTS);
     }
+
     if (!comparePassword(loginDto.password, user.password)) {
       throw new ApiException(HttpResponseKeyMap.WRONG_PASSWORD);
     }
+
+    const userRole = await this.userRoleRepo.findOne({
+      where: { user_id: user.id },
+    });
+
+    const [roleMenu, role] = await Promise.all([
+      this.roleMenuRepository.find({
+        where: { role_id: userRole.role_id },
+      }),
+      this.roleRepository.findOne({ where: { id: userRole.role_id } }),
+    ]);
+
+    const menuIds = roleMenu.filter((rm) => !!rm).map((rm) => rm.menu_id);
+    const perms: string[] = (
+      await this.menuRepository
+        .createQueryBuilder('menu')
+        .select('menu.perms as perms')
+        .where('menu.id IN (:...ids)', { ids: menuIds })
+        .getRawMany()
+    ).map((m: Menu) => {
+      return m.perms;
+    });
+
     // [TODO-RECORD-221023]
     // you may sign token with role and menu resource path, then check them in auth guard
-    const token = this.jwtService.sign({
-      ...user,
+    const token = this.jwtUtil.signToken({
+      id: user.id,
+      username: user.username,
+      nickname: user.nickname,
+      email: user.email,
+      avatar: user.avatar,
+      intro: user.intro,
+      status: user.status,
+      role_id: role.id,
+      role_name: role.role_name,
+      role_label: role.role_label,
+      perms: perms,
     });
 
     return { token };

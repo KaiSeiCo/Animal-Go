@@ -3,7 +3,7 @@ import { Delete, Param } from '@nestjs/common/decorators';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
 import { OpenApi } from 'src/common/decorator/auth.decorator';
-import { TagCreateDto } from 'src/model/dto/app/tag.dto';
+import { TagCreateDto } from 'src/module/api/tag/tag.dto';
 import { Tag } from 'src/model/entity/app/tag.entity';
 import { TagService } from './tag.service';
 

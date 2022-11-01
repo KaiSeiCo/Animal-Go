@@ -13,7 +13,7 @@ import {
 } from './global/logger/logger.interface';
 import { TypeORMLoggerService } from './global/logger/typeorm-logger.service';
 import { LOGGER_MODULE_OPTIONS } from './common/constant/logger.constants';
-import { RouterModule } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
 import {
   ADMIN_ROUTER_PREFIX,
   API_V1_ROUTER_PREFIX,
@@ -21,6 +21,8 @@ import {
 import { ApiModule } from './module/api/api.module';
 import { BullModule } from '@nestjs/bull';
 import { MissionModule } from './mission/misson.module';
+import { ClsGuard } from 'nestjs-cls';
+import { TokenInterceptor } from './common/interceptor/token.interceptor';
 
 @Module({
   imports: [
@@ -90,7 +92,6 @@ import { MissionModule } from './mission/misson.module';
       },
       true,
     ),
-    // Module
     // global
     GlobalModule,
     // mission
@@ -100,6 +101,12 @@ import { MissionModule } from './mission/misson.module';
     // common api
     ApiModule,
     // websocket
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TokenInterceptor,
+    },
   ],
 })
 export class AppModule {}

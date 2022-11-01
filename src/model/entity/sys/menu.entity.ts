@@ -17,7 +17,7 @@ export class Menu extends BaseEntity {
     comment: '父级菜单id',
   })
   @ApiProperty()
-  @Index()
+  @Index('parent-menu-index')
   parent_id: number;
 
   @Column({

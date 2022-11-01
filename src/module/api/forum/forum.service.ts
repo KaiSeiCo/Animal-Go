@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ForumCreateDto, ForumQueryDto } from 'src/model/dto/app/forum.dto';
+import { ForumCreateDto, ForumQueryDto } from 'src/module/api/forum/forum.dto';
 import { Forum } from 'src/model/entity/app/forum.entity';
 import { Repository } from 'typeorm';
 

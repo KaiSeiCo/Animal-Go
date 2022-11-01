@@ -3,7 +3,10 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { FastifyRequest } from 'fastify';
 import { isEmpty } from 'lodash';
+import { ClsService } from 'nestjs-cls';
+import { UserContext } from 'src/global/context/user.context';
 import { RedisService } from 'src/global/redis/redis.service';
+import User from 'src/model/entity/sys/user.entity';
 import { HttpResponseKeyMap } from '../constant/http/http-res-map.constants';
 import { OPEN_API_KEY_METADATA } from '../constant/system.constant';
 import { ApiException } from '../exception/api.exception';
@@ -11,7 +14,7 @@ import { ApiException } from '../exception/api.exception';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private reflector: Reflector, 
+    private reflector: Reflector,
     private jwtService: JwtService,
     private redisService: RedisService,
   ) {}
@@ -36,7 +39,7 @@ export class AuthGuard implements CanActivate {
     }
     // [TODO-RECORD-221023]
     // may check menu path resource in decoded token
-    const user = this.jwtService.verify(token.replace('Bearer ', ''));
+
     // [TODO-RECORD-221023]
     // check token in redis
 
