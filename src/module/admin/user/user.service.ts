@@ -7,7 +7,7 @@ import {
   UserLoginDto,
   UserQueryDto,
   UserRegisterDto,
-} from 'src/model/dto/sys/user.dto';
+} from 'src/module/admin/user/user.dto';
 import { ApiException } from 'src/common/exception/api.exception';
 import { bcryptPassword, comparePassword } from 'src/util/bcrypt.util';
 import { Snowflake } from 'nodejs-snowflake';
@@ -21,12 +21,15 @@ import { RoleMenu } from 'src/model/entity/sys/role_menu.entity';
 import { Menu } from 'src/model/entity/sys/menu.entity';
 import { Role } from 'src/model/entity/sys/role.entity';
 import { JwtUtil } from 'src/util/jwt.util';
+import { RedisService } from 'src/global/redis/redis.service';
+import { getLoginRecordKey } from 'src/global/redis/redis.key';
+import { REDIS_EXPIRE_TIME_WEEK } from 'src/common/constant/system.constant';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private userRepo: Repository<User>,
+    private userRepository: Repository<User>,
     @InjectRepository(UserRole)
     private userRoleRepo: Repository<UserRole>,
     @InjectRepository(Role)
@@ -35,6 +38,7 @@ export class UserService {
     private roleMenuRepository: Repository<RoleMenu>,
     @InjectRepository(Menu)
     private menuRepository: Repository<Menu>,
+    private redisService: RedisService,
     private jwtUtil: JwtUtil,
   ) {}
 
@@ -44,7 +48,8 @@ export class UserService {
    * @returns
    */
   async login(loginDto: UserLoginDto): Promise<LoginVo> {
-    const user = await this.userRepo.findOne({
+    // valid username
+    const user = await this.userRepository.findOne({
       where: { username: loginDto.username, status: true },
     });
 
@@ -52,10 +57,12 @@ export class UserService {
       throw new ApiException(HttpResponseKeyMap.USER_NOT_EXISTS);
     }
 
+    // compare password
     if (!comparePassword(loginDto.password, user.password)) {
       throw new ApiException(HttpResponseKeyMap.WRONG_PASSWORD);
     }
 
+    // generate token
     const userRole = await this.userRoleRepo.findOne({
       where: { user_id: user.id },
     });
@@ -78,8 +85,6 @@ export class UserService {
       return m.perms;
     });
 
-    // [TODO-RECORD-221023]
-    // you may sign token with role and menu resource path, then check them in auth guard
     const token = this.jwtUtil.signToken({
       id: user.id,
       username: user.username,
@@ -94,6 +99,9 @@ export class UserService {
       perms: perms,
     });
 
+    await this.redisService
+      .getRedis()
+      .setex(getLoginRecordKey(user.id), REDIS_EXPIRE_TIME_WEEK, token);
     return { token };
   }
 
@@ -103,7 +111,7 @@ export class UserService {
    * @returns
    */
   async register(waitToReg: UserRegisterDto): Promise<boolean> {
-    const user = await this.userRepo.findOneBy({
+    const user = await this.userRepository.findOneBy({
       username: waitToReg.username,
     });
 
@@ -117,7 +125,7 @@ export class UserService {
       .idFromTimestamp(Date.parse(new Date().toString()))
       .toString();
 
-    const result = await this.userRepo.insert({
+    const result = await this.userRepository.insert({
       id: toNumber(id),
       ...waitToReg,
       status: true,
@@ -133,7 +141,7 @@ export class UserService {
    */
   async page(query: UserQueryDto): Promise<[UserListVo[], number]> {
     const { username, email, status, page, limit } = query;
-    const queryBase = this.userRepo.createQueryBuilder('user');
+    const queryBase = this.userRepository.createQueryBuilder('user');
     buildDynamicSqlAppendWhere(queryBase, [
       {
         field: 'user.username',
@@ -176,7 +184,7 @@ export class UserService {
     const { id, role_id, username, password, email, status } = dto;
     const bcryPassword = password ? bcryptPassword(password) : undefined;
     const [_, role] = await Promise.all([
-      this.userRepo.update(id, {
+      this.userRepository.update(id, {
         username,
         password: bcryPassword,
         status,

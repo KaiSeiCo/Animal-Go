@@ -7,6 +7,7 @@ import { JwtUtil } from 'src/util/jwt.util';
 import { UserContext } from './context/user.context';
 import { ConsumerModule } from './kafka/consumer/consumer.module';
 import { KafkaModule } from './kafka/kafka.module';
+import { ProducerModule } from './kafka/producer/producer.module';
 import { RedisModule } from './redis/redis.module';
 import { RedisService } from './redis/redis.service';
 
@@ -55,6 +56,7 @@ const providers = [RedisService, UserContext, JwtUtil];
       inject: [ConfigService],
     }),
     ConsumerModule,
+    ProducerModule,
     // ctx
     ClsModule.forRoot({
       middleware: { mount: true },

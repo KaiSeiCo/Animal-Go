@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { difference, filter, includes } from 'lodash';
-import { CreateRoleDto, UpdateRoleDto } from 'src/model/dto/sys/role.dto';
+import {
+  CreateRoleDto,
+  UpdateRoleDto,
+} from 'src/module/admin/system/role/role.dto';
 import { Role } from 'src/model/entity/sys/role.entity';
 import { RoleMenu } from 'src/model/entity/sys/role_menu.entity';
 import { EntityManager, Repository } from 'typeorm';

@@ -2,14 +2,24 @@ import { ModuleMetadata } from '@nestjs/common';
 import { KafkaConfig } from 'kafkajs';
 import { TypeOfArrayOrNot, TypeOfPromiseOrNot } from 'src/common/type/typings';
 
-export class KafkaPayload {
-  body: any;
+export enum MessageType {
+  COMMON = 'common',
+  SOCKET = 'socket',
+}
+
+export class KafkaPayload<T = any> {
+  body: T;
   messageId: string;
-  messageType: string;
+  messageType: MessageType;
   topicName: string;
   createdTime?: string;
 
-  create?(messageId, body, messageType, topicName): KafkaPayload {
+  create?(
+    messageId: string,
+    body: T,
+    messageType: MessageType,
+    topicName: string,
+  ): KafkaPayload<T> {
     return {
       messageId,
       body,

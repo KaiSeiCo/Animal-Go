@@ -3,7 +3,7 @@ import { Body, Post } from '@nestjs/common/decorators';
 import { ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
 import { OpenApi } from 'src/common/decorator/auth.decorator';
-import { UserLoginDto, UserRegisterDto } from 'src/model/dto/sys/user.dto';
+import { UserLoginDto, UserRegisterDto } from 'src/module/admin/user/user.dto';
 import { LoginVo } from 'src/model/vo/user.vo';
 import { UserService } from 'src/module/admin/user/user.service';
 

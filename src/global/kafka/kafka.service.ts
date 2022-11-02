@@ -70,7 +70,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * init kafka client, producer and consumer
+   * init kafka client, producers and consumers
    */
   createClient() {
     this.kafka = new Kafka({
@@ -89,7 +89,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * consumer subscribe to topic
+   * subscribe to topic
    * @param _ func
    * @param _topic  topic_name
    */
@@ -98,7 +98,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * fixed consumer subscribe to topic
+   * subscribe to fixed topic
    * @param _ func
    * @param _topic topic_name
    */
@@ -110,7 +110,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * producer produce message to queue
+   * produce message to queue
    * @param topic
    * @param payload
    * @returns

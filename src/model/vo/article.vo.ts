@@ -14,6 +14,7 @@ export type ArticleDetailVo = {
   article_content: string;
   view_count: number;
   comment_count: number;
+  like_count: number;
   favor_count: number;
   article_tags: TagVo[];
   article_forum: ArticleForumVo;
@@ -31,6 +32,7 @@ export type ArticleListVo = {
   deleted: boolean;
   view_count: number;
   like_count: number;
+  favor_count: number;
   comment_count: number;
   publish_at: Date;
   edit_at: Date;

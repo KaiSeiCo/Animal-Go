@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OpenApi } from 'src/common/decorator/auth.decorator';
-import { KafkaPayload } from 'src/global/kafka/kafka.interface';
+import { KafkaPayload, MessageType } from 'src/global/kafka/kafka.interface';
 import { KafkaService } from 'src/global/kafka/kafka.service';
 import { TEST_TOPIC } from 'src/global/kafka/topic.constants';
 
@@ -19,7 +19,7 @@ export class TestController {
       body: {
         value: 'Test Message',
       },
-      messageType: 'test',
+      messageType: MessageType.COMMON,
       topicName: TEST_TOPIC,
     };
     const value = await this.kafkaService.sendMessage(TEST_TOPIC, payload);

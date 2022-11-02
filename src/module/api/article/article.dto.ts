@@ -2,9 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { ArticleStatus } from './article.constants';
 
-/**
- * 发布猫料dto
- */
+/* common dto */
 export class ArticlePublishDto {
   @ApiProperty({ description: '标题', required: true })
   @IsNotEmpty()
@@ -39,9 +37,6 @@ export class ArticlePublishDto {
   tag_ids?: number[];
 }
 
-/**
- * 猫料编辑dto
- */
 export class ArticleUpdateDto {
   @ApiProperty({ description: 'id', required: true })
   @IsNotEmpty()
@@ -106,6 +101,13 @@ export class ArticleQueryDto {
   tag_ids?: number[];
 }
 
+/* kafka dto */
+export interface LikePayload {
+  user_id: number;
+  article_id: number;
+}
+
+/* sql result */
 export type ArticleListSqlResult = {
   article_id?: number;
   article_title?: string;

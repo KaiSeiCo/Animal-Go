@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthGuard } from 'src/common/guard/auth.guard';
+import { ArticleProducer } from 'src/global/kafka/producer/article-producer.service';
 import { Article } from 'src/model/entity/app/article.entity';
 import { ArticleTag } from 'src/model/entity/app/article_tag.entity';
 import { Forum } from 'src/model/entity/app/forum.entity';
@@ -21,6 +22,7 @@ import { TestController } from './test/test.controller';
     ArticleService,
     ForumService,
     TagService,
+    ArticleProducer,
     // TestConsumer,
     {
       provide: APP_GUARD,
