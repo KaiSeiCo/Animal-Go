@@ -15,9 +15,10 @@ export class UserRole extends BaseEntity {
     type: 'bigint',
     unsigned: true,
     comment: '用户id',
+    unique: true,
   })
   @ApiProperty()
-  @Index()
+  @Index('user-index')
   user_id: number;
 
   @Column({

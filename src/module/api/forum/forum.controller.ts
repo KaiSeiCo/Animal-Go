@@ -3,7 +3,7 @@ import { Param } from '@nestjs/common/decorators';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
 import { OpenApi } from 'src/common/decorator/auth.decorator';
-import { ForumCreateDto, ForumQueryDto } from 'src/model/dto/app/forum.dto';
+import { ForumCreateDto, ForumQueryDto } from 'src/module/api/forum/forum.dto';
 import { Forum } from 'src/model/entity/app/forum.entity';
 import { ForumService } from './forum.service';
 

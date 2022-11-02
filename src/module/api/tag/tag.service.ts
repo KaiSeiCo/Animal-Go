@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TagCreateDto } from 'src/model/dto/app/tag.dto';
+import { TagCreateDto } from 'src/module/api/tag/tag.dto';
 import { Tag } from 'src/model/entity/app/tag.entity';
 import { Repository } from 'typeorm';
 

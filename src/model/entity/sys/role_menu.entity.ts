@@ -16,7 +16,7 @@ export class RoleMenu extends BaseEntity {
     comment: '角色id',
   })
   @ApiProperty()
-  @Index()
+  @Index('role-index')
   role_id: number;
 
   @Column({
@@ -25,5 +25,6 @@ export class RoleMenu extends BaseEntity {
     comment: '菜单id',
   })
   @ApiProperty()
+  @Index('menu-index')
   menu_id: number;
 }

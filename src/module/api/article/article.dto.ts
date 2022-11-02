@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
-import { ArticleStatus } from 'src/common/constant/app.constants';
+import { ArticleStatus } from './article.constants';
 
 /**
  * 发布猫料dto

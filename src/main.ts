@@ -10,6 +10,7 @@ import { FastifyAdapter } from '@nestjs/platform-fastify/adapters';
 import { ValidationError } from 'class-validator';
 import { AppModule } from './app.module';
 import { ApiExceptionFilter } from './common/filter/api-exception.filter';
+import { TokenInterceptor } from './common/interceptor/token.interceptor';
 import { setupSwagger } from './config/swagger.config';
 import { LoggerService } from './global/logger/logger.service';
 
