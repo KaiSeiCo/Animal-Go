@@ -6,6 +6,7 @@ import {
   ArticleListSqlResult,
   ArticlePublishDto,
   ArticleQueryDto,
+  LikePayload,
 } from 'src/module/api/article/article.dto';
 import { Article } from 'src/model/entity/app/article.entity';
 import { ArticleTag } from 'src/model/entity/app/article_tag.entity';
@@ -177,6 +178,7 @@ export class ArticleService {
     this.articleProducer.saveLike({
       article_id,
       user_id,
+      deleted: isLiked ? true : false,
     });
   }
 }

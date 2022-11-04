@@ -105,6 +105,7 @@ export class ArticleQueryDto {
 export interface LikePayload {
   user_id: number;
   article_id: number;
+  deleted: boolean;
 }
 
 /* sql result */

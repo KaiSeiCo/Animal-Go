@@ -1,31 +1,31 @@
-export const SUBSCRIBER_FN_REF_MAP = new Map<string, Function>();
-export const SUBSCRIBER_FIXED_FN_REF_MAP = new Map<string, Function>();
-export const SUBSCRIBER_OBJ_REF_MAP = new Map<string, Function>();
+import { ConsumerTopics, FixedConsumerTopics } from './topic.constants';
+
+export const SUBSCRIBER_TOPIC_EVENT_MAP = new Set<string>();
+export const SUBSCRIBER_FIXED_TOPIC_EVENT_MAP = new Set<string>();
 
 /**
- * subscribe to a topic
+ * subscribe to consumer topic
  * @param topic
+ * @param event
  * @returns
  */
-export function SubscribeTo(topic) {
-  return (target, propertyKey, descriptor) => {
-    const originalMethod = target[propertyKey];
-    SUBSCRIBER_FN_REF_MAP.set(topic, originalMethod);
-    SUBSCRIBER_OBJ_REF_MAP.set(topic, target);
+export function SubscribeToConsumer(topic: ConsumerTopics) {
+  return (_: any, __: string, descriptor: PropertyDescriptor) => {
+    SUBSCRIBER_TOPIC_EVENT_MAP.add(topic);
+
     return descriptor;
   };
 }
 
 /**
- * subscribe to a fixed topic
+ * subscribe to fixed consumer topic
  * @param topic
+ * @param event
  * @returns
  */
-export function SubscribeToFixedGroup(topic) {
-  return (target, propertyKey, descriptor) => {
-    const originalMethod = target[propertyKey];
-    SUBSCRIBER_FIXED_FN_REF_MAP.set(topic, originalMethod);
-    SUBSCRIBER_OBJ_REF_MAP.set(topic, target);
+export function SubscribeToFixedConsumer(topic: FixedConsumerTopics) {
+  return (_: any, __: string, descriptor: PropertyDescriptor) => {
+    SUBSCRIBER_FIXED_TOPIC_EVENT_MAP.add(topic);
     return descriptor;
   };
 }

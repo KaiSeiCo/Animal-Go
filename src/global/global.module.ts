@@ -2,7 +2,10 @@ import { HttpModule } from '@nestjs/axios';
 import { CacheModule, Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClsModule } from 'nestjs-cls';
+import { LikeDetail } from 'src/model/entity/app/like_detail.entity';
+import { ArticleService } from 'src/module/api/article/article.service';
 import { JwtUtil } from 'src/util/jwt.util';
 import { UserContext } from './context/user.context';
 import { ConsumerModule } from './kafka/consumer/consumer.module';
@@ -20,6 +23,7 @@ const providers = [RedisService, UserContext, JwtUtil];
 @Global()
 @Module({
   imports: [
+    TypeOrmModule.forFeature([LikeDetail]),
     // axios http
     HttpModule.register({
       timeout: 5000,
@@ -48,10 +52,11 @@ const providers = [RedisService, UserContext, JwtUtil];
     }),
     // kafka
     KafkaModule.registerAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule, ConsumerModule],
       useFactory: (config: ConfigService) => ({
         brokers: config.get<string[]>('kafka.brokers'),
         groupId: config.get<string>('kafka.groupId'),
+        randomSuffix: '-' + Math.floor(Math.random() * 100000),
       }),
       inject: [ConfigService],
     }),
@@ -70,6 +75,8 @@ const providers = [RedisService, UserContext, JwtUtil];
     JwtModule,
     ClsModule,
     KafkaModule,
+    ProducerModule,
+    ConsumerModule,
   ],
 })
 export class GlobalModule {}

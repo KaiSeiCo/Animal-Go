@@ -17,6 +17,7 @@ export class LikeDetail extends BaseEntity {
     type: 'int',
     unsigned: true,
     comment: '文章id',
+    nullable: true,
   })
   @ApiProperty()
   article_id: number;
@@ -25,12 +26,13 @@ export class LikeDetail extends BaseEntity {
     type: 'int',
     unsigned: true,
     comment: '图片id',
+    nullable: true,
   })
   @ApiProperty()
   photo_id: number;
 
   @Column({
-    type: 'int',
+    type: 'bigint',
     unsigned: true,
     comment: '用户id',
   })
@@ -40,7 +42,7 @@ export class LikeDetail extends BaseEntity {
   @Column({
     type: 'int',
     unsigned: true,
-    comment: '文章id',
+    comment: '是否点赞',
   })
   @ApiProperty()
   deleted: boolean;

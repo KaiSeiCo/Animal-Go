@@ -1,24 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
+import { LoggerService } from 'src/global/logger/logger.service';
 import { LikeDetail } from 'src/model/entity/app/like_detail.entity';
 import { LikePayload } from 'src/module/api/article/article.dto';
 import { Repository } from 'typeorm';
-import { SubscribeTo } from '../kafka.decorator';
-import { KafkaPayload } from '../kafka.interface';
-import { ARTICLE_PRODUCER_TOPIC } from '../topic.constants';
+import { SubscribeToConsumer } from '../kafka.decorator';
+import { ConsumerTopics, KafkaConsumeEvents } from '../topic.constants';
 
 @Injectable()
 export class ArticleConsumer {
   constructor(
     @InjectRepository(LikeDetail)
     private readonly likeDetailRepository: Repository<LikeDetail>,
+    private logger: LoggerService,
   ) {}
 
-  @SubscribeTo(ARTICLE_PRODUCER_TOPIC)
-  async saveLike(payload: KafkaPayload<LikePayload>) {
-    const { body } = payload;
-    const { article_id, user_id } = body;
+  @SubscribeToConsumer(ConsumerTopics.ARTICLE_TOPIC)
+  @OnEvent(KafkaConsumeEvents.ARTICLE_LIKE)
+  async saveLike(payload: LikePayload) {
+    this.logger.log('[Consumer-Event] start to save like detail');
+    const { article_id, user_id, deleted } = payload;
 
-    this.likeDetailRepository.save({});
+    const likeDetail = await this.likeDetailRepository.findOneBy({
+      article_id,
+      user_id,
+    });
+
+    await this.likeDetailRepository.save({
+      id: likeDetail?.id ?? undefined,
+      article_id,
+      user_id,
+      deleted,
+    });
   }
 }
