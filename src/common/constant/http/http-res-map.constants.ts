@@ -12,6 +12,7 @@ export const HttpResponseKeyMap = {
   WRONG_PASSWORD: 'WRONG_PASSWORD',
   USER_ALREADY_EXISTS: 'USER_ALREADY_EXISTS',
   SERVICE_NOT_MISSION: 'SERVICE_NOT_MISSION',
+  INVALID_TOKEN: 'INVALID_TOKEN',
   /* 500 */
   INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
 };
@@ -45,34 +46,38 @@ export const HttpResponse: HttpResMap = {
   PERMS_NOT_ALLOWED: {
     status: HttpStatusCode.FORBIDDEN,
     code: 40003,
-    message: 'Perms not allowed',
+    message: 'Perms Not Allowed',
   },
   USER_NOT_EXISTS: {
     status: HttpStatusCode.NOT_FOUND,
     code: 40004,
-    message: 'User not exists',
+    message: 'User Not Exists',
   },
   WRONG_PASSWORD: {
     status: HttpStatusCode.BAD_REQUEST,
     code: 40005,
-    message: 'Wrong password',
+    message: 'Wrong Password',
   },
   USER_ALREADY_EXISTS: {
     status: HttpStatusCode.BAD_REQUEST,
     code: 40006,
-    message: 'User already exists',
+    message: 'User Already Exists',
   },
   TASK_NOT_EXISTS: {
     status: HttpStatusCode.NOT_FOUND,
     code: 40007,
-    message: 'Task not exists',
+    message: 'Task Not Exists',
   },
   SERVICE_NOT_MISSION: {
     status: HttpStatusCode.BAD_REQUEST,
     code: 40008,
-    message: 'Service has not mission',
+    message: 'Service Has Not Mission',
   },
-
+  INVALID_TOKEN: {
+    status: HttpStatusCode.FORBIDDEN,
+    code: 40009,
+    message: 'Invalid Token',
+  },
   /* 500 */
   INTERNAL_SERVER_ERROR: {
     status: HttpStatusCode.INTERNAL_SERVER_ERROR,

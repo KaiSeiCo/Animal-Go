@@ -10,7 +10,7 @@ import {
 export const OpenApi = () => SetMetadata(OPEN_API_KEY_METADATA, true);
 
 /**
- * need token not need auth
+ * need token but not need perm
  */
 export const OnlyRequireLogin = () =>
   SetMetadata(ONLY_REQUIRE_LOGIN_KEY_METADATA, true);

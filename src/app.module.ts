@@ -13,7 +13,7 @@ import {
 } from './global/logger/logger.interface';
 import { TypeORMLoggerService } from './global/logger/typeorm-logger.service';
 import { LOGGER_MODULE_OPTIONS } from './common/constant/logger.constants';
-import { APP_GUARD, APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
+import { APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
 import {
   ADMIN_ROUTER_PREFIX,
   API_V1_ROUTER_PREFIX,
@@ -21,8 +21,8 @@ import {
 import { ApiModule } from './module/api/api.module';
 import { BullModule } from '@nestjs/bull';
 import { MissionModule } from './mission/misson.module';
-import { ClsGuard } from 'nestjs-cls';
 import { TokenInterceptor } from './common/interceptor/token.interceptor';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -92,6 +92,23 @@ import { TokenInterceptor } from './common/interceptor/token.interceptor';
       },
       true,
     ),
+    // event emitter
+    EventEmitterModule.forRoot({
+      // set this to `true` to use wildcards
+      wildcard: false,
+      // the delimiter used to segment namespaces
+      delimiter: '.',
+      // set this to `true` if you want to emit the newListener event
+      newListener: false,
+      // set this to `true` if you want to emit the removeListener event
+      removeListener: false,
+      // the maximum amount of listeners that can be assigned to an event
+      maxListeners: 10,
+      // show event name in memory leak message when more than maximum amount of listeners is assigned
+      verboseMemoryLeak: false,
+      // disable throwing uncaughtException if an error event is emitted and it has no listeners
+      ignoreErrors: false,
+    }),
     // global
     GlobalModule,
     // mission

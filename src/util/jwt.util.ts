@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common/decorators';
 import { JwtService } from '@nestjs/jwt';
+import { BEARER_TOKEN_PREFIX } from 'src/common/constant/system.constant';
 import { UserToken } from 'src/model/vo/user.vo';
 
 @Injectable()
@@ -24,7 +25,7 @@ export class JwtUtil {
     let userToken;
     try {
       userToken = this.jwtService.verify<UserToken>(
-        token.replace('Bearer ', ''),
+        token.replace(BEARER_TOKEN_PREFIX, ''),
       );
     } catch (e) {
       throw new Error('token invalid');

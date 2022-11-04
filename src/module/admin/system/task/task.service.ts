@@ -11,7 +11,10 @@ import {
 } from 'src/common/constant/system.constant';
 import { UnknownElementException } from '@nestjs/core/errors/exceptions/unknown-element.exception';
 import { ApiException } from 'src/common/exception/api.exception';
-import { CreateTaskDto, UpdateTaskDto } from 'src/model/dto/sys/task.dto';
+import {
+  CreateTaskDto,
+  UpdateTaskDto,
+} from 'src/module/admin/system/task/task.dto';
 import Task from 'src/model/entity/sys/task.entity';
 import { LoggerService } from 'src/global/logger/logger.service';
 import { RedisService } from 'src/global/redis/redis.service';

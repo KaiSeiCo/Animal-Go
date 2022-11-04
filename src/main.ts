@@ -5,12 +5,12 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { Transport } from '@nestjs/microservices';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { FastifyAdapter } from '@nestjs/platform-fastify/adapters';
 import { ValidationError } from 'class-validator';
 import { AppModule } from './app.module';
 import { ApiExceptionFilter } from './common/filter/api-exception.filter';
-import { TokenInterceptor } from './common/interceptor/token.interceptor';
 import { setupSwagger } from './config/swagger.config';
 import { LoggerService } from './global/logger/logger.service';
 
@@ -25,6 +25,8 @@ async function bootstrap() {
       bufferLogs: true,
     },
   );
+
+  // cors
   app.enableCors();
 
   // custom logger
@@ -56,6 +58,17 @@ async function bootstrap() {
   // swagger
   setupSwagger(app);
 
+  // microservice
+  // app.connectMicroservice({
+  //   transport: Transport.KAFKA,
+  //   options: {
+  //     client: {
+  //       brokers: [],
+  //     },
+  //     consumer: {},
+  //   },
+  // });
+  // await app.startAllMicroservices();
   // boot
   await app.listen(PORT, '0.0.0.0');
   const serverUrl = await app.getUrl();

@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ConsumerService } from './consumer.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { LikeDetail } from 'src/model/entity/app/like_detail.entity';
+import { ArticleConsumer } from './article-consumer.service';
 
 @Module({
-  providers: [ConsumerService],
+  imports: [TypeOrmModule.forFeature([LikeDetail])],
+  providers: [ArticleConsumer],
 })
 export class ConsumerModule {}

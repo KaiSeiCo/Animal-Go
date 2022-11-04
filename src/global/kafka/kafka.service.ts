@@ -4,12 +4,12 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Consumer, Kafka, Partitioners, Producer } from 'kafkajs';
 import { KAFKA_MODULE_OPTIONS } from 'src/common/constant/module.constants';
 import {
-  SUBSCRIBER_FIXED_FN_REF_MAP,
-  SUBSCRIBER_FN_REF_MAP,
-  SUBSCRIBER_OBJ_REF_MAP,
+  SUBSCRIBER_FIXED_TOPIC_EVENT_MAP,
+  SUBSCRIBER_TOPIC_EVENT_MAP,
 } from './kafka.decorator';
 import { KafkaModuleOptions, KafkaPayload } from './kafka.interface';
 
@@ -19,16 +19,15 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   private producer: Producer;
   private consumer: Consumer;
   private fixedConsumer: Consumer;
-  // random group id, make sure it always consume from latest pos when re-deploy the service
-  private readonly consumerSuffix = '-' + Math.floor(Math.random() * 100000);
 
   constructor(
     @Inject(KAFKA_MODULE_OPTIONS)
     private readonly options: KafkaModuleOptions,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   /**
-   * create kafka client and bind  when module init
+   * create kafka client and bind when module init
    */
   async onModuleInit(): Promise<void> {
     // connect to kafka client
@@ -36,28 +35,27 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
     await this.connect();
 
     // attach func with kafka topic name
-    SUBSCRIBER_FN_REF_MAP.forEach((funcRef, topic) => {
-      this.bindAllTopicToConsumer(funcRef, topic);
+    SUBSCRIBER_TOPIC_EVENT_MAP.forEach((_, topic) => {
+      this.bindTopicToConsumer(topic);
     });
-    SUBSCRIBER_FIXED_FN_REF_MAP.forEach((funcRef, topic) => {
-      this.bindAllTopicToFixedConsumer(funcRef, topic);
+    SUBSCRIBER_FIXED_TOPIC_EVENT_MAP.forEach((_, topic) => {
+      this.bindTopicToFixedConsumer(topic);
     });
 
     await this.fixedConsumer.run({
       eachMessage: async ({ topic, partition, message }) => {
-        const funcRef = SUBSCRIBER_FIXED_FN_REF_MAP.get(topic);
-        const object = SUBSCRIBER_OBJ_REF_MAP.get(topic);
-        // bind subscribed func to topic
-        await funcRef.apply(object, [message.value.toString()]);
+        const payload = JSON.parse(message.value.toString()) as KafkaPayload;
+
+        this.eventEmitter.emit(payload.event, payload.body);
+        // await funcRef.apply(object, [message.value.toString()]);
       },
     });
 
     await this.consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
-        const funcRef = SUBSCRIBER_FN_REF_MAP.get(topic);
-        const object = SUBSCRIBER_OBJ_REF_MAP.get(topic);
-        // bind subscribed func to topic
-        await funcRef.apply(object, [message.value.toString()]);
+        const payload = JSON.parse(message.value.toString()) as KafkaPayload;
+        console.log(payload);
+        this.eventEmitter.emit(payload.event, payload.body);
       },
     });
   }
@@ -70,7 +68,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * init kafka client, producer and consumer
+   * init kafka client, producers and consumers
    */
   createClient() {
     this.kafka = new Kafka({
@@ -81,7 +79,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
       createPartitioner: Partitioners.LegacyPartitioner,
     });
     this.consumer = this.kafka.consumer({
-      groupId: this.options.groupId + this.consumerSuffix,
+      groupId: this.options.groupId + this.options.randomSuffix,
     });
     this.fixedConsumer = this.kafka.consumer({
       groupId: this.options.groupId,
@@ -89,20 +87,20 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * consumer subscribe to topic
+   * subscribe to topic
    * @param _ func
    * @param _topic  topic_name
    */
-  async bindAllTopicToConsumer(_: Function, _topic: string) {
+  async bindTopicToConsumer(_topic: string) {
     await this.consumer.subscribe({ topic: _topic, fromBeginning: false });
   }
 
   /**
-   * fixed consumer subscribe to topic
+   * subscribe to fixed topic
    * @param _ func
    * @param _topic topic_name
    */
-  async bindAllTopicToFixedConsumer(_: Function, _topic: string) {
+  async bindTopicToFixedConsumer(_topic: string) {
     await this.fixedConsumer.subscribe({
       topic: _topic,
       fromBeginning: false,
@@ -110,12 +108,25 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * producer produce message to queue
+   *
+   * @param consumer
+   * @param topics
+   */
+  async subscribeToTopic(consumer: Consumer, ...topics: string[]) {
+    await Promise.all([
+      topics.forEach((topic) => {
+        consumer.subscribe({ topic, fromBeginning: false });
+      }),
+    ]);
+  }
+
+  /**
+   * produce message to queue
    * @param topic
    * @param payload
    * @returns
    */
-  async sendMessage(topic: string, payload: KafkaPayload) {
+  async sendMessage<T>(topic: string, payload: KafkaPayload<T>) {
     await this.producer.connect();
     const metadata = await this.producer
       .send({

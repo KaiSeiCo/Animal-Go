@@ -10,7 +10,10 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
 import { OpenApi } from 'src/common/decorator/auth.decorator';
-import { CreateMenuDto, UpdateMenuDto } from 'src/model/dto/sys/menu.dto';
+import {
+  CreateMenuDto,
+  UpdateMenuDto,
+} from 'src/module/admin/system/menu/menu.dto';
 import { Menu } from 'src/model/entity/sys/menu.entity';
 import { MenuService } from './menu.service';
 

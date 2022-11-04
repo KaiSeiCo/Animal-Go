@@ -3,7 +3,10 @@ import { Delete, Query } from '@nestjs/common/decorators';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
 import { OpenApi } from 'src/common/decorator/auth.decorator';
-import { CreateRoleDto, UpdateRoleDto } from 'src/model/dto/sys/role.dto';
+import {
+  CreateRoleDto,
+  UpdateRoleDto,
+} from 'src/module/admin/system/role/role.dto';
 import { Role } from 'src/model/entity/sys/role.entity';
 import { RoleService } from './role.service';
 

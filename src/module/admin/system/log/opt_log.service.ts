@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { OptLogSave } from 'src/model/dto/sys/opt_log.dto';
+import { OptLogSave } from 'src/module/admin/system/log/opt_log.dto';
 import { OperationLog } from 'src/model/entity/sys/opt_log.entity';
 import { Repository } from 'typeorm';
 

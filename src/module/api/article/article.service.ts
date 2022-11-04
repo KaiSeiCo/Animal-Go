@@ -6,6 +6,7 @@ import {
   ArticleListSqlResult,
   ArticlePublishDto,
   ArticleQueryDto,
+  LikePayload,
 } from 'src/module/api/article/article.dto';
 import { Article } from 'src/model/entity/app/article.entity';
 import { ArticleTag } from 'src/model/entity/app/article_tag.entity';
@@ -13,6 +14,12 @@ import { Forum } from 'src/model/entity/app/forum.entity';
 import { Tag } from 'src/model/entity/app/tag.entity';
 import { ArticleListVo } from 'src/model/vo/article.vo';
 import { Repository } from 'typeorm';
+import {
+  getPostLikeKey,
+  getUserLikeKey,
+  PostType,
+} from 'src/global/redis/redis.key';
+import { ArticleProducer } from 'src/global/kafka/producer/article-producer.service';
 
 @Injectable()
 export class ArticleService {
@@ -22,6 +29,7 @@ export class ArticleService {
     @InjectRepository(ArticleTag)
     private readonly articleTagRepository: Repository<Tag>,
     private readonly redisService: RedisService,
+    private readonly articleProducer: ArticleProducer,
   ) {}
 
   async listArticles(dto: ArticleQueryDto) {
@@ -80,6 +88,7 @@ export class ArticleService {
             deleted: row.deleted,
             view_count: 0,
             like_count: 0,
+            favor_count: 0,
             comment_count: 0,
             publish_at: row.publish_at,
             edit_at: row.edit_at,
@@ -137,5 +146,39 @@ export class ArticleService {
    * @param user_id
    * @param article_id
    */
-  async likeOrUnlike(user_id: number, article_id: number) {}
+  async likeOrUnlike(user_id: number, article_id: number): Promise<void> {
+    // get key
+    const key = getUserLikeKey(user_id, PostType.ARTICLE);
+    const article_hash_key = article_id.toString();
+    const article_like_key = getPostLikeKey(PostType.ARTICLE);
+    const redis = this.redisService.getRedis();
+
+    // check liked
+    const isLiked = await redis.hget(key, article_hash_key);
+    if (!isLiked) {
+      await Promise.all([
+        redis.hset(key, {
+          [article_hash_key]: new Date().getTime(),
+        }),
+        // post count + 1
+        this.redisService
+          .getRedis()
+          .hincrby(article_like_key, article_hash_key, 1),
+      ]);
+    }
+    // unlike
+    else {
+      await Promise.all([
+        redis.hdel(key, article_hash_key),
+        redis.hincrby(article_like_key, article_hash_key, -1),
+      ]);
+    }
+
+    // sync to db
+    this.articleProducer.saveLike({
+      article_id,
+      user_id,
+      deleted: isLiked ? true : false,
+    });
+  }
 }

@@ -3,18 +3,44 @@ export enum PostType {
   PHOTO = 'photo',
 }
 
-export function getArticleLikeKey(article_id: number) {
-  return `article:${article_id}:like`;
+/**
+ * get article like hash
+ * @param article_id
+ * @returns
+ */
+export function getPostLikeKey(type: PostType) {
+  return `${type}:like`;
 }
 
-export function getArticleFavorKey(article_id: number) {
-  return `article:${article_id}:favor`;
+/**
+ * get article favor hash
+ * @param article_id
+ * @returns
+ */
+export function getPostFavorKey(type: PostType) {
+  return `${type}:favor`;
 }
 
+/**
+ * get user like hash
+ * @param user_id
+ * @param type
+ * @returns
+ */
 export function getUserLikeKey(user_id: number, type: PostType) {
   return `user:${user_id}:${type}:like`;
 }
 
+/**
+ * get user favor hash
+ * @param user_id
+ * @param type
+ * @returns
+ */
 export function getUserFavorKey(user_id: number, type: PostType) {
   return `user:${user_id}:${type}:favor`;
+}
+
+export function getLoginRecordKey(user_id: number) {
+  return `user:login:${user_id}`;
 }

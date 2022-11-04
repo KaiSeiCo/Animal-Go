@@ -7,7 +7,7 @@ import {
   IsUrl,
   Length,
 } from 'class-validator';
-import { PageOptionsDto } from '../page.dto';
+import { PageOptionsDto } from '../../../model/dto/page.dto';
 
 export class UserLoginDto {
   @ApiProperty({ description: '用户名', required: true })

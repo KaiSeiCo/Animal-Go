@@ -18,7 +18,7 @@ import {
   CheckIdTaskDto,
   CreateTaskDto,
   UpdateTaskDto,
-} from 'src/model/dto/sys/task.dto';
+} from 'src/module/admin/system/task/task.dto';
 import Task from 'src/model/entity/sys/task.entity';
 import { TaskService } from './task.service';
 
