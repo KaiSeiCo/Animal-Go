@@ -24,7 +24,7 @@ module.exports = {
     },
     feat: {
       description: 'New feature',
-      emoji: '🎉',
+      emoji: '🚩',
       value: 'feat'
     },
     fix: {
@@ -44,12 +44,12 @@ module.exports = {
     },
     release: {
       description: 'Release',
-      emoji: '🏹',
+      emoji: '🎉',
       value: 'release'
     },
     style: {
       description: 'Markup, white-space, formatting, missing semi-colons...',
-      emoji: '💄',
+      emoji: '✂️',
       value: 'style'
     },
     test: {

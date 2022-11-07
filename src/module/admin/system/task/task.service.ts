@@ -1,7 +1,7 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef, Reflector } from '@nestjs/core';
-import type { Job } from 'bull';
+import type { CronRepeatOptions, EveryRepeatOptions, Job } from 'bull';
 import { Queue } from 'bull';
 import {
   SYSTEM_MISSION_KEY,
@@ -115,7 +115,7 @@ export class TaskService implements OnModuleInit {
     }
     // stop tasks that already exists
     await this.stop(task);
-    let repeat: any;
+    let repeat: CronRepeatOptions | EveryRepeatOptions;
     // if type === 1, repeat every millis
     if (task.type === 1) {
       repeat = {
@@ -143,7 +143,6 @@ export class TaskService implements OnModuleInit {
       { jobId: task.id, removeOnComplete: true, removeOnFail: true, repeat },
     );
 
-    //
     if (job && job.opts) {
       // save job option and set job status = 1
       await this.taskRepository.update(task.id, {

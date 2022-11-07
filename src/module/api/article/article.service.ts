@@ -87,12 +87,12 @@ export class ArticleService {
               article_id: row.article_id,
               article_title: row.article_title,
               article_desc: row.article_desc,
-              article_tags: [
+              article_tags: row.tag_id ? [
                 {
                   tag_id: row.tag_id,
-                  tag_name: row.tag_name,
-                },
-              ],
+                  tag_name: row.tag_name
+                }
+              ] : [],
               article_forum: {
                 forum_id: row.forum_id,
                 forum_name: row.forum_name,
@@ -182,7 +182,7 @@ export class ArticleService {
       ]);
     }
 
-    //  persistence
+    // persistence
     this.articleProducer.saveLike({
       article_id,
       user_id,
