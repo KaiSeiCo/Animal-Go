@@ -58,17 +58,6 @@ async function bootstrap() {
   // swagger
   setupSwagger(app);
 
-  // microservice
-  // app.connectMicroservice({
-  //   transport: Transport.KAFKA,
-  //   options: {
-  //     client: {
-  //       brokers: [],
-  //     },
-  //     consumer: {},
-  //   },
-  // });
-  // await app.startAllMicroservices();
   // boot
   await app.listen(PORT, '0.0.0.0');
   const serverUrl = await app.getUrl();

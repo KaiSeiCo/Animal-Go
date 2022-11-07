@@ -5,8 +5,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClsModule } from 'nestjs-cls';
 import { LikeDetail } from 'src/model/entity/app/like_detail.entity';
-import { ArticleService } from 'src/module/api/article/article.service';
+import {
+  repositories,
+  RepositoryModule,
+} from 'src/model/repository/repository.module';
 import { JwtUtil } from 'src/util/jwt.util';
+import { Repository } from 'typeorm';
 import { UserContext } from './context/user.context';
 import { ConsumerModule } from './kafka/consumer/consumer.module';
 import { KafkaModule } from './kafka/kafka.module';
@@ -14,8 +18,19 @@ import { ProducerModule } from './kafka/producer/producer.module';
 import { RedisModule } from './redis/redis.module';
 import { RedisService } from './redis/redis.service';
 
-// global service providers
-const providers = [RedisService, UserContext, JwtUtil];
+// global service
+const providers = [RedisService, UserContext, JwtUtil, RepositoryModule];
+// global modules
+const global_modules = [
+  JwtModule,
+  ClsModule,
+  KafkaModule,
+  ProducerModule,
+  ConsumerModule,
+  HttpModule,
+  CacheModule,
+  RepositoryModule,
+];
 
 /**
  * 全局 Module
@@ -23,7 +38,6 @@ const providers = [RedisService, UserContext, JwtUtil];
 @Global()
 @Module({
   imports: [
-    TypeOrmModule.forFeature([LikeDetail]),
     // axios http
     HttpModule.register({
       timeout: 5000,
@@ -66,17 +80,10 @@ const providers = [RedisService, UserContext, JwtUtil];
     ClsModule.forRoot({
       middleware: { mount: true },
     }),
+    // dao
+    RepositoryModule,
   ],
   providers: [...providers],
-  exports: [
-    HttpModule,
-    CacheModule,
-    ...providers,
-    JwtModule,
-    ClsModule,
-    KafkaModule,
-    ProducerModule,
-    ConsumerModule,
-  ],
+  exports: [...providers, ...global_modules],
 })
 export class GlobalModule {}

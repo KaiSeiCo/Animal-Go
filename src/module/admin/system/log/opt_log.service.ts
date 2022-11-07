@@ -1,15 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { OptLogSave } from 'src/module/admin/system/log/opt_log.dto';
-import { OperationLog } from 'src/model/entity/sys/opt_log.entity';
-import { Repository } from 'typeorm';
+import { OperationLogRepository } from 'src/model/repository/sys/log.repository';
 
 @Injectable()
 export class OperationLogService {
-  constructor(
-    @InjectRepository(OperationLog)
-    private readonly operationLogRepo: Repository<OperationLog>,
-  ) {}
+  constructor(private readonly operationLogRepo: OperationLogRepository) {}
 
   /**
    * 保存日志

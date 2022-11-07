@@ -1,7 +1,6 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef, Reflector } from '@nestjs/core';
-import { InjectRepository } from '@nestjs/typeorm';
 import type { Job } from 'bull';
 import { Queue } from 'bull';
 import {
@@ -18,15 +17,14 @@ import {
 import Task from 'src/model/entity/sys/task.entity';
 import { LoggerService } from 'src/global/logger/logger.service';
 import { RedisService } from 'src/global/redis/redis.service';
-import { Repository } from 'typeorm';
 import { toString, isEmpty } from 'lodash';
 import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
+import { TaskRepository } from 'src/model/repository/sys/task.repository';
 
 @Injectable()
 export class TaskService implements OnModuleInit {
   constructor(
-    @InjectRepository(Task)
-    private taskRepository: Repository<Task>,
+    private taskRepository: TaskRepository,
     @InjectQueue(SYSTEM_TASK_QUEUE_NAME)
     private queue: Queue,
     private moduleRef: ModuleRef,

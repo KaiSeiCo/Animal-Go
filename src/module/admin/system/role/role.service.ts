@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { InjectEntityManager } from '@nestjs/typeorm';
 import { difference, filter, includes } from 'lodash';
 import {
   CreateRoleDto,
@@ -7,15 +7,15 @@ import {
 } from 'src/module/admin/system/role/role.dto';
 import { Role } from 'src/model/entity/sys/role.entity';
 import { RoleMenu } from 'src/model/entity/sys/role_menu.entity';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager } from 'typeorm';
+import { RoleRepository } from 'src/model/repository/sys/role.repository';
+import { RoleMenuRepository } from 'src/model/repository/sys/role_menu.repository';
 
 @Injectable()
 export class RoleService {
   constructor(
-    @InjectRepository(Role)
-    private readonly roleRepo: Repository<Role>,
-    @InjectRepository(RoleMenu)
-    private readonly roleMenuRepo: Repository<RoleMenu>,
+    private readonly roleRepository: RoleRepository,
+    private readonly roleMenuRepository: RoleMenuRepository,
     @InjectEntityManager()
     private entityManager: EntityManager,
   ) {}
@@ -25,7 +25,7 @@ export class RoleService {
    * @returns
    */
   async list(): Promise<Role[]> {
-    return await this.roleRepo.find();
+    return await this.roleRepository.find();
   }
 
   /**
@@ -33,7 +33,7 @@ export class RoleService {
    * @param dto
    */
   async save(dto: CreateRoleDto) {
-    await this.roleRepo.save(dto);
+    await this.roleRepository.save(dto);
   }
 
   /**
@@ -41,7 +41,7 @@ export class RoleService {
    * @param id
    */
   async delete(id: number) {
-    await this.roleRepo.delete({
+    await this.roleRepository.delete({
       id,
     });
   }
@@ -55,13 +55,13 @@ export class RoleService {
     const { id, role_name, role_label, remark, menus } = dto;
     // save updated role, find relative menus
     const [role, originMenus] = await Promise.all([
-      this.roleRepo.save({
+      this.roleRepository.save({
         id,
         role_name,
         role_label,
         remark,
       }),
-      this.roleMenuRepo.find({
+      this.roleMenuRepository.find({
         where: { role_id: id },
       }),
     ]);

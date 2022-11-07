@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
 import { ApiException } from 'src/common/exception/api.exception';
 import {
@@ -7,21 +6,18 @@ import {
   UpdateMenuDto,
 } from 'src/module/admin/system/menu/menu.dto';
 import { Menu } from 'src/model/entity/sys/menu.entity';
-import { Repository } from 'typeorm';
+import { MenuRepository } from 'src/model/repository/sys/menu.repository';
 
 @Injectable()
 export class MenuService {
-  constructor(
-    @InjectRepository(Menu)
-    private readonly menuRepo: Repository<Menu>,
-  ) {}
+  constructor(private readonly menuRepository: MenuRepository) {}
 
   /**
    * find all menus
    * @returns
    */
   async list(): Promise<Menu[]> {
-    return await this.menuRepo.find();
+    return await this.menuRepository.find();
   }
 
   /**
@@ -29,7 +25,7 @@ export class MenuService {
    * @param menu
    */
   async save(menu: CreateMenuDto) {
-    await this.menuRepo.save(menu);
+    await this.menuRepository.save(menu);
   }
 
   /**
@@ -37,7 +33,7 @@ export class MenuService {
    * @param id
    */
   async delete(id: number) {
-    await this.menuRepo.delete({
+    await this.menuRepository.delete({
       id,
     });
   }
@@ -48,7 +44,7 @@ export class MenuService {
    */
   async update(dto: UpdateMenuDto) {
     // check parent id exists
-    const parent_menu = await this.menuRepo.find({
+    const parent_menu = await this.menuRepository.find({
       where: { parent_id: dto.parent_id },
     });
 
@@ -57,7 +53,7 @@ export class MenuService {
     }
 
     // update
-    await this.menuRepo
+    await this.menuRepository
       .createQueryBuilder()
       .update(Menu)
       .set(dto)

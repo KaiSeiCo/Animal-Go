@@ -9,10 +9,9 @@ export const SUBSCRIBER_FIXED_TOPIC_EVENT_MAP = new Set<string>();
  * @param event
  * @returns
  */
-export function SubscribeToConsumer(topic: ConsumerTopics) {
+export function Subscribe(topic: ConsumerTopics) {
   return (_: any, __: string, descriptor: PropertyDescriptor) => {
     SUBSCRIBER_TOPIC_EVENT_MAP.add(topic);
-
     return descriptor;
   };
 }
@@ -23,7 +22,7 @@ export function SubscribeToConsumer(topic: ConsumerTopics) {
  * @param event
  * @returns
  */
-export function SubscribeToFixedConsumer(topic: FixedConsumerTopics) {
+export function FixedSubscribe(topic: FixedConsumerTopics) {
   return (_: any, __: string, descriptor: PropertyDescriptor) => {
     SUBSCRIBER_FIXED_TOPIC_EVENT_MAP.add(topic);
     return descriptor;
