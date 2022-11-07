@@ -1,22 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { InjectRepository } from '@nestjs/typeorm';
 import { LoggerService } from 'src/global/logger/logger.service';
-import { LikeDetail } from 'src/model/entity/app/like_detail.entity';
+import { LikeDetailRepository } from 'src/model/repository/app/like_detail.repository';
 import { LikePayload } from 'src/module/api/article/article.dto';
-import { Repository } from 'typeorm';
-import { SubscribeToConsumer } from '../kafka.decorator';
+import { Subscribe } from '../kafka.decorator';
 import { ConsumerTopics, KafkaConsumeEvents } from '../topic.constants';
 
 @Injectable()
 export class ArticleConsumer {
   constructor(
-    @InjectRepository(LikeDetail)
-    private readonly likeDetailRepository: Repository<LikeDetail>,
+    private readonly likeDetailRepository: LikeDetailRepository,
     private logger: LoggerService,
   ) {}
 
-  @SubscribeToConsumer(ConsumerTopics.ARTICLE_TOPIC)
+  /**
+   * save like info to db
+   * @param payload
+   */
+  @Subscribe(ConsumerTopics.ARTICLE_TOPIC)
   @OnEvent(KafkaConsumeEvents.ARTICLE_LIKE)
   async saveLike(payload: LikePayload) {
     this.logger.log('[Consumer-Event] start to save like detail');

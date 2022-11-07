@@ -1,7 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import User from '../../../model/entity/sys/user.entity';
-import { Repository } from 'typeorm';
 import {
   UpdateUserDto,
   UserLoginDto,
@@ -12,32 +9,28 @@ import { ApiException } from 'src/common/exception/api.exception';
 import { bcryptPassword, comparePassword } from 'src/util/bcrypt.util';
 import { Snowflake } from 'nodejs-snowflake';
 import { isEmpty, toNumber } from 'lodash';
-import { JwtService } from '@nestjs/jwt';
 import { LoginVo, UserListVo } from 'src/model/vo/user.vo';
 import { buildDynamicSqlAppendWhere } from 'src/util/typeorm.util';
-import { UserRole } from 'src/model/entity/sys/user_role.entity';
 import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
-import { RoleMenu } from 'src/model/entity/sys/role_menu.entity';
 import { Menu } from 'src/model/entity/sys/menu.entity';
-import { Role } from 'src/model/entity/sys/role.entity';
 import { JwtUtil } from 'src/util/jwt.util';
 import { RedisService } from 'src/global/redis/redis.service';
 import { getLoginRecordKey } from 'src/global/redis/redis.key';
 import { REDIS_EXPIRE_TIME_WEEK } from 'src/common/constant/system.constant';
+import { UserRepository } from 'src/model/repository/sys/user.repository';
+import { UserRoleRepository } from 'src/model/repository/sys/user_role.repository';
+import { RoleRepository } from 'src/model/repository/sys/role.repository';
+import { RoleMenuRepository } from 'src/model/repository/sys/role_menu.repository';
+import { MenuRepository } from 'src/model/repository/sys/menu.repository';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-    @InjectRepository(UserRole)
-    private userRoleRepo: Repository<UserRole>,
-    @InjectRepository(Role)
-    private roleRepository: Repository<Role>,
-    @InjectRepository(RoleMenu)
-    private roleMenuRepository: Repository<RoleMenu>,
-    @InjectRepository(Menu)
-    private menuRepository: Repository<Menu>,
+    private userRepository: UserRepository,
+    private userRoleRepository: UserRoleRepository,
+    private roleRepository: RoleRepository,
+    private roleMenuRepository: RoleMenuRepository,
+    private menuRepository: MenuRepository,
     private redisService: RedisService,
     private jwtUtil: JwtUtil,
   ) {}
@@ -63,7 +56,7 @@ export class UserService {
     }
 
     // generate token
-    const userRole = await this.userRoleRepo.findOne({
+    const userRole = await this.userRoleRepository.findOne({
       where: { user_id: user.id },
     });
 
@@ -190,7 +183,7 @@ export class UserService {
         status,
         email,
       }),
-      this.userRoleRepo.findOne({ where: { user_id: id } }),
+      this.userRoleRepository.findOne({ where: { user_id: id } }),
     ]);
 
     const userRole = role
@@ -203,7 +196,7 @@ export class UserService {
           user_id: id,
           role_id: role_id,
         };
-    await this.userRoleRepo.save(userRole);
+    await this.userRoleRepository.save(userRole);
 
     // [TODO-RECORD-221023]
     // flush token in redis

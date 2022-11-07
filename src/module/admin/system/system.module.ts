@@ -1,19 +1,16 @@
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   SYSTEM_TASK_QUEUE_NAME,
   SYSTEM_TASK_QUEUE_PREFIX,
 } from 'src/common/constant/system.constant';
-import Task from 'src/model/entity/sys/task.entity';
 import { TaskController } from './task/task.controller';
 import { TaskConsumer } from './task/task.processor';
 import { TaskService } from './task/task.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Task]),
     BullModule.registerQueueAsync({
       name: SYSTEM_TASK_QUEUE_NAME,
       imports: [ConfigModule],

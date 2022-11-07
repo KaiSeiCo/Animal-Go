@@ -1,11 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { BaseEntity } from '../base.entity';
 
 @Entity({ name: 'tb_forum' })
 export class Forum extends BaseEntity {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @PrimaryColumn({
+    type: 'bigint',
     unsigned: true,
+    generated: 'increment',
   })
   id: number;
 

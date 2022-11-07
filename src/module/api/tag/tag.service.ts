@@ -1,15 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { TagCreateDto } from 'src/module/api/tag/tag.dto';
-import { Tag } from 'src/model/entity/app/tag.entity';
-import { Repository } from 'typeorm';
+import { TagRepository } from 'src/model/repository/app/tag.repository';
 
 @Injectable()
 export class TagService {
-  constructor(
-    @InjectRepository(Tag)
-    private tagRepostiory: Repository<Tag>,
-  ) {}
+  constructor(private tagRepostiory: TagRepository) {}
 
   async list() {
     return this.tagRepostiory.find();

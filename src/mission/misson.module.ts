@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { DynamicModule, ExistingProvider } from '@nestjs/common/interfaces';
 import { AdminModule } from 'src/module/admin/admin.module';
-import { TestJob } from './job/test.job';
+import { ArticleCronJob } from './job/article.job';
 
-const providers = [TestJob];
+const providers = [ArticleCronJob];
 
 function createAliasProviders(): ExistingProvider[] {
   const aliasProviders: ExistingProvider[] = [];

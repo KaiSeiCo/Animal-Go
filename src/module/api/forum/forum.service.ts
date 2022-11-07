@@ -1,15 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { ForumCreateDto, ForumQueryDto } from 'src/module/api/forum/forum.dto';
-import { Forum } from 'src/model/entity/app/forum.entity';
-import { Repository } from 'typeorm';
+import { ForumRepository } from 'src/model/repository/app/forum.repository';
 
 @Injectable()
 export class ForumService {
-  constructor(
-    @InjectRepository(Forum)
-    private forumRepository: Repository<Forum>,
-  ) {}
+  constructor(private forumRepository: ForumRepository) {}
 
   async list(dto: ForumQueryDto) {
     const where = {};
