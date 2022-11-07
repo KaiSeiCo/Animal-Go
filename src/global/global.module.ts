@@ -2,15 +2,11 @@ import { HttpModule } from '@nestjs/axios';
 import { CacheModule, Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClsModule } from 'nestjs-cls';
-import { LikeDetail } from 'src/model/entity/app/like_detail.entity';
 import {
-  repositories,
   RepositoryModule,
 } from 'src/model/repository/repository.module';
 import { JwtUtil } from 'src/util/jwt.util';
-import { Repository } from 'typeorm';
 import { UserContext } from './context/user.context';
 import { ConsumerModule } from './kafka/consumer/consumer.module';
 import { KafkaModule } from './kafka/kafka.module';

@@ -48,7 +48,7 @@ export class CreateTaskDto {
   @MinLength(1)
   service: string;
 
-  @ApiProperty({ description: '任务类型: 定时任务 or 间歇任务' })
+  @ApiProperty({ description: '任务类型: 0定时任务, 1间歇任务' })
   @IsIn([0, 1])
   type: number;
 
