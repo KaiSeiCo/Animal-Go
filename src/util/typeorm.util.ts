@@ -1,4 +1,5 @@
 import { isNotEmpty } from 'class-validator';
+import { query } from 'express';
 import { SelectQueryBuilder } from 'typeorm';
 
 /**
@@ -11,21 +12,30 @@ export function buildDynamicSqlAppendWhere<T>(
   queryBase: SelectQueryBuilder<T>,
   dynamicFields: {
     field: string;
-    condition: 'LIKE' | '=';
-    value: any;
-    fuzzy?: boolean;
+    condition: 'LIKE' | '=' | 'in';
+    value: string | string[] | number | number[] | boolean;
   }[],
-) {
-  queryBase.where('1=1');
+): SelectQueryBuilder<T> {
   dynamicFields
     .filter((e) => isNotEmpty(e.value))
     .forEach((e) => {
-      const { field, condition, value, fuzzy } = e;
+      const { field, condition } = e;
+      let { value } = e;
       const assignExp: {
         [key: string]: any;
       } = {};
-      assignExp[`${field}`] = fuzzy ? `%${value}%` : value;
-      queryBase.andWhere(`${field} ${condition} :${field}`, assignExp);
+      // transform boolean
+      if (value == 'true' || value == 'false') {
+        value = value == 'true' ? 1 : 0;
+      }
+      // component assign expression
+      assignExp[`${field}`] = condition === 'LIKE' ? `%${value}%` : value;
+
+      if (condition === 'in') {
+        queryBase.andWhere(`${field} ${condition} (:${field})`, assignExp);
+      } else {
+        queryBase.andWhere(`${field} ${condition} :${field}`, assignExp);
+      }
     });
 
   return queryBase;

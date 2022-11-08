@@ -47,7 +47,6 @@ export class TaskController {
   }
 
   @ApiOperation({ summary: '添加任务' })
-  @OpenApi()
   @Post('')
   async add(@Body() dto: CreateTaskDto): Promise<Result<void>> {
     const serviceCall = dto.service.split('.');
@@ -73,7 +72,6 @@ export class TaskController {
   }
 
   @ApiOperation({ summary: '手动执行一次任务' })
-  @OpenApi()
   @Post('once')
   async once(@Body() dto: CheckIdTaskDto): Promise<void> {
     await this.taskService.once(dto.id);

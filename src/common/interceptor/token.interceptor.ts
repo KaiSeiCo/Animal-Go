@@ -5,12 +5,10 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
 import { isNotEmpty } from 'class-validator';
 import { FastifyRequest } from 'fastify';
 import { Observable } from 'rxjs';
 import { UserContext } from 'src/global/context/user.context';
-import User from 'src/model/entity/sys/user.entity';
 import { JwtUtil } from 'src/util/jwt.util';
 import { OPEN_API_KEY_METADATA } from '../constant/system.constant';
 

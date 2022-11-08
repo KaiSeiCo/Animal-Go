@@ -11,7 +11,7 @@ import {
   REDIS_DEFAULT_CLIENT_KEY,
   REDIS_MODULE_OPTIONS,
 } from 'src/common/constant/module.constants';
-import { TypeOfArrayOrNot } from 'src/common/type/typings';
+import { TypeOfArrayOrNot } from 'src/typings';
 import { RedisModuleAsyncOptions, RedisModuleOptions } from './redis.interface';
 
 @Module({})

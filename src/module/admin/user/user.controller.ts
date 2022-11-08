@@ -11,7 +11,7 @@ import { UserService } from 'src/module/admin/user/user.service';
  */
 @ApiTags('用户模块')
 @ApiBearerAuth()
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -24,7 +24,7 @@ export class UserController {
     summary: '分页获取用户列表',
   })
   @OpenApi()
-  @Get('list')
+  @Get('')
   async list(
     @Query() query: UserQueryDto,
   ): Promise<Result<PageResult<UserListVo>>> {
@@ -42,7 +42,7 @@ export class UserController {
   @ApiOperation({
     summary: '管理员更新用户信息',
   })
-  @Put('update')
+  @Put('')
   async update(@Body() dto: UpdateUserDto): Promise<Result<void>> {
     await this.userService.update(dto);
     return Result.success();

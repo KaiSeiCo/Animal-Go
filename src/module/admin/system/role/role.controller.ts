@@ -20,9 +20,9 @@ export class RoleController {
    * 获取角色列表接口
    * @returns
    */
-  @OpenApi()
   @ApiOperation({ summary: '获取所有角色' })
-  @Get('list')
+  @OpenApi()
+  @Get('')
   async list(): Promise<Result<Role[]>> {
     const role = await this.roleService.list();
     return Result.success(role);
@@ -34,7 +34,7 @@ export class RoleController {
    * @returns
    */
   @ApiOperation({ summary: '添加角色' })
-  @Post('add')
+  @Post('')
   async add(@Body() dto: CreateRoleDto): Promise<Result<void>> {
     await this.roleService.save(dto);
     return Result.success();
@@ -46,7 +46,7 @@ export class RoleController {
    * @returns
    */
   @ApiOperation({ summary: '删除角色' })
-  @Delete('delete')
+  @Delete('')
   async delete(@Query('id') id: number): Promise<Result<void>> {
     await this.roleService.delete(id);
     return Result.success();
@@ -58,7 +58,7 @@ export class RoleController {
    * @returns
    */
   @ApiOperation({ summary: '更新角色权限资源' })
-  @Put('update')
+  @Put('')
   async updateRole(@Body() dto: UpdateRoleDto): Promise<Result<void>> {
     await this.roleService.update(dto);
     return Result.success();
