@@ -1,6 +1,6 @@
 import { ModuleMetadata } from '@nestjs/common';
 import { KafkaConfig } from 'kafkajs';
-import { TypeOfArrayOrNot, TypeOfPromiseOrNot } from 'src/common/type/typings';
+import { TypeOfArrayOrNot, TypeOfPromiseOrNot } from 'src/typings';
 import { KafkaConsumeEvents } from './topic.constants';
 
 export enum MessageType {

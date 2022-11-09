@@ -32,90 +32,82 @@ export class ArticleService {
     private readonly articleProducer: ArticleProducer,
   ) {}
 
+  /**
+   * article list
+   * @param dto
+   * @returns
+   */
   async listArticles(dto: ArticleQueryDto) {
-    // find article
-    const result: ArticleListSqlResult[] = await this.articleRepository
-      .createQueryBuilder('a')
-      .select(
-        `
-        a.id as article_id,
-        a.article_title as article_title,
-        a.article_desc as article_desc,
-        a.created_at as publish_at,
-        a.updated_at as edit_at,
-        a.pinned as pinned,
-        a.deleted as deleted,
-        t.id as tag_id,
-        t.tag_name as tag_name,
-        f.id as forum_id,
-        f.forum_name as forum_name
-      `,
-      )
-      .leftJoin(Forum, 'f', 'f.id = a.forum_id')
-      .leftJoin(ArticleTag, 'at', 'at.article_id = a.id')
-      .leftJoin(Tag, 't', 't.id = at.tag_id')
-      .getRawMany();
+    // find articles
+    const result = await this.articleRepository.getArticleListSqlResult(dto);
 
-    const article_key = getPostLikeKey(PostType.ARTICLE);
     // build article vo list
     const articleEntries: Record<number, ArticleListVo> = {};
-    await Promise.all(
-      result
-        .filter((row) => !!row)
-        .map(async (row) => {
-          const relevantEntry = articleEntries[row.article_id];
-          if (relevantEntry) {
-            row.tag_id
-              ? articleEntries[row.article_id].article_tags.push({
-                  tag_id: row.tag_id,
-                  tag_name: row.tag_name,
-                })
-              : doNothing;
-          } else {
-            // get like count
-            const likeCnt =
-              (await this.redisService
-                .getRedis()
-                .hget(article_key, row.article_id.toString())) ??
-              (await this.likeDetailRepository.countBy({
-                article_id: row.article_id,
-                deleted: false,
-              }));
+    result
+      .filter((row) => !!row)
+      .forEach(async (row) => {
+        const key = row.article_id;
+        const relevantEntry = articleEntries[key];
+        if (relevantEntry) {
+          row.tag_id
+            ? articleEntries[key].article_tags.push({
+                tag_id: row.tag_id,
+                tag_name: row.tag_name,
+              })
+            : doNothing;
+        } else {
+          // make entries
+          articleEntries[key] = {
+            article_id: row.article_id,
+            article_title: row.article_title,
+            article_desc: row.article_desc,
+            article_tags: row.tag_id
+              ? [
+                  {
+                    tag_id: row.tag_id,
+                    tag_name: row.tag_name,
+                  },
+                ]
+              : [],
+            article_forum: {
+              forum_id: row.forum_id,
+              forum_name: row.forum_name,
+            },
+            pinned: row.pinned,
+            deleted: row.deleted,
+            view_count: 0,
+            like_count: 0,
+            favor_count: 0,
+            comment_count: 0,
+            publish_at: row.publish_at,
+            edit_at: row.edit_at,
+          };
+        }
+      });
 
-            // make entries
-            articleEntries[row.article_id] = {
-              article_id: row.article_id,
-              article_title: row.article_title,
-              article_desc: row.article_desc,
-              article_tags: row.tag_id ? [
-                {
-                  tag_id: row.tag_id,
-                  tag_name: row.tag_name
-                }
-              ] : [],
-              article_forum: {
-                forum_id: row.forum_id,
-                forum_name: row.forum_name,
-              },
-              pinned: row.pinned,
-              deleted: row.deleted,
-              view_count: 0,
-              like_count: toNumber(likeCnt),
-              favor_count: 0,
-              comment_count: 0,
-              publish_at: row.publish_at,
-              edit_at: row.edit_at,
-            };
-          }
-        }),
+    const article_key = getPostLikeKey(PostType.ARTICLE);
+    const res = await Promise.all(
+      Object.values(articleEntries).map(async (v) => {
+        // get like count
+        const likeCnt =
+          (await this.redisService
+            .getRedis()
+            .hget(article_key, v.article_id.toString())) ??
+          (await this.likeDetailRepository.countBy({
+            article_id: v.article_id,
+            deleted: false,
+          }));
+        v.like_count = toNumber(likeCnt);
+        return v;
+      }),
     );
-
-    const res = Object.values(articleEntries).map((v) => {
-      return v;
-    });
     return res;
   }
 
+  /**
+   * publish article
+   * @param dto
+   */
   async publishArticle(dto: ArticlePublishDto) {
     const {
       article_content,
@@ -187,6 +179,16 @@ export class ArticleService {
       article_id,
       user_id,
       deleted: isLiked ? true : false,
+    });
+  }
+
+  /**
+   * delete by id
+   * @param id
+   */
+  async delete(id: number): Promise<void> {
+    await this.articleRepository.delete({
+      id,
     });
   }
 }

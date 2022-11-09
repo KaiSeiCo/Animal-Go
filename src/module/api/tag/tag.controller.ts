@@ -37,8 +37,8 @@ export class TagController {
     summary: '删除标签',
   })
   @OpenApi()
-  @Delete('/:id')
-  async deleteTagById(@Param('id') id: number): Promise<Result<void>> {
+  @Delete('')
+  async deleteTagById(@Query('id') id: number): Promise<Result<void>> {
     await this.tagService.deleteById(id);
     return Result.success();
   }

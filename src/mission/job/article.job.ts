@@ -33,8 +33,8 @@ export class ArticleCronJob {
           count(*) as count
         `,
       )
-      .where(`like_detail.deleted = 0`)
-      .groupBy(`like_detail.article_id`)
+      .where('like_detail.deleted = 0')
+      .groupBy('like_detail.article_id')
       .getRawMany();
     const articleCountObj = {};
     articleCounts.forEach((e) => {

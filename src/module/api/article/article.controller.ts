@@ -9,11 +9,11 @@ import {
 } from 'src/module/api/article/article.dto';
 import { ArticleListVo } from 'src/model/vo/article.vo';
 import { ArticleService } from './article.service';
-import { Query } from '@nestjs/common/decorators';
+import { Put, Query } from '@nestjs/common/decorators';
 
-@ApiTags('猫料模块')
+@ApiTags('文章模块')
 @ApiBearerAuth()
-@Controller('article')
+@Controller('articles')
 export class ArticleController {
   constructor(
     private articleService: ArticleService,
@@ -21,19 +21,19 @@ export class ArticleController {
   ) {}
 
   @ApiOperation({
-    summary: '猫料列表',
+    summary: '首页文章列表',
   })
   @OpenApi()
   @Get('')
   async catfoods(
-    @Param() dto: ArticleQueryDto,
+    @Query() dto: ArticleQueryDto,
   ): Promise<Result<ArticleListVo[]>> {
     const articles = await this.articleService.listArticles(dto);
     return Result.success(articles);
   }
 
   @ApiOperation({
-    summary: '发布猫料',
+    summary: '用户发布文章',
   })
   @OpenApi()
   @Post('publish')
@@ -43,7 +43,7 @@ export class ArticleController {
   }
 
   @ApiOperation({
-    summary: '点赞',
+    summary: '用户点赞',
   })
   @OnlyRequireLogin()
   @Post('like')
@@ -51,5 +51,13 @@ export class ArticleController {
     const user = this.userCtx.get('user');
     await this.articleService.likeOrUnlike(user.id, article_id);
     return Result.success();
+  }
+
+  @ApiOperation({
+    summary: '用户更新文章'
+  })
+  @Put('/')
+  async updateMyArticle(): Promise<Result<void>> {
+    return Result.success()
   }
 }

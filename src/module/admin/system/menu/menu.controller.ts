@@ -27,9 +27,9 @@ export class MenuController {
    * 获取所有菜单接口
    * @returns Menu[]
    */
-  @OpenApi()
   @ApiOperation({ summary: '获取所有菜单' })
-  @Get('list')
+  @OpenApi()
+  @Get('')
   async list(): Promise<Result<Menu[]>> {
     const menus = await this.menuService.list();
     return Result.success(menus);
@@ -41,7 +41,7 @@ export class MenuController {
    * @returns
    */
   @ApiOperation({ summary: '添加菜单' })
-  @Post('add')
+  @Post('')
   async add(@Body() dto: CreateMenuDto): Promise<Result<void>> {
     await this.menuService.save(dto);
     return Result.success();
@@ -53,7 +53,7 @@ export class MenuController {
    * @returns
    */
   @ApiOperation({ summary: '删除菜单' })
-  @Delete('delete')
+  @Delete('')
   async delete(@Query('id') id: number): Promise<Result<void>> {
     await this.menuService.delete(id);
     return Result.success();
@@ -65,7 +65,7 @@ export class MenuController {
    * @returns
    */
   @ApiOperation({ summary: '修改菜单' })
-  @Put('update')
+  @Put('')
   async update(@Body() dto: UpdateMenuDto) {
     await this.menuService.update(dto);
     return Result.success();

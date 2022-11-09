@@ -134,28 +134,29 @@ export class UserService {
    */
   async page(query: UserQueryDto): Promise<[UserListVo[], number]> {
     const { username, email, status, page, limit } = query;
-    const queryBase = this.userRepository.createQueryBuilder('user');
-    buildDynamicSqlAppendWhere(queryBase, [
-      {
-        field: 'user.username',
-        condition: 'LIKE',
-        value: username,
-        fuzzy: true,
-      },
-      {
-        field: 'user.email',
-        condition: '=',
-        value: email,
-      },
-      {
-        field: 'user.status',
-        condition: '=',
-        value: status,
-      },
-    ])
+    const basicSql = buildDynamicSqlAppendWhere(
+      this.userRepository.createQueryBuilder('user'),
+      [
+        {
+          field: 'user.username',
+          condition: 'LIKE',
+          value: username,
+        },
+        {
+          field: 'user.email',
+          condition: '=',
+          value: email,
+        },
+        {
+          field: 'user.status',
+          condition: '=',
+          value: status,
+        },
+      ],
+    )
       .skip((page - 1) * limit)
       .take(limit);
-    const [list, total] = await queryBase.getManyAndCount();
+    const [list, total] = await basicSql.getManyAndCount();
     const result: UserListVo[] = list.map((e) => {
       return {
         username: e.username,

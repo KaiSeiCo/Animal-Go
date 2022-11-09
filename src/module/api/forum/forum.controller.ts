@@ -37,8 +37,8 @@ export class ForumController {
     summary: '删除板块',
   })
   @OpenApi()
-  @Delete('/:id')
-  async deleteForumById(@Param('id') id: number) {
+  @Delete('')
+  async deleteForumById(@Query('id') id: number) {
     await this.forumService.deleteById(id);
   }
 }
