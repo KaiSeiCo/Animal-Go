@@ -23,7 +23,7 @@ export class ArticleRepository extends Repository<Article> {
   async getArticleListSqlResult(
     dto: ArticleQueryDto,
   ): Promise<ArticleListSqlResult[]> {
-    const { article_title, deleted, status, forum_id, tag_ids, limit, page } =
+    const { article_title, deleted, status, forum_id, tag_ids, limit, page, user_id } =
       dto;
 
     const basicSql = buildDynamicSqlAppendWhere(
@@ -38,6 +38,7 @@ export class ArticleRepository extends Repository<Article> {
             a.pinned as pinned,
             a.deleted as deleted,
             a.status as status,
+            a.user_id as user_id,
             t.id as tag_id,
             t.tag_name as tag_name,
             f.id as forum_id,
@@ -73,6 +74,11 @@ export class ArticleRepository extends Repository<Article> {
           condition: 'in',
           value: tag_ids,
         },
+        {
+          field: 'user_id',
+          condition: '=',
+          value: user_id
+        }
       ],
     );
     basicSql.skip((page - 1) * limit).limit(limit);

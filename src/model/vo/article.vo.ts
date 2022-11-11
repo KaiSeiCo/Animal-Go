@@ -28,6 +28,9 @@ export type ArticleListVo = {
   article_desc: string;
   article_tags: TagVo[];
   article_forum: ArticleForumVo;
+  user_id: number,
+  username: string,
+  avatar: string,
   pinned: boolean;
   deleted: boolean;
   view_count: number;

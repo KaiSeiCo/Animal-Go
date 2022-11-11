@@ -1,11 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { BaseEntity } from '../base.entity';
 
-@Entity({ name: 'tb_like_detail' })
-@Index('article-user-index', ['article_id', 'user_id'])
-@Index('photo-user-index', ['photo_id', 'user_id'])
-export class LikeDetail extends BaseEntity {
+@Entity('tb-favor-detail')
+export class FavorDetail extends BaseEntity {
   @PrimaryColumn({
     type: 'bigint',
     unsigned: true,
@@ -13,6 +11,14 @@ export class LikeDetail extends BaseEntity {
   })
   @ApiProperty()
   id: number;
+
+  @Column({
+    type: 'bigint',
+    unsigned: true,
+    comment: '用户id',
+  })
+  @ApiProperty()
+  user_id: number;
 
   @Column({
     type: 'bigint',
@@ -33,17 +39,10 @@ export class LikeDetail extends BaseEntity {
   photo_id: number;
 
   @Column({
-    type: 'bigint',
-    unsigned: true,
-    comment: '用户id',
-  })
-  @ApiProperty()
-  user_id: number;
-
-  @Column({
     type: 'tinyint',
     unsigned: true,
-    comment: '是否点赞',
+    comment: '是否favor',
+    nullable: true,
   })
   @ApiProperty()
   deleted: boolean;

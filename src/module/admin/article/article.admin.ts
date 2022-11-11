@@ -1,7 +1,6 @@
 import { Controller, Delete, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
-import { UserContext } from 'src/global/context/user.context';
 import { ArticleService } from 'src/module/api/article/article.service';
 
 @ApiTags('文章管理')
@@ -10,7 +9,6 @@ import { ArticleService } from 'src/module/api/article/article.service';
 export class ArticleAdminController {
   constructor(
     private articleService: ArticleService,
-    private userCtx: UserContext,
   ) {}
 
   @ApiOperation({

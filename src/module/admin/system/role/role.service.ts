@@ -87,14 +87,12 @@ export class RoleService {
 
     // start transaction
     await this.entityManager.transaction(async (manager) => {
-      Promise.all([
-        insertMenu.length > 0
-          ? await manager.insert(RoleMenu, insertMenu)
-          : null,
-        deleteMenu.length > 0
-          ? await manager.delete(RoleMenu, deleteRoleMenuFieldIds)
-          : null,
-      ]);
+      if (insertMenu.length > 0) {
+        await manager.insert(RoleMenu, insertMenu);
+      }
+      if (deleteMenu.length > 0) {
+        await manager.delete(RoleMenu, deleteRoleMenuFieldIds);
+      }
     });
     // [TODO-RECORD-221023]
     // should force logout relavant user

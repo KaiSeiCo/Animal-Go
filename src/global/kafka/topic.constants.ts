@@ -9,4 +9,5 @@ export enum FixedConsumerTopics {
 
 export enum KafkaConsumeEvents {
   ARTICLE_LIKE = 'article.like',
+  ARTICLE_FAVOR = 'article.favor'
 }
