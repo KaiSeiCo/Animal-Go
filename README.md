@@ -1,7 +1,10 @@
 
 ## Description
+A Independent Product Called Animal-Go, A Funny Community
+NOT FOR ANY BUSINESS. JUST FOR FUN
 
-Animal-Go 
+Frontend is on the way
+Backend is improving
 
 ## Installation
 
@@ -20,19 +23,6 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
 
 ## Commit 
