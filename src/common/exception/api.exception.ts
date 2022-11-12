@@ -1,5 +1,8 @@
 import { HttpException } from '@nestjs/common';
-import { HttpResponse, HttpResponseKeyMap } from '../constant/http/http-res-map.constants';
+import {
+  HttpResponse,
+  HttpResponseKeyMap,
+} from '../constant/http/http-res-map.constants';
 
 export class ApiException extends HttpException {
   private errorCode: number;

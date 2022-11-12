@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Article } from '../entity/app/article.entity';
 import { ArticleTag } from '../entity/app/article_tag.entity';
+import { FavorDetail } from '../entity/app/favor_detail.entity';
 import { Forum } from '../entity/app/forum.entity';
 import { LikeDetail } from '../entity/app/like_detail.entity';
 import { Tag } from '../entity/app/tag.entity';
@@ -14,6 +15,7 @@ import User from '../entity/sys/user.entity';
 import { UserRole } from '../entity/sys/user_role.entity';
 import { ArticleRepository } from './app/article.repository';
 import { ArticleTagRepository } from './app/article_tag.repository';
+import { FavorDetailRepository } from './app/favor_detail.repository';
 import { ForumRepository } from './app/forum.repository';
 import { LikeDetailRepository } from './app/like_detail.repository';
 import { TagRepository } from './app/tag.repository';
@@ -38,6 +40,7 @@ export const repositories = [
   TaskRepository,
   UserRoleRepository,
   UserRepository,
+  FavorDetailRepository,
 ];
 
 @Module({
@@ -55,6 +58,7 @@ export const repositories = [
       Task,
       UserRole,
       User,
+      FavorDetail,
     ]),
   ],
   providers: [...repositories],

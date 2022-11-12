@@ -7,16 +7,14 @@ import { ArticleService } from 'src/module/api/article/article.service';
 @ApiBearerAuth()
 @Controller('articles')
 export class ArticleAdminController {
-  constructor(
-    private articleService: ArticleService,
-  ) {}
+  constructor(private articleService: ArticleService) {}
 
   @ApiOperation({
     summary: '删除文章',
   })
   @Delete('')
-  async delete (@Query('id') id: number): Promise<Result<void>> {
-    await this.articleService.delete(id)
-    return Result.success()
+  async delete(@Query('id') id: number): Promise<Result<void>> {
+    await this.articleService.delete(id);
+    return Result.success();
   }
 }

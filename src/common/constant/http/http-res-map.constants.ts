@@ -23,7 +23,7 @@ export const HttpResponseKeyMap = {
 export type HttpResponseKey = keyof typeof HttpResponseKeyMap;
 
 export type HttpResMap = Record<
-HttpResponseKey,
+  HttpResponseKey,
   { status: number; code: number; message: string }
 >;
 
@@ -84,12 +84,12 @@ export const HttpResponse: HttpResMap = {
   OPERATION_FAILED: {
     status: HttpStatusCode.BAD_REQUEST,
     code: 40010,
-    message: 'Operation Failed'
+    message: 'Operation Failed',
   },
   ARTICLE_NOT_EXISTS: {
     status: HttpStatusCode.BAD_REQUEST,
     code: 41000,
-    message: 'Article Not Exists'
+    message: 'Article Not Exists',
   },
   /* 500 */
   INTERNAL_SERVER_ERROR: {

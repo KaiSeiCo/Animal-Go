@@ -93,7 +93,7 @@ export class ArticleQueryDto extends PageOptionsDto {
   @IsOptional()
   tag_ids: number[];
 
-  @ApiProperty({ description: '用户id', required: false})
+  @ApiProperty({ description: '用户id', required: false })
   @IsOptional()
   user_id: number;
 }

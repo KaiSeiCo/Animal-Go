@@ -41,7 +41,7 @@ export class ArticleController {
   @OnlyRequireLogin()
   @Post('publish')
   async publish(@Body() dto: ArticlePublishDto): Promise<Result<void>> {
-    const user = this.userCtx.get('user')
+    const user = this.userCtx.get('user');
     await this.articleService.publishArticle(user.id, dto);
     return Result.success();
   }
@@ -52,8 +52,8 @@ export class ArticleController {
   @OnlyRequireLogin()
   @Put('/users/@me')
   async editMyArticle(@Body() dto: ArticleUpdateDto): Promise<Result<void>> {
-    const user = this.userCtx.get('user')
-    await this.articleService.editArticleBySelf(user.id, dto)
+    const user = this.userCtx.get('user');
+    await this.articleService.editArticleBySelf(user.id, dto);
     return Result.success();
   }
 
@@ -62,9 +62,11 @@ export class ArticleController {
   })
   @OnlyRequireLogin()
   @Delete('/:articleId/users/@me')
-  async deleteMyArticle(@Param('articleId') article_id: number): Promise<Result<void>> {
-    const user = this.userCtx.get('user')
-    await this.articleService.deleteArticleBySelf(user.id, article_id)
+  async deleteMyArticle(
+    @Param('articleId') article_id: number,
+  ): Promise<Result<void>> {
+    const user = this.userCtx.get('user');
+    await this.articleService.deleteArticleBySelf(user.id, article_id);
     return Result.success();
   }
 
@@ -74,8 +76,8 @@ export class ArticleController {
   @OnlyRequireLogin()
   @Get('/users/@me')
   async listMyArticle(@Query() dto: ArticleQueryDto): Promise<Result<void>> {
-    const user = this.userCtx.get('user')
-    await this.articleService.listArticleBySelf(user.id, dto)
+    const user = this.userCtx.get('user');
+    await this.articleService.listArticleBySelf(user.id, dto);
     return Result.success();
   }
 
@@ -91,13 +93,13 @@ export class ArticleController {
   }
 
   @ApiOperation({
-    summary: '收藏'
+    summary: '收藏',
   })
   @OnlyRequireLogin()
   @Post('/:id/favor')
   async favorOrUnfavor(@Param('id') article_id: number): Promise<Result<void>> {
-    const user = this.userCtx.get('user')
-    await this.articleService.favorOrUnfavor(user.id, article_id)
-    return Result.success()
+    const user = this.userCtx.get('user');
+    await this.articleService.favorOrUnfavor(user.id, article_id);
+    return Result.success();
   }
 }

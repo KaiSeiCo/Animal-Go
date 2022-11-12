@@ -3,9 +3,7 @@ import { CacheModule, Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { ClsModule } from 'nestjs-cls';
-import {
-  RepositoryModule,
-} from 'src/model/repository/repository.module';
+import { RepositoryModule } from 'src/model/repository/repository.module';
 import { JwtUtil } from 'src/util/jwt.util';
 import { UserContext } from './context/user.context';
 import { ConsumerModule } from './kafka/consumer/consumer.module';

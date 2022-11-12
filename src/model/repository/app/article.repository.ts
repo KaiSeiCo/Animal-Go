@@ -7,7 +7,10 @@ import { ArticleTag } from 'src/model/entity/app/article_tag.entity';
 import { Forum } from 'src/model/entity/app/forum.entity';
 import { Tag } from 'src/model/entity/app/tag.entity';
 import { ArticleListVo } from 'src/model/vo/article.vo';
-import { ArticleListSqlResult, ArticleQueryDto } from 'src/module/api/article/article.dto';
+import {
+  ArticleListSqlResult,
+  ArticleQueryDto,
+} from 'src/module/api/article/article.dto';
 import { buildDynamicSqlAppendWhere } from 'src/util/typeorm.util';
 import { Repository } from 'typeorm';
 
@@ -23,8 +26,16 @@ export class ArticleRepository extends Repository<Article> {
   async getArticleListSqlResult(
     dto: ArticleQueryDto,
   ): Promise<ArticleListSqlResult[]> {
-    const { article_title, deleted, status, forum_id, tag_ids, limit, page, user_id } =
-      dto;
+    const {
+      article_title,
+      deleted,
+      status,
+      forum_id,
+      tag_ids,
+      limit,
+      page,
+      user_id,
+    } = dto;
 
     const basicSql = buildDynamicSqlAppendWhere(
       this.createQueryBuilder('a')
@@ -77,8 +88,8 @@ export class ArticleRepository extends Repository<Article> {
         {
           field: 'user_id',
           condition: '=',
-          value: user_id
-        }
+          value: user_id,
+        },
       ],
     );
     basicSql.skip((page - 1) * limit).limit(limit);

@@ -43,8 +43,8 @@ export function getUserFavorKey(user_id: number, type: PostType) {
 
 /**
  * login record redis key
- * @param user_id 
- * @returns 
+ * @param user_id
+ * @returns
  */
 export function getLoginRecordKey(user_id: number) {
   return `user:login:${user_id}`;
