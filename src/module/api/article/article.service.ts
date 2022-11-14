@@ -27,6 +27,7 @@ import { EntityManager } from 'typeorm';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { ArticleTag } from 'src/model/entity/app/article_tag.entity';
 import { UserRepository } from 'src/model/repository/sys/user.repository';
+import { FavorDetailRepository } from 'src/model/repository/app/favor_detail.repository';
 
 @Injectable()
 export class ArticleService {
@@ -34,6 +35,7 @@ export class ArticleService {
     private readonly articleRepository: ArticleRepository,
     private readonly articleTagRepository: ArticleTagRepository,
     private readonly likeDetailRepository: LikeDetailRepository,
+    private readonly favorDetailRepository: FavorDetailRepository,
     private readonly userRepository: UserRepository,
     private readonly redisService: RedisService,
     private readonly articleProducer: ArticleProducer,
@@ -124,7 +126,7 @@ export class ArticleService {
     }
 
     if (article.user_id !== user_id) {
-      throw new ApiException();
+      throw new ApiException(HttpResponseKeyMap.PERMS_NOT_ALLOWED);
     }
 
     // update article table
@@ -135,6 +137,7 @@ export class ArticleService {
         article_cover: dto.article_cover ?? article.article_cover,
         status: dto.status ?? article.status,
         forum_id: dto.forum_id ?? article.forum_id,
+        pinned: dto.pinned ?? article.pinned,
       }),
       await this.articleTagRepository.find({
         where: {
@@ -145,30 +148,32 @@ export class ArticleService {
 
     // update article_tag
     const { tag_ids } = dto;
-    const originArticleTagIds = originArticleTag.map((e) => e.tag_id);
-    const insertArticleTags = difference(tag_ids, originArticleTagIds)
-      .filter((tag_id) => !!tag_id)
-      .map((tag_id) => {
-        return {
-          article_id: article.id,
-          tag_id: tag_id,
-        };
+    if (tag_ids?.length > 0) {
+      const originArticleTagIds = originArticleTag.map((e) => e.tag_id);
+      const insertArticleTags = difference(tag_ids, originArticleTagIds)
+        .filter((tag_id) => !!tag_id)
+        .map((tag_id) => {
+          return {
+            article_id: article.id,
+            tag_id: tag_id,
+          };
+        });
+      const deleteTagIds = difference(originArticleTagIds, tag_ids);
+      const deleteArticleTagFieldIds = filter(originArticleTag, (e) => {
+        return includes(deleteTagIds, e.id);
+      }).map((e) => {
+        return e.id;
       });
-    const deleteTagIds = difference(originArticleTagIds, tag_ids);
-    const deleteArticleTagFieldIds = filter(originArticleTag, (e) => {
-      return includes(deleteTagIds, e.id);
-    }).map((e) => {
-      return e.id;
-    });
 
-    await this.entityManager.transaction(async (manager) => {
-      if (insertArticleTags.length > 0) {
-        await manager.insert(ArticleTag, insertArticleTags);
-      }
-      if (deleteArticleTagFieldIds.length > 0) {
-        await manager.delete(ArticleTag, deleteArticleTagFieldIds);
-      }
-    });
+      await this.entityManager.transaction(async (manager) => {
+        if (insertArticleTags.length > 0) {
+          await manager.insert(ArticleTag, insertArticleTags);
+        }
+        if (deleteArticleTagFieldIds.length > 0) {
+          await manager.delete(ArticleTag, deleteArticleTagFieldIds);
+        }
+      });
+    }
   }
 
   /**
@@ -279,7 +284,7 @@ export class ArticleService {
 
     // user not allowed delete article not belong to self
     if (article.user_id !== user_id) {
-      throw new ApiException();
+      throw new ApiException(HttpResponseKeyMap.PERMS_NOT_ALLOWED);
     }
 
     await this.articleRepository.update(article_id, {
@@ -311,7 +316,7 @@ export class ArticleService {
               })
             : doNothing;
         } else {
-          // make entries
+          // initialize entries
           articleEntries[key] = {
             article_id: row.article_id,
             article_title: row.article_title,
@@ -343,22 +348,31 @@ export class ArticleService {
         }
       });
 
-    const article_key = getPostLikeKey(PostType.ARTICLE);
+    const article_like_key = getPostLikeKey(PostType.ARTICLE);
+    const article_favor_key = getPostFavorKey(PostType.ARTICLE);
     const res = await Promise.all(
       Object.values(articleEntries).map(async (e) => {
         // get count, user info
-        const [likeCnt, user] = await Promise.all([
+        const [likeCnt, favorCnt, user] = await Promise.all([
           (await this.redisService
             .getRedis()
-            .hget(article_key, e.article_id.toString())) ??
+            .hget(article_like_key, e.article_id.toString())) ??
             (await this.likeDetailRepository.countBy({
+              article_id: e.article_id,
+              deleted: false,
+            })),
+          (await this.redisService
+            .getRedis()
+            .hget(article_favor_key, e.article_id.toString())) ??
+            (await this.favorDetailRepository.countBy({
               article_id: e.article_id,
               deleted: false,
             })),
           self ? null : await this.userRepository.findOneBy({ id: e.user_id }),
         ]);
         // fill info
-        e.like_count = toNumber(likeCnt);
+        e.like_count = toNumber(likeCnt ?? 0);
+        e.favor_count = toNumber(favorCnt ?? 0)
         if (!self) {
           e.avatar = user.avatar;
           e.username = user.username;

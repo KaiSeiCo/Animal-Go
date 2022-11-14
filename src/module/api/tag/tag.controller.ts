@@ -9,7 +9,7 @@ import { TagService } from './tag.service';
 
 @ApiTags('标签模块')
 @ApiBearerAuth()
-@Controller('tag')
+@Controller('tags')
 export class TagController {
   constructor(private tagService: TagService) {}
 
@@ -21,25 +21,5 @@ export class TagController {
   async list(): Promise<Result<Tag[]>> {
     const tags = await this.tagService.list();
     return Result.success(tags);
-  }
-
-  @ApiOperation({
-    summary: '新增标签',
-  })
-  @OpenApi()
-  @Post('')
-  async addNewTag(@Body() dto: TagCreateDto): Promise<Result<void>> {
-    await this.tagService.add(dto);
-    return Result.success();
-  }
-
-  @ApiOperation({
-    summary: '删除标签',
-  })
-  @OpenApi()
-  @Delete('')
-  async deleteTagById(@Query('id') id: number): Promise<Result<void>> {
-    await this.tagService.deleteById(id);
-    return Result.success();
   }
 }

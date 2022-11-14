@@ -1,11 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { Mission } from 'src/common/decorator/mission.decorator';
-import { getPostLikeKey, PostType } from 'src/global/redis/redis.key';
+import {
+  getPostFavorKey,
+  getPostLikeKey,
+  PostType,
+} from 'src/global/redis/redis.key';
 import { RedisService } from 'src/global/redis/redis.service';
+import { FavorDetailRepository } from 'src/model/repository/app/favor_detail.repository';
 import { LikeDetailRepository } from 'src/model/repository/app/like_detail.repository';
 
 type ArticleCounts = {
   article_id: number;
+  count: number;
+};
+
+type PhotoCounts = {
+  photo_id: number;
   count: number;
 };
 
@@ -15,6 +25,7 @@ export class ArticleCronJob {
   constructor(
     private redisService: RedisService,
     private likeDetailRepository: LikeDetailRepository,
+    private favorDetailRepository: FavorDetailRepository,
   ) {}
 
   /**
@@ -25,24 +36,45 @@ export class ArticleCronJob {
    * @limit -1
    */
   async syncCountToRedis() {
-    const articleCounts: ArticleCounts[] = await this.likeDetailRepository
-      .createQueryBuilder('like_detail')
-      .select(
-        `
-          like_detail.article_id as article_id,
-          count(*) as count
-        `,
-      )
-      .where('like_detail.deleted = 0')
-      .groupBy('like_detail.article_id')
-      .getRawMany();
-    const articleCountObj = {};
-    articleCounts.forEach((e) => {
-      articleCountObj[e.article_id.toString()] = e.count;
+    const [articleLikeCounts, articleFavorCounts]: ArticleCounts[][] =
+      await Promise.all([
+        this.likeDetailRepository
+          .createQueryBuilder('like_detail')
+          .select(
+            `
+              like_detail.article_id as article_id,
+              count(*) as count
+            `,
+          )
+          .where('like_detail.deleted = 0')
+          .groupBy('like_detail.article_id')
+          .getRawMany(),
+        this.favorDetailRepository
+          .createQueryBuilder('favor_detail')
+          .select(
+            `
+              favor_detail.article_id as article_id,
+              count(*) as count
+            `,
+          )
+          .where('favor_detail.deleted = 0')
+          .groupBy('favor_detail.article_id')
+          .getRawMany(),
+      ]);
+    const articleLikeCountObj = {},
+      articleFavorCountObj = {};
+    articleLikeCounts.forEach((e) => {
+      articleLikeCountObj[e.article_id.toString()] = e.count;
+    });
+    articleFavorCounts.forEach((e) => {
+      articleFavorCountObj[e.article_id.toString()] = e.count;
     });
 
     await this.redisService
       .getRedis()
-      .hset(getPostLikeKey(PostType.ARTICLE), articleCountObj);
+      .pipeline()
+      .hset(getPostLikeKey(PostType.ARTICLE), articleLikeCountObj)
+      .hset(getPostFavorKey(PostType.ARTICLE))
+      .exec();
   }
 }

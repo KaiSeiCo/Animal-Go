@@ -69,6 +69,7 @@ export class Article extends BaseEntity {
 
   @Column({
     type: 'bigint',
+    unsigned: true,
     comment: '所属用户id',
   })
   user_id: number;

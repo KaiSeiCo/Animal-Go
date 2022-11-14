@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
 import { BaseEntity } from '../base.entity';
 
-@Entity('tb-favor-detail')
+@Entity('tb_favor_detail')
 export class FavorDetail extends BaseEntity {
   @PrimaryColumn({
     type: 'bigint',

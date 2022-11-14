@@ -22,7 +22,7 @@ export class ArticleController {
   ) {}
 
   @ApiOperation({
-    summary: '首页文章列表',
+    summary: '文章列表',
   })
   @OpenApi()
   @Get('')
@@ -32,6 +32,13 @@ export class ArticleController {
     const articles = await this.articleService.listArticles(dto);
     return Result.success(articles);
   }
+
+  @ApiOperation({
+    summary: '文下评论列表',
+  })
+  @OpenApi()
+  @Get('/:id/comments')
+  async commnets(@Param('id') article_id: number) {}
 
   /* user action */
 
@@ -75,10 +82,12 @@ export class ArticleController {
   })
   @OnlyRequireLogin()
   @Get('/users/@me')
-  async listMyArticle(@Query() dto: ArticleQueryDto): Promise<Result<void>> {
+  async listMyArticle(
+    @Query() dto: ArticleQueryDto,
+  ): Promise<Result<ArticleListVo[]>> {
     const user = this.userCtx.get('user');
-    await this.articleService.listArticleBySelf(user.id, dto);
-    return Result.success();
+    const result = await this.articleService.listArticleBySelf(user.id, dto);
+    return Result.success(result);
   }
 
   @ApiOperation({
