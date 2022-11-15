@@ -5,9 +5,6 @@ export class CommentDto {
   article_id: number;
 
   @ApiProperty()
-  photo_id: number;
-
-  @ApiProperty()
   comment_content: string;
   
   @ApiProperty()

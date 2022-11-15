@@ -14,8 +14,8 @@ export const HttpResponseKeyMap = {
   SERVICE_NOT_MISSION: 'SERVICE_NOT_MISSION',
   INVALID_TOKEN: 'INVALID_TOKEN',
   OPERATION_FAILED: 'OPERATION_FAILED',
-
   ARTICLE_NOT_EXISTS: 'ARTICLE_NOT_EXISTS',
+  COMMENT_NOT_EXISTS: 'COMMENT_NOT_EXISTS',
   /* 500 */
   INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
 };
@@ -88,8 +88,13 @@ export const HttpResponse: HttpResMap = {
   },
   ARTICLE_NOT_EXISTS: {
     status: HttpStatusCode.BAD_REQUEST,
-    code: 41000,
+    code: 40401,
     message: 'Article Not Exists',
+  },
+  COMMENT_NOT_EXISTS: {
+    status: HttpStatusCode.BAD_REQUEST,
+    code: 40402,
+    message: 'Comment Not Exists',
   },
   /* 500 */
   INTERNAL_SERVER_ERROR: {

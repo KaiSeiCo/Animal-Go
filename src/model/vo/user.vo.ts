@@ -3,12 +3,13 @@ export type LoginVo = {
 };
 
 export type UserListVo = {
-  username?: string;
-  nickname?: string;
-  email?: string;
-  avatar?: string;
-  intro?: string;
-  status?: boolean;
+  id: number;
+  username: string;
+  nickname: string;
+  email: string;
+  avatar: string;
+  intro: string;
+  status: boolean;
 };
 
 export type UserToken = {
