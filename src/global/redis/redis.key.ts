@@ -41,6 +41,18 @@ export function getUserFavorKey(user_id: number, type: PostType) {
   return `user:${user_id}:${type}:favor`;
 }
 
+/**
+ * login record redis key
+ * @param user_id
+ * @returns
+ */
 export function getLoginRecordKey(user_id: number) {
   return `user:login:${user_id}`;
+}
+
+/**
+ * get article comment count key
+ */
+export function getArticleCommentCountKey() {
+  return `article:comment:count`;
 }

@@ -159,6 +159,7 @@ export class UserService {
     const [list, total] = await basicSql.getManyAndCount();
     const result: UserListVo[] = list.map((e) => {
       return {
+        id: e.id,
         username: e.username,
         nickname: e.nickname,
         email: e.email,

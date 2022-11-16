@@ -19,23 +19,23 @@ export class ArticlePublishDto {
 
   @ApiProperty({ description: '文章简述', required: false })
   @IsOptional()
-  article_desc?: string;
+  article_desc: string;
 
   @ApiProperty({ description: '置顶', required: false })
   @IsOptional()
-  pinned?: boolean = false;
+  pinned: boolean = false;
 
   @ApiProperty({ description: '状态(0公开 1私密)', required: false })
   @IsOptional()
-  status?: number = ArticleStatus.PUBLIC;
+  status: number = ArticleStatus.PUBLIC;
 
   @ApiProperty({ description: '板块id', required: false })
   @IsOptional()
-  forum_id?: number;
+  forum_id: number;
 
   @ApiProperty({ description: '标签', required: false })
   @IsOptional()
-  tag_ids?: number[];
+  tag_ids: number[];
 }
 
 export class ArticleUpdateDto {
@@ -58,10 +58,6 @@ export class ArticleUpdateDto {
   @ApiProperty({ description: '置顶', required: false })
   @IsOptional()
   pinned: boolean;
-
-  @ApiProperty({ description: '删除', required: false })
-  @IsOptional()
-  deleted: boolean;
 
   @ApiProperty({ description: '状态(0公开 1私密)', required: false })
   @IsOptional()
@@ -96,10 +92,20 @@ export class ArticleQueryDto extends PageOptionsDto {
   @ApiProperty({ description: '标签', required: false })
   @IsOptional()
   tag_ids: number[];
+
+  @ApiProperty({ description: '用户id', required: false })
+  @IsOptional()
+  user_id: number;
 }
 
 /* kafka dto */
 export interface LikePayload {
+  user_id: number;
+  article_id: number;
+  deleted: boolean;
+}
+
+export interface FavorPayload {
   user_id: number;
   article_id: number;
   deleted: boolean;
@@ -110,8 +116,8 @@ export type ArticleListSqlResult = {
   article_id?: number;
   article_title?: string;
   article_desc?: string;
-  publish_at?: Date;
-  edit_at?: Date;
+  created_at?: Date;
+  updated_at?: Date;
   pinned?: boolean;
   deleted?: boolean;
   status?: number;
@@ -119,4 +125,6 @@ export type ArticleListSqlResult = {
   tag_name?: string;
   forum_id?: number;
   forum_name?: string;
+  forum_type?: number;
+  user_id?: number;
 };

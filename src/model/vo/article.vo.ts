@@ -3,9 +3,10 @@ export type TagVo = {
   tag_name: string;
 };
 
-export type ArticleForumVo = {
+export type ForumVo = {
   forum_id: number;
   forum_name: string;
+  forum_type: number;
 };
 
 export type ArticleDetailVo = {
@@ -17,9 +18,15 @@ export type ArticleDetailVo = {
   like_count: number;
   favor_count: number;
   article_tags: TagVo[];
-  article_forum: ArticleForumVo;
-  publish_at: Date;
-  edit_at: Date;
+  article_forum: ForumVo;
+  created_at: Date;
+  updated_at: Date;
+  author: {
+    author_id: number;
+    author_username: string;
+    author_nickname: string;
+    author_avatar: string;
+  };
 };
 
 export type ArticleListVo = {
@@ -27,13 +34,17 @@ export type ArticleListVo = {
   article_title: string;
   article_desc: string;
   article_tags: TagVo[];
-  article_forum: ArticleForumVo;
+  article_forum: ForumVo;
+  user_id: number;
+  username: string;
+  nickname: string;
+  avatar: string;
   pinned: boolean;
   deleted: boolean;
   view_count: number;
   like_count: number;
   favor_count: number;
   comment_count: number;
-  publish_at: Date;
-  edit_at: Date;
+  created_at: Date;
+  updated_at: Date;
 };

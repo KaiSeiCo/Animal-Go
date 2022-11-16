@@ -45,16 +45,13 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
     await this.fixedConsumer.run({
       eachMessage: async ({ topic, partition, message }) => {
         const payload = JSON.parse(message.value.toString()) as KafkaPayload;
-
         this.eventEmitter.emit(payload.event, payload.body);
-        // await funcRef.apply(object, [message.value.toString()]);
       },
     });
 
     await this.consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
         const payload = JSON.parse(message.value.toString()) as KafkaPayload;
-        console.log(payload);
         this.eventEmitter.emit(payload.event, payload.body);
       },
     });

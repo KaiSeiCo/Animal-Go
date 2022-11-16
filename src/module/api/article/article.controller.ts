@@ -6,10 +6,11 @@ import { UserContext } from 'src/global/context/user.context';
 import {
   ArticlePublishDto,
   ArticleQueryDto,
+  ArticleUpdateDto,
 } from 'src/module/api/article/article.dto';
-import { ArticleListVo } from 'src/model/vo/article.vo';
+import { ArticleDetailVo, ArticleListVo } from 'src/model/vo/article.vo';
 import { ArticleService } from './article.service';
-import { Put, Query } from '@nestjs/common/decorators';
+import { Delete, Put, Query } from '@nestjs/common/decorators';
 
 @ApiTags('文章模块')
 @ApiBearerAuth()
@@ -21,7 +22,7 @@ export class ArticleController {
   ) {}
 
   @ApiOperation({
-    summary: '首页文章列表',
+    summary: '文章列表',
   })
   @OpenApi()
   @Get('')
@@ -33,31 +34,86 @@ export class ArticleController {
   }
 
   @ApiOperation({
-    summary: '用户发布文章',
+    summary: '文章详情',
   })
   @OpenApi()
-  @Post('publish')
-  async publish(@Body() dto: ArticlePublishDto): Promise<Result<void>> {
-    await this.articleService.publishArticle(dto);
-    return Result.success();
+  @Get('/:id')
+  async commnets(
+    @Param('id') article_id: number,
+  ): Promise<Result<ArticleDetailVo>> {
+    const article = await this.articleService.getArticleDetail(article_id);
+    return Result.success(article);
   }
 
+  /* user action */
+
   @ApiOperation({
-    summary: '用户点赞',
+    summary: '用户发布文章',
   })
   @OnlyRequireLogin()
-  @Post('like')
-  async likeOrUnlike(@Query('id') article_id: number): Promise<Result<void>> {
+  @Post('publish')
+  async publish(@Body() dto: ArticlePublishDto): Promise<Result<void>> {
     const user = this.userCtx.get('user');
-    await this.articleService.likeOrUnlike(user.id, article_id);
+    await this.articleService.publishArticle(user.id, dto);
     return Result.success();
   }
 
   @ApiOperation({
-    summary: '用户更新文章'
+    summary: '用户编辑文章',
   })
-  @Put('/')
-  async updateMyArticle(): Promise<Result<void>> {
-    return Result.success()
+  @OnlyRequireLogin()
+  @Put('/users/@me')
+  async editMyArticle(@Body() dto: ArticleUpdateDto): Promise<Result<void>> {
+    const user = this.userCtx.get('user');
+    await this.articleService.editArticleBySelf(user.id, dto);
+    return Result.success();
+  }
+
+  @ApiOperation({
+    summary: '用户删除文章',
+  })
+  @OnlyRequireLogin()
+  @Delete('/:articleId/users/@me')
+  async deleteMyArticle(
+    @Param('articleId') article_id: number,
+  ): Promise<Result<void>> {
+    const user = this.userCtx.get('user');
+    await this.articleService.deleteArticleBySelf(user.id, article_id);
+    return Result.success();
+  }
+
+  @ApiOperation({
+    summary: '用户文章列表',
+  })
+  @OnlyRequireLogin()
+  @Get('/users/@me')
+  async listMyArticle(
+    @Query() dto: ArticleQueryDto,
+  ): Promise<Result<ArticleListVo[]>> {
+    const user = this.userCtx.get('user');
+    const result = await this.articleService.listArticleBySelf(user.id, dto);
+    return Result.success(result);
+  }
+
+  @ApiOperation({
+    summary: '点赞',
+  })
+  @OnlyRequireLogin()
+  @Post('/:id/like')
+  async like(@Param('id') article_id: number): Promise<Result<void>> {
+    const user = this.userCtx.get('user');
+    await this.articleService.like(user.id, article_id);
+    return Result.success();
+  }
+
+  @ApiOperation({
+    summary: '收藏',
+  })
+  @OnlyRequireLogin()
+  @Post('/:id/favor')
+  async favor(@Param('id') article_id: number): Promise<Result<void>> {
+    const user = this.userCtx.get('user');
+    await this.articleService.favor(user.id, article_id);
+    return Result.success();
   }
 }
