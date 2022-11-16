@@ -10,7 +10,7 @@ import { RoleController } from './system/role/role.controller';
 import { SystemModule } from './system/system.module';
 import { MenuController } from './system/menu/menu.controller';
 import { RoleService } from './system/role/role.service';
-import { ServiceAdminController } from './service/service.admin';
+import { ServiceAdminController } from './service-manager/service-manager.controller';
 import { ArticleService } from '../api/article/article.service';
 import { TagService } from '../api/tag/tag.service';
 import { ForumService } from '../api/forum/forum.service';

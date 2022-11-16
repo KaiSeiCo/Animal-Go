@@ -49,3 +49,10 @@ export function getUserFavorKey(user_id: number, type: PostType) {
 export function getLoginRecordKey(user_id: number) {
   return `user:login:${user_id}`;
 }
+
+/**
+ * get article comment count key
+ */
+export function getArticleCommentCountKey() {
+  return `article:comment:count`
+}

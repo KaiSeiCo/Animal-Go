@@ -12,7 +12,7 @@ import {
 } from 'class-validator';
 
 export class CreateMenuDto {
-  @ApiProperty({ description: '菜单类型' })
+  @ApiProperty({ description: '菜单类型(0-父级菜单 1-子级菜单 2-按钮)' })
   @IsIn([0, 1, 2])
   type: number;
 

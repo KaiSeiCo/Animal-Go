@@ -42,7 +42,7 @@ export class CommentController {
   async commentToArticle(@Body() dto: CommentDto): Promise<Result<void>> {
     const user = this.userCtx.get('user');
     await this.commentService.comment(user.id, dto);
-    return Result.success()
+    return Result.success();
   }
 
   @ApiOperation({
@@ -51,8 +51,8 @@ export class CommentController {
   @OnlyRequireLogin()
   @Delete('/:id')
   async deleteComment(@Param('id') comment_id: number): Promise<Result<void>> {
-    const user = this.userCtx.get('user')
-    await this.commentService.deleteCommentSelf(user.id, comment_id)
-    return Result.success()
+    const user = this.userCtx.get('user');
+    await this.commentService.deleteCommentSelf(user.id, comment_id);
+    return Result.success();
   }
 }

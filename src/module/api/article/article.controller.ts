@@ -8,7 +8,7 @@ import {
   ArticleQueryDto,
   ArticleUpdateDto,
 } from 'src/module/api/article/article.dto';
-import { ArticleListVo } from 'src/model/vo/article.vo';
+import { ArticleDetailVo, ArticleListVo } from 'src/model/vo/article.vo';
 import { ArticleService } from './article.service';
 import { Delete, Put, Query } from '@nestjs/common/decorators';
 
@@ -34,11 +34,16 @@ export class ArticleController {
   }
 
   @ApiOperation({
-    summary: '文下评论列表',
+    summary: '文章详情',
   })
   @OpenApi()
-  @Get('/:id/comments')
-  async commnets(@Param('id') article_id: number) {}
+  @Get('/:id')
+  async commnets(
+    @Param('id') article_id: number,
+  ): Promise<Result<ArticleDetailVo>> {
+    const article = await this.articleService.getArticleDetail(article_id);
+    return Result.success(article);
+  }
 
   /* user action */
 
@@ -95,9 +100,9 @@ export class ArticleController {
   })
   @OnlyRequireLogin()
   @Post('/:id/like')
-  async likeOrUnlike(@Param('id') article_id: number): Promise<Result<void>> {
+  async like(@Param('id') article_id: number): Promise<Result<void>> {
     const user = this.userCtx.get('user');
-    await this.articleService.likeOrUnlike(user.id, article_id);
+    await this.articleService.like(user.id, article_id);
     return Result.success();
   }
 
@@ -106,9 +111,9 @@ export class ArticleController {
   })
   @OnlyRequireLogin()
   @Post('/:id/favor')
-  async favorOrUnfavor(@Param('id') article_id: number): Promise<Result<void>> {
+  async favor(@Param('id') article_id: number): Promise<Result<void>> {
     const user = this.userCtx.get('user');
-    await this.articleService.favorOrUnfavor(user.id, article_id);
+    await this.articleService.favor(user.id, article_id);
     return Result.success();
   }
 }

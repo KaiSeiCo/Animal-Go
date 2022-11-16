@@ -116,8 +116,8 @@ export type ArticleListSqlResult = {
   article_id?: number;
   article_title?: string;
   article_desc?: string;
-  publish_at?: Date;
-  edit_at?: Date;
+  created_at?: Date;
+  updated_at?: Date;
   pinned?: boolean;
   deleted?: boolean;
   status?: number;
@@ -125,5 +125,6 @@ export type ArticleListSqlResult = {
   tag_name?: string;
   forum_id?: number;
   forum_name?: string;
+  forum_type?: number;
   user_id?: number;
 };

@@ -115,9 +115,9 @@ export class CommentService {
   }
 
   /**
-   * 
-   * @param user_id 
-   * @param comment_id 
+   *
+   * @param user_id
+   * @param comment_id
    */
   async deleteCommentSelf(user_id: number, comment_id: number) {
     const comment = await this.commentRepository.findOneBy({

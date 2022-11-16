@@ -6,7 +6,7 @@ export class CommentDto {
 
   @ApiProperty()
   comment_content: string;
-  
+
   @ApiProperty()
   reply_to: number;
 }

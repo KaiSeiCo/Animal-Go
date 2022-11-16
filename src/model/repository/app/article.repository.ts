@@ -44,8 +44,8 @@ export class ArticleRepository extends Repository<Article> {
             a.id as article_id,
             a.article_title as article_title,
             a.article_desc as article_desc,
-            a.created_at as publish_at,
-            a.updated_at as edit_at,
+            a.created_at as created_at,
+            a.updated_at as updated_at,
             a.pinned as pinned,
             a.deleted as deleted,
             a.status as status,
@@ -54,6 +54,7 @@ export class ArticleRepository extends Repository<Article> {
             t.tag_name as tag_name,
             f.id as forum_id,
             f.forum_name as forum_name
+            f.forum_type as forum_type
           `,
         )
         .leftJoin(Forum, 'f', 'f.id = a.forum_id')
@@ -92,7 +93,7 @@ export class ArticleRepository extends Repository<Article> {
         },
       ],
     );
-    basicSql.skip((page - 1) * limit).limit(limit);
+    basicSql.skip((page - 1) * limit).take(limit);
     return await basicSql.getRawMany();
   }
 }

@@ -12,14 +12,4 @@ import { TagService } from './tag.service';
 @Controller('tags')
 export class TagController {
   constructor(private tagService: TagService) {}
-
-  @ApiOperation({
-    summary: '标签列表',
-  })
-  @OpenApi()
-  @Get('')
-  async list(): Promise<Result<Tag[]>> {
-    const tags = await this.tagService.list();
-    return Result.success(tags);
-  }
 }

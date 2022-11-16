@@ -11,14 +11,4 @@ import { ForumService } from './forum.service';
 @Controller('forums')
 export class ForumController {
   constructor(private forumService: ForumService) {}
-
-  @ApiOperation({
-    summary: '查询板块',
-  })
-  @OpenApi()
-  @Get('')
-  async list(@Query() dto: ForumQueryDto): Promise<Result<Forum[]>> {
-    const forums = await this.forumService.list(dto);
-    return Result.success(forums);
-  }
 }

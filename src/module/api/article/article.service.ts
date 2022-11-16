@@ -8,8 +8,9 @@ import {
   ArticleUpdateDto,
 } from 'src/module/api/article/article.dto';
 import { Tag } from 'src/model/entity/app/tag.entity';
-import { ArticleListVo } from 'src/model/vo/article.vo';
+import { ArticleDetailVo, ArticleListVo, TagVo } from 'src/model/vo/article.vo';
 import {
+  getArticleCommentCountKey,
   getPostFavorKey,
   getPostLikeKey,
   getUserFavorKey,
@@ -28,6 +29,10 @@ import { InjectEntityManager } from '@nestjs/typeorm';
 import { ArticleTag } from 'src/model/entity/app/article_tag.entity';
 import { UserRepository } from 'src/model/repository/sys/user.repository';
 import { FavorDetailRepository } from 'src/model/repository/app/favor_detail.repository';
+import { CommentRepository } from 'src/model/repository/app/comment.repository';
+import { Article } from 'src/model/entity/app/article.entity';
+import { TagRepository } from 'src/model/repository/app/tag.repository';
+import { ForumRepository } from 'src/model/repository/app/forum.repository';
 
 @Injectable()
 export class ArticleService {
@@ -37,6 +42,9 @@ export class ArticleService {
     private readonly likeDetailRepository: LikeDetailRepository,
     private readonly favorDetailRepository: FavorDetailRepository,
     private readonly userRepository: UserRepository,
+    private readonly commentRepository: CommentRepository,
+    private readonly tagRepository: TagRepository,
+    private readonly forumRepository: ForumRepository,
     private readonly redisService: RedisService,
     private readonly articleProducer: ArticleProducer,
     @InjectEntityManager()
@@ -54,6 +62,73 @@ export class ArticleService {
     // build article vo list
     const result = await this.buildAricleListVo(articles);
     return result;
+  }
+
+  async getArticleDetail(id: number): Promise<ArticleDetailVo> {
+    const article: Article = await this.articleRepository.findOneBy({
+      id,
+      deleted: false,
+    });
+
+    if (!article) {
+      throw new ApiException(HttpResponseKeyMap.ARTICLE_NOT_EXISTS);
+    }
+
+    const [
+      { like_count, favor_count, comment_count, view_count },
+      author,
+      articleTags,
+    ] = await Promise.all([
+      this.getAllCount(article.id),
+      this.userRepository.findOneBy({
+        id: article.user_id,
+      }),
+      this.articleTagRepository.findBy({
+        article_id: article.id,
+      }),
+    ]);
+
+    const [tags, forum] = await Promise.all([
+      this.tagRepository
+        .createQueryBuilder('tag')
+        .select(
+          `
+          tag.id as tag_id,
+          tag.name as tag_name,
+          `,
+        )
+        .whereInIds(articleTags.map((at) => at.tag_id))
+        .getRawMany() as Promise<TagVo[]>,
+      this.forumRepository.findOneBy({
+        id: article.forum_id,
+      }),
+    ]);
+
+    return {
+      article_id: article.id,
+      article_title: article.article_title,
+      article_content: article.article_content,
+      view_count: view_count,
+      comment_count: comment_count,
+      like_count: like_count,
+      favor_count: favor_count,
+      article_tags: {
+        ...tags,
+      },
+      article_forum: {
+        forum_id: forum.id,
+        forum_name: forum.forum_name,
+        forum_type: forum.forum_type,
+      },
+      created_at: article.createdAt,
+      updated_at: article.updatedAt,
+      author: {
+        author_id: author.id,
+        author_username: author.username,
+        author_nickname: author.nickname,
+        author_avatar: author.avatar,
+      },
+    };
   }
 
   /**
@@ -181,7 +256,7 @@ export class ArticleService {
    * @param user_id
    * @param article_id
    */
-  async likeOrUnlike(user_id: number, article_id: number): Promise<void> {
+  async like(user_id: number, article_id: number): Promise<void> {
     // redis key
     const user_key = getUserLikeKey(user_id, PostType.ARTICLE);
     const article_key = getPostLikeKey(PostType.ARTICLE);
@@ -220,7 +295,7 @@ export class ArticleService {
    * @param user_id
    * @param article_id
    */
-  async favorOrUnfavor(user_id: number, article_id: number): Promise<void> {
+  async favor(user_id: number, article_id: number): Promise<void> {
     // redis key
     const user_key = getUserFavorKey(user_id, PostType.ARTICLE);
     const article_key = getPostFavorKey(PostType.ARTICLE);
@@ -332,6 +407,7 @@ export class ArticleService {
             article_forum: {
               forum_id: row.forum_id,
               forum_name: row.forum_name,
+              forum_type: row.forum_type,
             },
             pinned: row.pinned,
             deleted: row.deleted,
@@ -339,47 +415,80 @@ export class ArticleService {
             like_count: 0,
             favor_count: 0,
             comment_count: 0,
-            publish_at: row.publish_at,
-            edit_at: row.edit_at,
+            created_at: row.created_at,
+            updated_at: row.updated_at,
             user_id: row.user_id,
             username: undefined,
+            nickname: undefined,
             avatar: undefined,
           };
         }
       });
 
-    const article_like_key = getPostLikeKey(PostType.ARTICLE);
-    const article_favor_key = getPostFavorKey(PostType.ARTICLE);
+    // fill info
     const res = await Promise.all(
       Object.values(articleEntries).map(async (e) => {
         // get count, user info
-        const [likeCnt, favorCnt, user] = await Promise.all([
-          (await this.redisService
-            .getRedis()
-            .hget(article_like_key, e.article_id.toString())) ??
-            (await this.likeDetailRepository.countBy({
-              article_id: e.article_id,
-              deleted: false,
-            })),
-          (await this.redisService
-            .getRedis()
-            .hget(article_favor_key, e.article_id.toString())) ??
-            (await this.favorDetailRepository.countBy({
-              article_id: e.article_id,
-              deleted: false,
-            })),
-          self ? null : await this.userRepository.findOneBy({ id: e.user_id }),
-        ]);
+        const [{ like_count, favor_count, comment_count, view_count }, user] =
+          await Promise.all([
+            this.getAllCount(e.article_id),
+            self
+              ? null
+              : await this.userRepository.findOneBy({ id: e.user_id }),
+          ]);
         // fill info
-        e.like_count = toNumber(likeCnt ?? 0);
-        e.favor_count = toNumber(favorCnt ?? 0)
+        e.like_count = toNumber(like_count ?? 0);
+        e.favor_count = toNumber(favor_count ?? 0);
+        e.comment_count = toNumber(comment_count ?? 0);
         if (!self) {
           e.avatar = user.avatar;
           e.username = user.username;
+          e.nickname = user.nickname;
         }
         return e;
       }),
     );
     return res;
+  }
+
+  /**
+   * get all count
+   * @param id
+   */
+  async getAllCount(id: number): Promise<{
+    like_count?: number;
+    favor_count?: number;
+    comment_count?: number;
+    view_count?: number;
+  }> {
+    const article_like_key = getPostLikeKey(PostType.ARTICLE);
+    const article_favor_key = getPostFavorKey(PostType.ARTICLE);
+    const article_comment_count_key = getArticleCommentCountKey();
+    const key = id.toString();
+    const redis = this.redisService.getRedis();
+
+    const [likeCnt, favorCnt, commentCnt] = await Promise.all([
+      (await redis.hget(article_like_key, key)) ??
+        (await this.likeDetailRepository.countBy({
+          article_id: id,
+          deleted: false,
+        })),
+      (await redis.hget(article_favor_key, key)) ??
+        (await this.favorDetailRepository.countBy({
+          article_id: id,
+          deleted: false,
+        })),
+      (await redis.hget(article_comment_count_key, key)) ??
+        (await this.commentRepository.countBy({
+          article_id: id,
+          deleted: false,
+        })),
+    ]);
+
+    return {
+      like_count: toNumber(likeCnt ?? 0),
+      favor_count: toNumber(favorCnt ?? 0),
+      comment_count: toNumber(commentCnt ?? 0),
+    };
   }
 }
