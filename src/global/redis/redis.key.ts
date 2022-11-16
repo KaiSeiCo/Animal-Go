@@ -54,5 +54,5 @@ export function getLoginRecordKey(user_id: number) {
  * get article comment count key
  */
 export function getArticleCommentCountKey() {
-  return `article:comment:count`
+  return `article:comment:count`;
 }
