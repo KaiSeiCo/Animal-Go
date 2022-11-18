@@ -2,18 +2,14 @@ import { Body, Controller, Get, Put, Query } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { PageResult, Result } from 'src/common/class/result.class';
 import { OpenApi } from 'src/common/decorator/auth.decorator';
-import { UpdateUserDto, UserQueryDto } from 'src/module/admin/user/user.dto';
+import { UpdateUserDto, UserQueryDto } from 'src/module/api/user/user.dto';
 import { UserListVo } from 'src/model/vo/user.vo';
-import { UserService } from 'src/module/admin/user/user.service';
-import { resolve } from 'path';
+import { UserService } from 'src/module/api/user/user.service';
 
-/**
- * @desc api used for authentication
- */
-@ApiTags('用户模块')
+@ApiTags('服务管理')
 @ApiBearerAuth()
-@Controller('users')
-export class UserController {
+@Controller('/users')
+export class UserManagerController {
   constructor(private userService: UserService) {}
 
   /**

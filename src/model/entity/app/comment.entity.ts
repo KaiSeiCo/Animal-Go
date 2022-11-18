@@ -28,6 +28,7 @@ export class Comment extends BaseEntity {
     type: 'bigint',
     unsigned: true,
     comment: '父级id',
+    nullable: true,
   })
   parent_id: number;
 
@@ -35,6 +36,7 @@ export class Comment extends BaseEntity {
     type: 'bigint',
     unsigned: true,
     comment: '回复评论id',
+    nullable: true,
   })
   reply_to: number;
 
@@ -49,6 +51,7 @@ export class Comment extends BaseEntity {
     type: 'tinyint',
     unsigned: true,
     comment: '是否删除',
+    default: false,
   })
   deleted: boolean;
 
@@ -56,6 +59,7 @@ export class Comment extends BaseEntity {
     type: 'tinyint',
     unsigned: true,
     comment: '是否审核',
+    default: true,
   })
   reviewed: boolean;
 }

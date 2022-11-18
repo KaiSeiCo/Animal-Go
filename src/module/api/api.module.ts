@@ -9,8 +9,9 @@ import { ForumController } from './forum/forum.controller';
 import { ForumService } from './forum/forum.service';
 import { TagController } from './tag/tag.controller';
 import { TagService } from './tag/tag.service';
-import { UserService } from '../admin/user/user.service';
 import { CommentService } from './comment/comment.service';
+import { CommentController } from './comment/comment.controller';
+import { UserService } from './user/user.service';
 
 @Module({
   providers: [
@@ -27,6 +28,7 @@ import { CommentService } from './comment/comment.service';
   ],
   controllers: [
     AuthController,
+    CommentController,
     ArticleController,
     ForumController,
     TagController,

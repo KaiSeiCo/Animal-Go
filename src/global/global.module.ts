@@ -12,7 +12,7 @@ import { ProducerModule } from './kafka/producer/producer.module';
 import { RedisModule } from './redis/redis.module';
 import { RedisService } from './redis/redis.service';
 
-// global service
+// global context
 const providers = [RedisService, UserContext, JwtUtil, RepositoryModule];
 // global modules
 const global_modules = [
