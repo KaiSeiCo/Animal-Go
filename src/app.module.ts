@@ -23,6 +23,8 @@ import { BullModule } from '@nestjs/bull';
 import { MissionModule } from './mission/misson.module';
 import { TokenInterceptor } from './common/interceptor/token.interceptor';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { SystemModule } from './module/admin/system/system.module';
+import { ServiceManagerModule } from './module/admin/service-manager/service-manager.module';
 
 @Module({
   imports: [
@@ -30,7 +32,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     RouterModule.register([
       {
         path: ADMIN_ROUTER_PREFIX,
-        children: [AdminModule],
+        children: [SystemModule, ServiceManagerModule],
       },
       {
         path: API_V1_ROUTER_PREFIX,

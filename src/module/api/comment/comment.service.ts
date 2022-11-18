@@ -108,8 +108,6 @@ export class CommentService {
       article_id,
       comment_content,
       user_id,
-      deleted: false,
-      reviewed: true,
       reply_to,
     });
   }
@@ -125,7 +123,11 @@ export class CommentService {
       deleted: false,
     });
 
-    if (!comment || (comment && comment.user_id !== user_id)) {
+    if (!comment) {
+      throw new ApiException(HttpResponseKeyMap.COMMENT_NOT_EXISTS);
+    }
+
+    if (comment.user_id !== user_id) {
       throw new ApiException(HttpResponseKeyMap.PERMS_NOT_ALLOWED);
     }
 

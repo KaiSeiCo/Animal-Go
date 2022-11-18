@@ -1,11 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { Body, Post } from '@nestjs/common/decorators';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
 import { OpenApi } from 'src/common/decorator/auth.decorator';
-import { UserLoginDto, UserRegisterDto } from 'src/module/admin/user/user.dto';
+import { UserLoginDto, UserRegisterDto } from 'src/module/api/user/user.dto';
 import { LoginVo } from 'src/model/vo/user.vo';
-import { UserService } from 'src/module/admin/user/user.service';
+import { UserService } from '../user/user.service';
 
 /**
  * @desc api used for authentication
@@ -19,6 +19,9 @@ export class AuthController {
    * @desc login user
    * @returns userinfo
    */
+  @ApiOperation({
+    summary: '登录'
+  })
   @OpenApi()
   @Post('login')
   async login(@Body() loginDto: UserLoginDto): Promise<Result<LoginVo>> {
@@ -30,6 +33,9 @@ export class AuthController {
    * @desc register user
    * @returns true|false
    */
+   @ApiOperation({
+    summary: '注册'
+  })
   @OpenApi()
   @Post('register')
   async register(@Body() waitToReg: UserRegisterDto): Promise<Result<boolean>> {

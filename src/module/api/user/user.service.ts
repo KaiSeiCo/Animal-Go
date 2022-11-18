@@ -4,7 +4,7 @@ import {
   UserLoginDto,
   UserQueryDto,
   UserRegisterDto,
-} from 'src/module/admin/user/user.dto';
+} from 'src/module/api/user/user.dto';
 import { ApiException } from 'src/common/exception/api.exception';
 import { bcryptPassword, comparePassword } from 'src/util/bcrypt.util';
 import { Snowflake } from 'nodejs-snowflake';

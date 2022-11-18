@@ -5,6 +5,10 @@ import {
   SYSTEM_TASK_QUEUE_NAME,
   SYSTEM_TASK_QUEUE_PREFIX,
 } from 'src/common/constant/system.constant';
+import { MenuController } from './menu/menu.controller';
+import { MenuService } from './menu/menu.service';
+import { RoleController } from './role/role.controller';
+import { RoleService } from './role/role.service';
 import { TaskController } from './task/task.controller';
 import { TaskConsumer } from './task/task.processor';
 import { TaskService } from './task/task.service';
@@ -26,8 +30,8 @@ import { TaskService } from './task/task.service';
       inject: [ConfigService],
     }),
   ],
-  controllers: [TaskController],
-  providers: [TaskService, TaskConsumer],
+  controllers: [TaskController, MenuController, RoleController],
+  providers: [TaskService, TaskConsumer, MenuService, RoleService],
   exports: [],
 })
 export class SystemModule {}
