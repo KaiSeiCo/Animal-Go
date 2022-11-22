@@ -12,6 +12,8 @@ import { TagService } from './tag/tag.service';
 import { CommentService } from './comment/comment.service';
 import { CommentController } from './comment/comment.controller';
 import { UserService } from './user/user.service';
+import { MessageService } from './message/message.service';
+import { MessageController } from './message/message.controller';
 
 @Module({
   providers: [
@@ -21,6 +23,7 @@ import { UserService } from './user/user.service';
     TagService,
     CommentService,
     ArticleProducer,
+    MessageService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
@@ -32,6 +35,7 @@ import { UserService } from './user/user.service';
     ArticleController,
     ForumController,
     TagController,
+    MessageController,
   ],
 })
 export class ApiModule {}

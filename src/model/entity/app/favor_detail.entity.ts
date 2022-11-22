@@ -1,5 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { BaseEntity } from '../base.entity';
 
 @Entity('tb_favor_detail')
@@ -9,7 +8,6 @@ export class FavorDetail extends BaseEntity {
     unsigned: true,
     generated: 'increment',
   })
-  @ApiProperty()
   id: number;
 
   @Column({
@@ -17,7 +15,6 @@ export class FavorDetail extends BaseEntity {
     unsigned: true,
     comment: '用户id',
   })
-  @ApiProperty()
   user_id: number;
 
   @Column({
@@ -26,7 +23,6 @@ export class FavorDetail extends BaseEntity {
     comment: '文章id',
     nullable: true,
   })
-  @ApiProperty()
   article_id: number;
 
   @Column({
@@ -35,7 +31,6 @@ export class FavorDetail extends BaseEntity {
     comment: '图片id',
     nullable: true,
   })
-  @ApiProperty()
   photo_id: number;
 
   @Column({
@@ -44,6 +39,5 @@ export class FavorDetail extends BaseEntity {
     comment: '是否favor',
     nullable: true,
   })
-  @ApiProperty()
   deleted: boolean;
 }

@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
 import { BaseEntity } from '../base.entity';
 
@@ -11,7 +10,6 @@ export class LikeDetail extends BaseEntity {
     unsigned: true,
     generated: 'increment',
   })
-  @ApiProperty()
   id: number;
 
   @Column({
@@ -20,7 +18,6 @@ export class LikeDetail extends BaseEntity {
     comment: '文章id',
     nullable: true,
   })
-  @ApiProperty()
   article_id: number;
 
   @Column({
@@ -29,7 +26,6 @@ export class LikeDetail extends BaseEntity {
     comment: '图片id',
     nullable: true,
   })
-  @ApiProperty()
   photo_id: number;
 
   @Column({
@@ -37,7 +33,6 @@ export class LikeDetail extends BaseEntity {
     unsigned: true,
     comment: '用户id',
   })
-  @ApiProperty()
   user_id: number;
 
   @Column({
@@ -45,6 +40,5 @@ export class LikeDetail extends BaseEntity {
     unsigned: true,
     comment: '是否点赞',
   })
-  @ApiProperty()
   deleted: boolean;
 }

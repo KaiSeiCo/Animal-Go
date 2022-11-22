@@ -20,7 +20,7 @@ export class AuthController {
    * @returns userinfo
    */
   @ApiOperation({
-    summary: '登录'
+    summary: '登录',
   })
   @OpenApi()
   @Post('login')
@@ -33,8 +33,8 @@ export class AuthController {
    * @desc register user
    * @returns true|false
    */
-   @ApiOperation({
-    summary: '注册'
+  @ApiOperation({
+    summary: '注册',
   })
   @OpenApi()
   @Post('register')
