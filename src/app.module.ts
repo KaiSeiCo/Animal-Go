@@ -25,6 +25,7 @@ import { TokenInterceptor } from './common/interceptor/token.interceptor';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { SystemModule } from './module/admin/system/system.module';
 import { ServiceManagerModule } from './module/admin/service-manager/service-manager.module';
+import { WebsocketModule } from './module/socket/ws.module';
 
 @Module({
   imports: [
@@ -120,6 +121,7 @@ import { ServiceManagerModule } from './module/admin/service-manager/service-man
     // common api
     ApiModule,
     // websocket
+    WebsocketModule,
   ],
   providers: [
     {

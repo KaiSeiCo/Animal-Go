@@ -15,12 +15,7 @@ import { UserManagerController } from './controller/user-manager.controller';
     TagManagerController,
     UserManagerController,
   ],
-  providers: [
-    ArticleService,
-    TagService,
-    ForumService,
-    UserService,
-  ],
+  providers: [ArticleService, TagService, ForumService, UserService],
   exports: [],
 })
 export class ServiceManagerModule {}

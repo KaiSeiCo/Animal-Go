@@ -2,10 +2,12 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Article } from '../entity/app/article.entity';
 import { ArticleTag } from '../entity/app/article_tag.entity';
+import { Camp } from '../entity/app/camp.entity';
 import { Comment } from '../entity/app/comment.entity';
 import { FavorDetail } from '../entity/app/favor_detail.entity';
 import { Forum } from '../entity/app/forum.entity';
 import { LikeDetail } from '../entity/app/like_detail.entity';
+import { Message } from '../entity/app/message.entity';
 import { Tag } from '../entity/app/tag.entity';
 import { Menu } from '../entity/sys/menu.entity';
 import { OperationLog } from '../entity/sys/opt_log.entity';
@@ -16,10 +18,12 @@ import User from '../entity/sys/user.entity';
 import { UserRole } from '../entity/sys/user_role.entity';
 import { ArticleRepository } from './app/article.repository';
 import { ArticleTagRepository } from './app/article_tag.repository';
+import { CampRepository } from './app/camp.repository';
 import { CommentRepository } from './app/comment.repository';
 import { FavorDetailRepository } from './app/favor_detail.repository';
 import { ForumRepository } from './app/forum.repository';
 import { LikeDetailRepository } from './app/like_detail.repository';
+import { MessageRepository } from './app/message.repository';
 import { TagRepository } from './app/tag.repository';
 import { OperationLogRepository } from './sys/log.repository';
 import { MenuRepository } from './sys/menu.repository';
@@ -44,6 +48,8 @@ export const repositories = [
   UserRepository,
   FavorDetailRepository,
   CommentRepository,
+  MessageRepository,
+  CampRepository,
 ];
 
 @Module({
@@ -63,6 +69,8 @@ export const repositories = [
       User,
       FavorDetail,
       Comment,
+      Message,
+      Camp,
     ]),
   ],
   providers: [...repositories],
