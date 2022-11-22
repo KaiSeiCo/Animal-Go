@@ -61,13 +61,6 @@ export class Article extends BaseEntity {
   status: number;
 
   @Column({
-    type: 'int',
-    comment: '所属板块id',
-    nullable: true,
-  })
-  forum_id: number;
-
-  @Column({
     type: 'bigint',
     unsigned: true,
     comment: '所属用户id',

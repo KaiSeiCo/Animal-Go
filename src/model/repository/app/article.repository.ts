@@ -1,12 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { isNotEmpty } from 'class-validator';
-import { toNumber, toString } from 'lodash';
 import { Article } from 'src/model/entity/app/article.entity';
 import { ArticleTag } from 'src/model/entity/app/article_tag.entity';
-import { Forum } from 'src/model/entity/app/forum.entity';
 import { Tag } from 'src/model/entity/app/tag.entity';
-import { ArticleListVo } from 'src/model/vo/article.vo';
 import {
   ArticleListSqlResult,
   ArticleQueryDto,
@@ -26,16 +22,8 @@ export class ArticleRepository extends Repository<Article> {
   async getArticleListSqlResult(
     dto: ArticleQueryDto,
   ): Promise<ArticleListSqlResult[]> {
-    const {
-      article_title,
-      deleted,
-      status,
-      forum_id,
-      tag_ids,
-      limit,
-      page,
-      user_id,
-    } = dto;
+    const { article_title, deleted, status, tag_ids, limit, page, user_id } =
+      dto;
 
     const basicSql = buildDynamicSqlAppendWhere(
       this.createQueryBuilder('a')
@@ -52,12 +40,8 @@ export class ArticleRepository extends Repository<Article> {
             a.user_id as user_id,
             t.id as tag_id,
             t.tag_name as tag_name,
-            f.id as forum_id,
-            f.forum_name as forum_name
-            f.forum_type as forum_type
           `,
         )
-        .leftJoin(Forum, 'f', 'f.id = a.forum_id')
         .leftJoin(ArticleTag, 'at', 'at.article_id = a.id')
         .leftJoin(Tag, 't', 't.id = at.tag_id'),
       [
@@ -75,11 +59,6 @@ export class ArticleRepository extends Repository<Article> {
           field: 'article_title',
           condition: 'LIKE',
           value: article_title,
-        },
-        {
-          field: 'forum_id',
-          condition: '=',
-          value: forum_id,
         },
         {
           field: 'tag_id',

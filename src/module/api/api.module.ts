@@ -5,8 +5,6 @@ import { ArticleProducer } from 'src/global/kafka/producer/article-producer.serv
 import { AuthController } from './auth/auth.controller';
 import { ArticleController } from './article/article.controller';
 import { ArticleService } from './article/article.service';
-import { ForumController } from './forum/forum.controller';
-import { ForumService } from './forum/forum.service';
 import { TagController } from './tag/tag.controller';
 import { TagService } from './tag/tag.service';
 import { CommentService } from './comment/comment.service';
@@ -19,7 +17,6 @@ import { MessageController } from './message/message.controller';
   providers: [
     UserService,
     ArticleService,
-    ForumService,
     TagService,
     CommentService,
     ArticleProducer,
@@ -33,7 +30,6 @@ import { MessageController } from './message/message.controller';
     AuthController,
     CommentController,
     ArticleController,
-    ForumController,
     TagController,
     MessageController,
   ],

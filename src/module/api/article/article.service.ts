@@ -32,7 +32,6 @@ import { FavorDetailRepository } from 'src/model/repository/app/favor_detail.rep
 import { CommentRepository } from 'src/model/repository/app/comment.repository';
 import { Article } from 'src/model/entity/app/article.entity';
 import { TagRepository } from 'src/model/repository/app/tag.repository';
-import { ForumRepository } from 'src/model/repository/app/forum.repository';
 
 @Injectable()
 export class ArticleService {
@@ -44,7 +43,6 @@ export class ArticleService {
     private readonly userRepository: UserRepository,
     private readonly commentRepository: CommentRepository,
     private readonly tagRepository: TagRepository,
-    private readonly forumRepository: ForumRepository,
     private readonly redisService: RedisService,
     private readonly articleProducer: ArticleProducer,
     @InjectEntityManager()
@@ -88,21 +86,16 @@ export class ArticleService {
       }),
     ]);
 
-    const [tags, forum] = await Promise.all([
-      this.tagRepository
-        .createQueryBuilder('tag')
-        .select(
-          `
+    const tags = (await this.tagRepository
+      .createQueryBuilder('tag')
+      .select(
+        `
           tag.id as tag_id,
           tag.name as tag_name,
-          `,
-        )
-        .whereInIds(articleTags.map((at) => at.tag_id))
-        .getRawMany() as Promise<TagVo[]>,
-      this.forumRepository.findOneBy({
-        id: article.forum_id,
-      }),
-    ]);
+        `,
+      )
+      .whereInIds(articleTags.map((at) => at.tag_id))
+      .getRawMany()) as TagVo[];
 
     return {
       article_id: article.id,
@@ -114,11 +107,6 @@ export class ArticleService {
       favor_count: favor_count,
       article_tags: {
         ...tags,
-      },
-      article_forum: {
-        forum_id: forum.id,
-        forum_name: forum.forum_name,
-        forum_type: forum.forum_type,
       },
       created_at: article.createdAt,
       updated_at: article.updatedAt,
@@ -143,7 +131,6 @@ export class ArticleService {
       article_desc,
       pinned,
       status,
-      forum_id,
       tag_ids,
     } = dto;
     const desc = article_desc ?? article_content.substring(0, 30) + '...';
@@ -155,7 +142,6 @@ export class ArticleService {
       article_desc: desc,
       pinned,
       status,
-      forum_id,
       user_id,
     });
     const id = result.generatedMaps[0]['id'] as number;
@@ -211,7 +197,6 @@ export class ArticleService {
         article_content: dto.article_content ?? article.article_content,
         article_cover: dto.article_cover ?? article.article_cover,
         status: dto.status ?? article.status,
-        forum_id: dto.forum_id ?? article.forum_id,
         pinned: dto.pinned ?? article.pinned,
       }),
       await this.articleTagRepository.find({
@@ -404,11 +389,6 @@ export class ArticleService {
                   },
                 ]
               : [],
-            article_forum: {
-              forum_id: row.forum_id,
-              forum_name: row.forum_name,
-              forum_type: row.forum_type,
-            },
             pinned: row.pinned,
             deleted: row.deleted,
             view_count: 0,

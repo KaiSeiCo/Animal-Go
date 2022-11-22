@@ -3,12 +3,6 @@ export type TagVo = {
   tag_name: string;
 };
 
-export type ForumVo = {
-  forum_id: number;
-  forum_name: string;
-  forum_type: number;
-};
-
 export type ArticleDetailVo = {
   article_id: number;
   article_title: string;
@@ -18,7 +12,6 @@ export type ArticleDetailVo = {
   like_count: number;
   favor_count: number;
   article_tags: TagVo[];
-  article_forum: ForumVo;
   created_at: Date;
   updated_at: Date;
   author: {
@@ -34,7 +27,6 @@ export type ArticleListVo = {
   article_title: string;
   article_desc: string;
   article_tags: TagVo[];
-  article_forum: ForumVo;
   user_id: number;
   username: string;
   nickname: string;
