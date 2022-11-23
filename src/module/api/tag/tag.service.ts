@@ -62,7 +62,7 @@ export class TagService {
    * delete tag by id
    * @param id
    */
-  async deleteById(id: number): Promise<void> {
+  async deleteById(id: string): Promise<void> {
     await this.tagRepostiory.delete({
       id,
     });

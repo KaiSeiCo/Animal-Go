@@ -8,14 +8,14 @@ export class Message extends BaseEntity {
     unsigned: true,
     generated: 'increment',
   })
-  id: number;
+  id: string;
 
   @Column({
     type: 'bigint',
     unsigned: true,
     comment: '发送用户id',
   })
-  user_id: number;
+  user_id: string;
 
   @Column({
     type: 'varchar',
@@ -29,7 +29,7 @@ export class Message extends BaseEntity {
     unsigned: true,
     comment: '营地id',
   })
-  camp_id: number;
+  camp_id: string;
 
   @Column({
     type: 'bigint',
@@ -37,7 +37,7 @@ export class Message extends BaseEntity {
     nullable: true,
     comment: '回复消息id',
   })
-  reply_to: number;
+  reply_to: string;
 
   @Column({
     type: 'tinyint',

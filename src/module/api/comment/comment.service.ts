@@ -26,7 +26,7 @@ export class CommentService {
    * @returns
    */
   async listArticleComments(
-    article_id: number,
+    article_id: string,
     pageDto: PageOptionsDto,
   ): Promise<ArticleCommentVo> {
     // page query
@@ -84,7 +84,7 @@ export class CommentService {
    * @param user_id
    * @param dto
    */
-  async comment(user_id: number, dto: CommentDto) {
+  async comment(user_id: string, dto: CommentDto) {
     const { article_id, comment_content, reply_to } = dto;
     const [article, replyComment] = await Promise.all([
       this.articleRepository.findOneBy({
@@ -117,7 +117,7 @@ export class CommentService {
    * @param user_id
    * @param comment_id
    */
-  async deleteCommentSelf(user_id: number, comment_id: number) {
+  async deleteCommentSelf(user_id: string, comment_id: string) {
     const comment = await this.commentRepository.findOneBy({
       id: comment_id,
       deleted: false,

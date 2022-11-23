@@ -32,7 +32,6 @@ import { FavorDetailRepository } from 'src/model/repository/app/favor_detail.rep
 import { CommentRepository } from 'src/model/repository/app/comment.repository';
 import { Article } from 'src/model/entity/app/article.entity';
 import { TagRepository } from 'src/model/repository/app/tag.repository';
-import { ForumRepository } from 'src/model/repository/app/forum.repository';
 
 @Injectable()
 export class ArticleService {
@@ -44,7 +43,6 @@ export class ArticleService {
     private readonly userRepository: UserRepository,
     private readonly commentRepository: CommentRepository,
     private readonly tagRepository: TagRepository,
-    private readonly forumRepository: ForumRepository,
     private readonly redisService: RedisService,
     private readonly articleProducer: ArticleProducer,
     @InjectEntityManager()
@@ -64,7 +62,7 @@ export class ArticleService {
     return result;
   }
 
-  async getArticleDetail(id: number): Promise<ArticleDetailVo> {
+  async getArticleDetail(id: string): Promise<ArticleDetailVo> {
     const article: Article = await this.articleRepository.findOneBy({
       id,
       deleted: false,
@@ -86,23 +84,19 @@ export class ArticleService {
       this.articleTagRepository.findBy({
         article_id: article.id,
       }),
+      [],
     ]);
 
-    const [tags, forum] = await Promise.all([
-      this.tagRepository
-        .createQueryBuilder('tag')
-        .select(
-          `
+    const tags = (await this.tagRepository
+      .createQueryBuilder('tag')
+      .select(
+        `
           tag.id as tag_id,
-          tag.name as tag_name,
-          `,
-        )
-        .whereInIds(articleTags.map((at) => at.tag_id))
-        .getRawMany() as Promise<TagVo[]>,
-      this.forumRepository.findOneBy({
-        id: article.forum_id,
-      }),
-    ]);
+          tag.tag_name as tag_name
+        `,
+      )
+      .whereInIds(articleTags.map((at) => at.tag_id))
+      .getRawMany()) as TagVo[];
 
     return {
       article_id: article.id,
@@ -114,11 +108,6 @@ export class ArticleService {
       favor_count: favor_count,
       article_tags: {
         ...tags,
-      },
-      article_forum: {
-        forum_id: forum.id,
-        forum_name: forum.forum_name,
-        forum_type: forum.forum_type,
       },
       created_at: article.createdAt,
       updated_at: article.updatedAt,
@@ -135,7 +124,7 @@ export class ArticleService {
    * publish article
    * @param dto
    */
-  async publishArticle(user_id: number, dto: ArticlePublishDto) {
+  async publishArticle(user_id: string, dto: ArticlePublishDto) {
     const {
       article_content,
       article_cover,
@@ -143,7 +132,6 @@ export class ArticleService {
       article_desc,
       pinned,
       status,
-      forum_id,
       tag_ids,
     } = dto;
     const desc = article_desc ?? article_content.substring(0, 30) + '...';
@@ -155,10 +143,9 @@ export class ArticleService {
       article_desc: desc,
       pinned,
       status,
-      forum_id,
       user_id,
     });
-    const id = result.generatedMaps[0]['id'] as number;
+    const id = result.generatedMaps[0]['id'] as string;
     // save relavant tags
     const articleTag = tag_ids
       .filter((t) => !!t)
@@ -175,7 +162,7 @@ export class ArticleService {
    * list article by self
    * @param user_id
    */
-  async listArticleBySelf(user_id: number, dto: ArticleQueryDto) {
+  async listArticleBySelf(user_id: string, dto: ArticleQueryDto) {
     dto.user_id = user_id;
     const articles = await this.articleRepository.getArticleListSqlResult(dto);
     const result = await this.buildAricleListVo(articles, true);
@@ -188,7 +175,7 @@ export class ArticleService {
    * @param dto
    */
   async editArticleBySelf(
-    user_id: number,
+    user_id: string,
     dto: ArticleUpdateDto,
   ): Promise<void> {
     const article = await this.articleRepository.findOneBy({
@@ -211,10 +198,9 @@ export class ArticleService {
         article_content: dto.article_content ?? article.article_content,
         article_cover: dto.article_cover ?? article.article_cover,
         status: dto.status ?? article.status,
-        forum_id: dto.forum_id ?? article.forum_id,
         pinned: dto.pinned ?? article.pinned,
       }),
-      await this.articleTagRepository.find({
+      this.articleTagRepository.find({
         where: {
           article_id: article.id,
         },
@@ -223,8 +209,10 @@ export class ArticleService {
 
     // update article_tag
     const { tag_ids } = dto;
-    if (tag_ids?.length > 0) {
-      const originArticleTagIds = originArticleTag.map((e) => e.tag_id);
+    if (tag_ids) {
+      const originArticleTagIds = originArticleTag.map((e) => {
+        return e.tag_id;
+      });
       const insertArticleTags = difference(tag_ids, originArticleTagIds)
         .filter((tag_id) => !!tag_id)
         .map((tag_id) => {
@@ -235,7 +223,7 @@ export class ArticleService {
         });
       const deleteTagIds = difference(originArticleTagIds, tag_ids);
       const deleteArticleTagFieldIds = filter(originArticleTag, (e) => {
-        return includes(deleteTagIds, e.id);
+        return includes(deleteTagIds, e.tag_id);
       }).map((e) => {
         return e.id;
       });
@@ -256,7 +244,7 @@ export class ArticleService {
    * @param user_id
    * @param article_id
    */
-  async like(user_id: number, article_id: number): Promise<void> {
+  async like(user_id: string, article_id: string): Promise<void> {
     // redis key
     const user_key = getUserLikeKey(user_id, PostType.ARTICLE);
     const article_key = getPostLikeKey(PostType.ARTICLE);
@@ -295,7 +283,7 @@ export class ArticleService {
    * @param user_id
    * @param article_id
    */
-  async favor(user_id: number, article_id: number): Promise<void> {
+  async favor(user_id: string, article_id: string): Promise<void> {
     // redis key
     const user_key = getUserFavorKey(user_id, PostType.ARTICLE);
     const article_key = getPostFavorKey(PostType.ARTICLE);
@@ -332,7 +320,7 @@ export class ArticleService {
    * delete by id
    * @param id
    */
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.articleRepository.delete({
       id,
     });
@@ -344,8 +332,8 @@ export class ArticleService {
    * @param article_id
    */
   async deleteArticleBySelf(
-    user_id: number,
-    article_id: number,
+    user_id: string,
+    article_id: string,
   ): Promise<void> {
     const article = await this.articleRepository.findOneBy({
       id: article_id,
@@ -404,11 +392,6 @@ export class ArticleService {
                   },
                 ]
               : [],
-            article_forum: {
-              forum_id: row.forum_id,
-              forum_name: row.forum_name,
-              forum_type: row.forum_type,
-            },
             pinned: row.pinned,
             deleted: row.deleted,
             view_count: 0,
@@ -455,7 +438,7 @@ export class ArticleService {
    * get all count
    * @param id
    */
-  async getAllCount(id: number): Promise<{
+  async getAllCount(id: string): Promise<{
     like_count?: number;
     favor_count?: number;
     comment_count?: number;

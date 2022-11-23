@@ -19,7 +19,7 @@ export class ArticleManagerController {
     summary: '删除文章',
   })
   @Delete('/articles')
-  async deleteArticleById(@Query('id') id: number): Promise<Result<void>> {
+  async deleteArticleById(@Query('id') id: string): Promise<Result<void>> {
     await this.articleService.delete(id);
     return Result.success();
   }

@@ -1,6 +1,6 @@
 export class SendMessageDto {
-  user_id: number;
-  camp_id: number;
+  user_id: string;
+  camp_id: string;
   message_content: string;
-  reply_to: number;
+  reply_to: string;
 }

@@ -119,7 +119,7 @@ export class UserService {
       .toString();
 
     const result = await this.userRepository.insert({
-      id: toNumber(id),
+      id,
       ...waitToReg,
       status: true,
     });
