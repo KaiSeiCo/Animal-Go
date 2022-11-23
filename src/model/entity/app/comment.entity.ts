@@ -8,21 +8,21 @@ export class Comment extends BaseEntity {
     unsigned: true,
     generated: 'increment',
   })
-  id: number;
+  id: string;
 
   @Column({
     type: 'bigint',
     unsigned: true,
     comment: '评论文章id',
   })
-  article_id: number;
+  article_id: string;
 
   @Column({
     type: 'bigint',
     unsigned: true,
     comment: '评论用户id',
   })
-  user_id: number;
+  user_id: string;
 
   @Column({
     type: 'bigint',
@@ -30,7 +30,7 @@ export class Comment extends BaseEntity {
     comment: '父级id',
     nullable: true,
   })
-  parent_id: number;
+  parent_id: string;
 
   @Column({
     type: 'bigint',
@@ -38,7 +38,7 @@ export class Comment extends BaseEntity {
     comment: '回复评论id',
     nullable: true,
   })
-  reply_to: number;
+  reply_to: string;
 
   @Column({
     type: 'varchar',

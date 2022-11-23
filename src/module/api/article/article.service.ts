@@ -62,7 +62,7 @@ export class ArticleService {
     return result;
   }
 
-  async getArticleDetail(id: number): Promise<ArticleDetailVo> {
+  async getArticleDetail(id: string): Promise<ArticleDetailVo> {
     const article: Article = await this.articleRepository.findOneBy({
       id,
       deleted: false,
@@ -84,6 +84,7 @@ export class ArticleService {
       this.articleTagRepository.findBy({
         article_id: article.id,
       }),
+      [],
     ]);
 
     const tags = (await this.tagRepository
@@ -91,7 +92,7 @@ export class ArticleService {
       .select(
         `
           tag.id as tag_id,
-          tag.name as tag_name,
+          tag.tag_name as tag_name
         `,
       )
       .whereInIds(articleTags.map((at) => at.tag_id))
@@ -123,7 +124,7 @@ export class ArticleService {
    * publish article
    * @param dto
    */
-  async publishArticle(user_id: number, dto: ArticlePublishDto) {
+  async publishArticle(user_id: string, dto: ArticlePublishDto) {
     const {
       article_content,
       article_cover,
@@ -144,7 +145,7 @@ export class ArticleService {
       status,
       user_id,
     });
-    const id = result.generatedMaps[0]['id'] as number;
+    const id = result.generatedMaps[0]['id'] as string;
     // save relavant tags
     const articleTag = tag_ids
       .filter((t) => !!t)
@@ -161,7 +162,7 @@ export class ArticleService {
    * list article by self
    * @param user_id
    */
-  async listArticleBySelf(user_id: number, dto: ArticleQueryDto) {
+  async listArticleBySelf(user_id: string, dto: ArticleQueryDto) {
     dto.user_id = user_id;
     const articles = await this.articleRepository.getArticleListSqlResult(dto);
     const result = await this.buildAricleListVo(articles, true);
@@ -174,7 +175,7 @@ export class ArticleService {
    * @param dto
    */
   async editArticleBySelf(
-    user_id: number,
+    user_id: string,
     dto: ArticleUpdateDto,
   ): Promise<void> {
     const article = await this.articleRepository.findOneBy({
@@ -199,7 +200,7 @@ export class ArticleService {
         status: dto.status ?? article.status,
         pinned: dto.pinned ?? article.pinned,
       }),
-      await this.articleTagRepository.find({
+      this.articleTagRepository.find({
         where: {
           article_id: article.id,
         },
@@ -208,8 +209,10 @@ export class ArticleService {
 
     // update article_tag
     const { tag_ids } = dto;
-    if (tag_ids?.length > 0) {
-      const originArticleTagIds = originArticleTag.map((e) => e.tag_id);
+    if (tag_ids) {
+      const originArticleTagIds = originArticleTag.map((e) => {
+        return e.tag_id;
+      });
       const insertArticleTags = difference(tag_ids, originArticleTagIds)
         .filter((tag_id) => !!tag_id)
         .map((tag_id) => {
@@ -220,7 +223,7 @@ export class ArticleService {
         });
       const deleteTagIds = difference(originArticleTagIds, tag_ids);
       const deleteArticleTagFieldIds = filter(originArticleTag, (e) => {
-        return includes(deleteTagIds, e.id);
+        return includes(deleteTagIds, e.tag_id);
       }).map((e) => {
         return e.id;
       });
@@ -241,7 +244,7 @@ export class ArticleService {
    * @param user_id
    * @param article_id
    */
-  async like(user_id: number, article_id: number): Promise<void> {
+  async like(user_id: string, article_id: string): Promise<void> {
     // redis key
     const user_key = getUserLikeKey(user_id, PostType.ARTICLE);
     const article_key = getPostLikeKey(PostType.ARTICLE);
@@ -280,7 +283,7 @@ export class ArticleService {
    * @param user_id
    * @param article_id
    */
-  async favor(user_id: number, article_id: number): Promise<void> {
+  async favor(user_id: string, article_id: string): Promise<void> {
     // redis key
     const user_key = getUserFavorKey(user_id, PostType.ARTICLE);
     const article_key = getPostFavorKey(PostType.ARTICLE);
@@ -317,7 +320,7 @@ export class ArticleService {
    * delete by id
    * @param id
    */
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.articleRepository.delete({
       id,
     });
@@ -329,8 +332,8 @@ export class ArticleService {
    * @param article_id
    */
   async deleteArticleBySelf(
-    user_id: number,
-    article_id: number,
+    user_id: string,
+    article_id: string,
   ): Promise<void> {
     const article = await this.articleRepository.findOneBy({
       id: article_id,
@@ -435,7 +438,7 @@ export class ArticleService {
    * get all count
    * @param id
    */
-  async getAllCount(id: number): Promise<{
+  async getAllCount(id: string): Promise<{
     like_count?: number;
     favor_count?: number;
     comment_count?: number;

@@ -8,7 +8,7 @@ export class Article extends BaseEntity {
     unsigned: true,
     generated: 'increment',
   })
-  id: number;
+  id: string;
 
   @Column({
     type: 'varchar',
@@ -65,5 +65,5 @@ export class Article extends BaseEntity {
     unsigned: true,
     comment: '所属用户id',
   })
-  user_id: number;
+  user_id: string;
 }

@@ -8,7 +8,7 @@ export class ArticleTag extends BaseEntity {
     unsigned: true,
     generated: 'increment',
   })
-  id: number;
+  id: string;
 
   @Column({
     type: 'bigint',
@@ -16,12 +16,12 @@ export class ArticleTag extends BaseEntity {
     comment: '文章id',
   })
   @Index('article-index')
-  article_id: number;
+  article_id: string;
 
   @Column({
     type: 'bigint',
     unsigned: true,
     comment: '标签id',
   })
-  tag_id: number;
+  tag_id: string;
 }

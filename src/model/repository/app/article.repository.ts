@@ -39,7 +39,7 @@ export class ArticleRepository extends Repository<Article> {
             a.status as status,
             a.user_id as user_id,
             t.id as tag_id,
-            t.tag_name as tag_name,
+            t.tag_name as tag_name
           `,
         )
         .leftJoin(ArticleTag, 'at', 'at.article_id = a.id')

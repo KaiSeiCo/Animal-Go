@@ -10,7 +10,7 @@ export class LikeDetail extends BaseEntity {
     unsigned: true,
     generated: 'increment',
   })
-  id: number;
+  id: string;
 
   @Column({
     type: 'bigint',
@@ -18,7 +18,7 @@ export class LikeDetail extends BaseEntity {
     comment: '文章id',
     nullable: true,
   })
-  article_id: number;
+  article_id: string;
 
   @Column({
     type: 'bigint',
@@ -26,14 +26,14 @@ export class LikeDetail extends BaseEntity {
     comment: '图片id',
     nullable: true,
   })
-  photo_id: number;
+  photo_id: string;
 
   @Column({
     type: 'bigint',
     unsigned: true,
     comment: '用户id',
   })
-  user_id: number;
+  user_id: string;
 
   @Column({
     type: 'tinyint',

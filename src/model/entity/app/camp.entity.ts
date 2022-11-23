@@ -7,7 +7,7 @@ export class Camp {
     unsigned: true,
     generated: 'increment',
   })
-  id: number;
+  id: string;
 
   @Column({
     type: 'varchar',
@@ -25,6 +25,7 @@ export class Camp {
 
   @Column({
     type: 'int',
+    unsigned: true,
     comment: '容纳人数',
   })
   camp_capacity: number;
@@ -34,7 +35,7 @@ export class Camp {
     unsigned: true,
     comment: '营地所属人',
   })
-  owner: number;
+  owner: string;
 
   @Column({
     type: 'tinyint',

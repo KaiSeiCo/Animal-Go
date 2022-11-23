@@ -8,7 +8,7 @@ export class Tag extends BaseEntity {
     unsigned: true,
     generated: 'increment',
   })
-  id: number;
+  id: string;
 
   @Column({
     type: 'varchar',

@@ -10,7 +10,7 @@ export default class User extends BaseEntity {
     unsigned: true,
   })
   @ApiProperty()
-  id: number;
+  id: string;
 
   @Column({
     comment: '用户名',

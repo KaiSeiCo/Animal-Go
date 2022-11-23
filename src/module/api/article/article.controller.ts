@@ -39,7 +39,7 @@ export class ArticleController {
   @OpenApi()
   @Get('/:id')
   async commnets(
-    @Param('id') article_id: number,
+    @Param('id') article_id: string,
   ): Promise<Result<ArticleDetailVo>> {
     const article = await this.articleService.getArticleDetail(article_id);
     return Result.success(article);
@@ -75,7 +75,7 @@ export class ArticleController {
   @OnlyRequireLogin()
   @Delete('/:articleId/users/@me')
   async deleteMyArticle(
-    @Param('articleId') article_id: number,
+    @Param('articleId') article_id: string,
   ): Promise<Result<void>> {
     const user = this.userCtx.get('user');
     await this.articleService.deleteArticleBySelf(user.id, article_id);
@@ -100,7 +100,7 @@ export class ArticleController {
   })
   @OnlyRequireLogin()
   @Post('/:id/like')
-  async like(@Param('id') article_id: number): Promise<Result<void>> {
+  async like(@Param('id') article_id: string): Promise<Result<void>> {
     const user = this.userCtx.get('user');
     await this.articleService.like(user.id, article_id);
     return Result.success();
@@ -111,7 +111,7 @@ export class ArticleController {
   })
   @OnlyRequireLogin()
   @Post('/:id/favor')
-  async favor(@Param('id') article_id: number): Promise<Result<void>> {
+  async favor(@Param('id') article_id: string): Promise<Result<void>> {
     const user = this.userCtx.get('user');
     await this.articleService.favor(user.id, article_id);
     return Result.success();

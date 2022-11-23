@@ -24,7 +24,7 @@ export class CommentController {
   @OpenApi()
   @Get('/articles/:id')
   async articleComments(
-    @Param('id') article_id: number,
+    @Param('id') article_id: string,
     @Query() pageDto: PageOptionsDto,
   ): Promise<Result<ArticleCommentVo>> {
     const result = await this.commentService.listArticleComments(
@@ -50,7 +50,7 @@ export class CommentController {
   })
   @OnlyRequireLogin()
   @Delete('/:id')
-  async deleteComment(@Param('id') comment_id: number): Promise<Result<void>> {
+  async deleteComment(@Param('id') comment_id: string): Promise<Result<void>> {
     const user = this.userCtx.get('user');
     await this.commentService.deleteCommentSelf(user.id, comment_id);
     return Result.success();

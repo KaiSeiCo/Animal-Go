@@ -19,7 +19,7 @@ export class UserRole extends BaseEntity {
   })
   @ApiProperty()
   @Index('user-index')
-  user_id: number;
+  user_id: string;
 
   @Column({
     type: 'int',

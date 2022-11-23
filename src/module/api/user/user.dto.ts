@@ -70,7 +70,7 @@ export class UserQueryDto extends PageOptionsDto {
 export class UpdateUserDto {
   @ApiProperty({ description: '用户id', required: true })
   @IsNotEmpty()
-  id?: number;
+  id?: string;
 
   @ApiProperty({ description: '用户名', required: false })
   @IsOptional()

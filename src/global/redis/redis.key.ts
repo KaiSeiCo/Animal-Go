@@ -27,7 +27,7 @@ export function getPostFavorKey(type: PostType) {
  * @param type
  * @returns
  */
-export function getUserLikeKey(user_id: number, type: PostType) {
+export function getUserLikeKey(user_id: string, type: PostType) {
   return `user:${user_id}:${type}:like`;
 }
 
@@ -37,7 +37,7 @@ export function getUserLikeKey(user_id: number, type: PostType) {
  * @param type
  * @returns
  */
-export function getUserFavorKey(user_id: number, type: PostType) {
+export function getUserFavorKey(user_id: string, type: PostType) {
   return `user:${user_id}:${type}:favor`;
 }
 
@@ -46,7 +46,7 @@ export function getUserFavorKey(user_id: number, type: PostType) {
  * @param user_id
  * @returns
  */
-export function getLoginRecordKey(user_id: number) {
+export function getLoginRecordKey(user_id: string) {
   return `user:login:${user_id}`;
 }
 

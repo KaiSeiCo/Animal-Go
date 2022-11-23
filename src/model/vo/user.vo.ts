@@ -3,7 +3,7 @@ export type LoginVo = {
 };
 
 export type UserListVo = {
-  id: number;
+  id: string;
   username: string;
   nickname: string;
   email: string;
@@ -13,7 +13,7 @@ export type UserListVo = {
 };
 
 export type UserToken = {
-  id: number;
+  id: string;
   username: string;
   nickname: string;
   email: string;

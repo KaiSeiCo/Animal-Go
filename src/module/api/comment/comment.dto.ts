@@ -4,7 +4,7 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 export class CommentDto {
   @ApiProperty()
   @IsNotEmpty()
-  article_id: number;
+  article_id: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -12,5 +12,5 @@ export class CommentDto {
 
   @ApiProperty()
   @IsOptional()
-  reply_to: number;
+  reply_to: string;
 }

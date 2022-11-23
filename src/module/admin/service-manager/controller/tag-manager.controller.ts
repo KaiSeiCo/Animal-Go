@@ -31,7 +31,7 @@ export class TagManagerController {
     summary: '删除标签',
   })
   @Delete('/tags')
-  async deleteTagById(@Query('id') id: number): Promise<Result<void>> {
+  async deleteTagById(@Query('id') id: string): Promise<Result<void>> {
     await this.tagService.deleteById(id);
     return Result.success();
   }
