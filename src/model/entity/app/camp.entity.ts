@@ -27,6 +27,7 @@ export class Camp {
     type: 'int',
     unsigned: true,
     comment: '容纳人数',
+    default: 20,
   })
   camp_capacity: number;
 
