@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Article } from '../entity/app/article.entity';
 import { ArticleTag } from '../entity/app/article_tag.entity';
 import { Camp } from '../entity/app/camp.entity';
+import { CampUser } from '../entity/app/camp_user.entity';
 import { Comment } from '../entity/app/comment.entity';
 import { FavorDetail } from '../entity/app/favor_detail.entity';
 import { LikeDetail } from '../entity/app/like_detail.entity';
@@ -18,6 +19,7 @@ import { UserRole } from '../entity/sys/user_role.entity';
 import { ArticleRepository } from './app/article.repository';
 import { ArticleTagRepository } from './app/article_tag.repository';
 import { CampRepository } from './app/camp.repository';
+import { CampUserRepository } from './app/camp_user.repository';
 import { CommentRepository } from './app/comment.repository';
 import { FavorDetailRepository } from './app/favor_detail.repository';
 import { LikeDetailRepository } from './app/like_detail.repository';
@@ -47,6 +49,7 @@ export const repositories = [
   CommentRepository,
   MessageRepository,
   CampRepository,
+  CampUserRepository,
 ];
 
 @Module({
@@ -67,6 +70,7 @@ export const repositories = [
       Comment,
       Message,
       Camp,
+      CampUser,
     ]),
   ],
   providers: [...repositories],
