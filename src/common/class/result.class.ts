@@ -21,6 +21,6 @@ export class Pagination {
 }
 
 export class PageResult<T> {
-  list?: Array<T>;
+  data?: Array<T>;
   pagination: Pagination;
 }
