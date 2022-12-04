@@ -32,12 +32,12 @@ export class TaskController {
   @OpenApi()
   @Get('')
   async page(@Query() dto: PageOptionsDto): Promise<PageResult<Task>> {
-    const [list, count] = await Promise.all([
+    const [data, count] = await Promise.all([
       this.taskService.page(dto.page - 1, dto.limit),
       this.taskService.count(),
     ]);
     return {
-      list,
+      data,
       pagination: {
         total: count,
         size: dto.limit,

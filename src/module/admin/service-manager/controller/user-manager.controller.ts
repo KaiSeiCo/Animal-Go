@@ -25,9 +25,9 @@ export class UserManagerController {
   async list(
     @Query() query: UserQueryDto,
   ): Promise<Result<PageResult<UserListVo>>> {
-    const [list, total] = await this.userService.page(query);
+    const [data, total] = await this.userService.page(query);
     return Result.success({
-      list,
+      data,
       pagination: {
         total,
         page: query.page,
