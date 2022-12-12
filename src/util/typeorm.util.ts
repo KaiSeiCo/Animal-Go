@@ -1,5 +1,4 @@
 import { isNotEmpty } from 'class-validator';
-import { query } from 'express';
 import { SelectQueryBuilder } from 'typeorm';
 
 /**
