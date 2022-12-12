@@ -12,6 +12,7 @@ import { CommentController } from './comment/comment.controller';
 import { UserService } from './user/user.service';
 import { MessageService } from './message/message.service';
 import { MessageController } from './message/message.controller';
+import { CampController } from './camp/camp.controller';
 
 @Module({
   providers: [
@@ -32,6 +33,7 @@ import { MessageController } from './message/message.controller';
     ArticleController,
     TagController,
     MessageController,
+    CampController,
   ],
 })
 export class ApiModule {}

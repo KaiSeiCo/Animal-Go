@@ -8,8 +8,8 @@ import {
 import { ApiException } from 'src/common/exception/api.exception';
 import { bcryptPassword, comparePassword } from 'src/util/bcrypt.util';
 import { Snowflake } from 'nodejs-snowflake';
-import { isEmpty, toNumber } from 'lodash';
-import { LoginVo, UserListVo } from 'src/model/vo/user.vo';
+import { isEmpty } from 'lodash';
+import { LoginVo, UserInfoVo } from 'src/model/vo/user.vo';
 import { buildDynamicSqlAppendWhere } from 'src/util/typeorm.util';
 import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
 import { Menu } from 'src/model/entity/sys/menu.entity';
@@ -132,7 +132,7 @@ export class UserService {
    * @param query
    * @returns
    */
-  async page(query: UserQueryDto): Promise<[UserListVo[], number]> {
+  async page(query: UserQueryDto): Promise<[UserInfoVo[], number]> {
     const { username, email, status, page, limit } = query;
     const basicSql = buildDynamicSqlAppendWhere(
       this.userRepository.createQueryBuilder('user'),
@@ -157,7 +157,7 @@ export class UserService {
       .skip((page - 1) * limit)
       .take(limit);
     const [list, total] = await basicSql.getManyAndCount();
-    const result: UserListVo[] = list.map((e) => {
+    const result: UserInfoVo[] = list.map((e) => {
       return {
         id: e.id,
         username: e.username,
