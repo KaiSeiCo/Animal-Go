@@ -73,9 +73,9 @@ export class ArticleController {
     summary: '用户删除文章',
   })
   @OnlyRequireLogin()
-  @Delete('/:articleId/users/@me')
+  @Delete('/:id/users/@me')
   async deleteMyArticle(
-    @Param('articleId') article_id: string,
+    @Param('id') article_id: string,
   ): Promise<Result<void>> {
     const user = this.userCtx.get('user');
     await this.articleService.deleteArticleBySelf(user.id, article_id);

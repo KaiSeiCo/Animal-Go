@@ -3,7 +3,7 @@ import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
 import { BaseEntity } from '../base.entity';
 
 @Entity({ name: 'sys_user' })
-@Index('username-status', ['username', 'status'])
+@Index('username-status-index', ['username', 'status'])
 export default class User extends BaseEntity {
   @PrimaryColumn({
     type: 'bigint',

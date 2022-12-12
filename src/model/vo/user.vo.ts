@@ -2,7 +2,7 @@ export type LoginVo = {
   token: string;
 };
 
-export type UserListVo = {
+export type UserInfoVo = {
   id: string;
   username: string;
   nickname: string;
