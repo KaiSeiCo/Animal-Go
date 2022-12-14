@@ -1,3 +1,5 @@
+import { WssCode } from './gateway.constants';
+
 export class SendMessageDto {
   user_id: string;
   camp_id: string;
@@ -20,4 +22,14 @@ export class JoinCampDto {
 export class LeaveCampDto {
   user_id: string;
   camp_id: string;
+}
+
+export class SocketEmitPayload {
+  socketEvent: string;
+  data: {
+    code: WssCode;
+    message: string;
+    data: any;
+  };
+  room?: string;
 }

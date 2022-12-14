@@ -3,7 +3,7 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 import { PageOptionsDto } from 'src/model/dto/page.dto';
 import { ArticleStatus } from './article.constants';
 
-/* common dto */
+/* http dto */
 export class ArticlePublishDto {
   @ApiProperty({ description: '标题', required: true })
   @IsNotEmpty()
@@ -23,7 +23,7 @@ export class ArticlePublishDto {
 
   @ApiProperty({ description: '置顶', required: false })
   @IsOptional()
-  pinned: boolean = false;
+  pinned = false;
 
   @ApiProperty({ description: '状态(0公开 1私密)', required: false })
   @IsOptional()

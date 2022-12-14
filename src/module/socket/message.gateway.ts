@@ -1,3 +1,4 @@
+import { UseFilters, UseGuards } from '@nestjs/common/decorators';
 import {
   ConnectedSocket,
   MessageBody,
@@ -5,8 +6,16 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import {
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
+} from '@nestjs/websockets/interfaces';
 import { isEmpty } from 'lodash';
 import { Server, Socket } from 'socket.io';
+import WsExceptionFilter from 'src/common/exception/ws.exception';
+import JwtWsGuard from 'src/common/guard/ws.guard';
+import { LoggerService } from 'src/global/logger/logger.service';
 import { CampRepository } from 'src/model/repository/app/camp.repository';
 import { CampUserRepository } from 'src/model/repository/app/camp_user.repository';
 import { MessageRepository } from 'src/model/repository/app/message.repository';
@@ -18,15 +27,34 @@ import {
   LeaveCampDto,
   SendMessageDto,
 } from './gateway.dto';
+import { ExSocket } from './socket.typings';
 
-@WebSocketGateway()
-export class MessageGateway {
+// @UseGuards(JwtWsGuard)
+// @UseFilters(new WsExceptionFilter())
+@WebSocketGateway(81, { transports: ['websocket'] })
+export class MessageGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   constructor(
     private readonly messageRepository: MessageRepository,
     private readonly campRepository: CampRepository,
     private readonly userRepository: UserRepository,
     private readonly campUserRepository: CampUserRepository,
+    private readonly logger: LoggerService,
   ) {}
+
+  async afterInit(server: Server) {
+    this.logger.log('message gateway initialized', server);
+  }
+
+  async handleDisconnect(client: ExSocket) {
+    this.logger.log(`WebSocket client disconnected: ${client.id}`);
+  }
+
+  async handleConnection(client: ExSocket, ...args: any[]) {
+    client.uid = client.handshake.query.uid as string;
+    this.logger.log(`WebSocket client connected: ${client.uid}`);
+  }
 
   @WebSocketServer()
   private server: Server;
@@ -39,7 +67,7 @@ export class MessageGateway {
    */
   @SubscribeMessage('buildCamp')
   async buildCamp(
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() client: ExSocket,
     @MessageBody() data: BuildCampDto,
   ) {
     const { camp_name, camp_desc, user_id } = data;
@@ -97,7 +125,7 @@ export class MessageGateway {
 
   @SubscribeMessage('joinCamp')
   async joinCamp(
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() client: ExSocket,
     @MessageBody() data: JoinCampDto,
   ) {
     const { camp_id, user_id } = data;
@@ -160,7 +188,7 @@ export class MessageGateway {
 
   @SubscribeMessage('leaveCamp')
   async leaveCamp(
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() client: ExSocket,
     @MessageBody() data: LeaveCampDto,
   ) {
     const { user_id, camp_id } = data;
@@ -221,7 +249,7 @@ export class MessageGateway {
 
     // check camp exist
     if (!camp) {
-      this.emit('message', {
+      this.emit('messages', {
         code: WssCode.FAILED,
         message: 'camp not exists',
       });
@@ -230,7 +258,7 @@ export class MessageGateway {
 
     // check reply message exist if data has reply_to
     if (reply_to && !replyMessage) {
-      this.emit('message', {
+      this.emit('messages', {
         code: WssCode.FAILED,
         message: 'message not exists',
       });
@@ -242,7 +270,7 @@ export class MessageGateway {
     });
 
     this.emit(
-      'message',
+      'messages',
       {
         code: WssCode.OK,
         message: 'ok',
@@ -254,9 +282,28 @@ export class MessageGateway {
     );
   }
 
-  private emit(
+  @SubscribeMessage('tests')
+  async tests(@MessageBody() message: string) {
+    const messages = await this.messageRepository.find();
+    console.log(messages);
+    const sockets = await this.server.fetchSockets();
+    for (const socket of sockets) {
+      // @ts-ignore
+      console.log(socket.uid);
+    }
+
+    this.emit('tests', {
+      code: WssCode.OK,
+      message,
+      data: {
+        message,
+      },
+    });
+  }
+
+  emit(
     eventName: string,
-    wsResponse: {
+    payload: {
       code: WssCode;
       message: string;
       data?: any;
@@ -264,9 +311,9 @@ export class MessageGateway {
     room?: string,
   ) {
     if (room) {
-      this.server.to(room).emit(eventName, wsResponse);
+      this.server.to(room).emit(eventName, payload);
     } else {
-      this.server.emit(eventName, wsResponse);
+      this.server.emit(eventName, payload);
     }
   }
 }

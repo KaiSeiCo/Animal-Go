@@ -22,7 +22,7 @@ export class ArticleConsumer {
   @Subscribe(ConsumerTopics.ARTICLE_TOPIC)
   @OnEvent(KafkaConsumeEvents.ARTICLE_LIKE)
   async dumpLikeToDb(payload: LikePayload) {
-    this.logger.log('[Consumer-Event] start dump like detail to db');
+    this.logger.log('[🚥 Consumer-Event] start dump like detail to db');
     const { article_id, user_id, deleted } = payload;
 
     const likeDetail = await this.likeDetailRepository.findOneBy({
@@ -45,7 +45,7 @@ export class ArticleConsumer {
   @Subscribe(ConsumerTopics.ARTICLE_TOPIC)
   @OnEvent(KafkaConsumeEvents.ARTICLE_FAVOR)
   async dumpFavorToDb(payload: FavorPayload) {
-    this.logger.log('[Consumer-Event] start dump like detail to db');
+    this.logger.log('[🚥 Consumer-Event] start dump like detail to db');
 
     const { article_id, user_id, deleted } = payload;
     const favorDetail = await this.favorDetailRepository.findOneBy({

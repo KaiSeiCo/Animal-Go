@@ -121,7 +121,7 @@ import { WebsocketModule } from './module/socket/ws.module';
     // common api
     ApiModule,
     // websocket
-    WebsocketModule,
+    // WebsocketModule,
   ],
   providers: [
     {

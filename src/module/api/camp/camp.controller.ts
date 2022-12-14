@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
 import { OpenApi } from 'src/common/decorator/auth.decorator';
@@ -23,5 +23,14 @@ export class CampController {
   ): Promise<Result<CampMessageListVo>> {
     const data = await this.messageService.page(camp_id, dto);
     return Result.success(data);
+  }
+
+  @ApiOperation({
+    summary: '发送消息到营地',
+  })
+  @OpenApi()
+  @Post('/message')
+  async sendMessage() {
+    return Result.success();
   }
 }

@@ -1,22 +1,31 @@
-const socket = io("http://localhost:3000", {
+const socket = io("http://localhost:81", {
   transports: ["websocket"],
+  query: {
+    uid: new Date().getTime(),
+  }
 });
 
 const message = document.getElementById("message");
 const messages = document.getElementById("messages");
 
 const handleSubmitNewMessage = () => {
-  socket.emit("sendMessage", {
-    user_id: 1,
-    camp_id: 1,
-    message_content: message.value,
-    reply_to: 0,
-  });
+  console.log(message.value)
+  socket.emit("tests", message.value);
 };
 
-socket.on("message", ({ status, message, data }) => {
-  console.log(status, message, data);
-  if (status === "ok") {
+socket.on("tests", ({ code, message, data }) => {
+  console.log(code, message, data);
+  if (code === 1) {
+    handleNewMessage(data.message);
+  } else {
+    throw new Error(message)
+  }
+  
+});
+
+socket.on("exception", ({ code, message, data }) => {
+  console.log(code, message, data);
+  if (code === 1) {
     handleNewMessage(data.message);
   } else {
     throw new Error(message)
