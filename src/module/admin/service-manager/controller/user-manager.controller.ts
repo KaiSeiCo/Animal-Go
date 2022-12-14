@@ -3,7 +3,7 @@ import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { PageResult, Result } from 'src/common/class/result.class';
 import { OpenApi } from 'src/common/decorator/auth.decorator';
 import { UpdateUserDto, UserQueryDto } from 'src/module/api/user/user.dto';
-import { UserListVo } from 'src/model/vo/user.vo';
+import { UserInfoVo } from 'src/model/vo/user.vo';
 import { UserService } from 'src/module/api/user/user.service';
 
 @ApiTags('服务管理')
@@ -24,7 +24,7 @@ export class UserManagerController {
   @Get('')
   async list(
     @Query() query: UserQueryDto,
-  ): Promise<Result<PageResult<UserListVo>>> {
+  ): Promise<Result<PageResult<UserInfoVo>>> {
     const [data, total] = await this.userService.page(query);
     return Result.success({
       data,
