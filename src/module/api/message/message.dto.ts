@@ -10,3 +10,10 @@ export class MessagePageQueryDto extends PageOptionsDto {
   @IsOptional()
   message_content: string;
 }
+
+/* kafka payload */
+export type MessagePayload = {
+  event: string;
+  data: any;
+  room?: string;
+}

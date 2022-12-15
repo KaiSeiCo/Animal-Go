@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { isEmpty } from 'lodash';
+import { MessageProducer } from 'src/global/kafka/producer/message-producer.service';
 import { Message } from 'src/model/entity/app/message.entity';
 import { MessageRepository } from 'src/model/repository/app/message.repository';
 import { UserRepository } from 'src/model/repository/sys/user.repository';
@@ -10,14 +10,25 @@ import {
 } from 'src/model/vo/message.vo';
 import { UserInfoVo } from 'src/model/vo/user.vo';
 import { buildDynamicSqlAppendWhere } from 'src/util/typeorm.util';
-import { MessagePageQueryDto } from './message.dto';
+import { MessagePageQueryDto, MessagePayload } from './message.dto';
 
 @Injectable()
 export class MessageService {
   constructor(
     private readonly messageRepository: MessageRepository,
     private readonly userRepository: UserRepository,
+    private readonly messageProducer: MessageProducer,
   ) {}
+
+  async test(msg: string) {
+    const payload: MessagePayload = {
+      event: 'tests',
+      data: {
+        message: msg
+      },
+    }
+    this.messageProducer.sendMessage(payload)
+  }
 
   /**
    * query all
@@ -28,7 +39,7 @@ export class MessageService {
   }
 
   /**
-   *
+   * page query
    * @param camp_id
    * @param dto
    * @returns
@@ -130,5 +141,9 @@ export class MessageService {
       messages,
       users,
     };
+  }
+
+  async sendMessage() {
+    return;
   }
 }

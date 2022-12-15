@@ -22,6 +22,11 @@ export interface IConfig {
   redis?: RedisConfigOptions;
 
   /**
+   * Redis 适配器
+   */
+  redisAdapterClient?: RedisConfigOptions;
+
+  /**
    * 应用级别日志配置
    */
   logger?: LoggerConfigOptions;
@@ -43,7 +48,7 @@ export interface JwtConfigOptions {
 
 export interface RedisConfigOptions {
   host?: string;
-  port?: number | string;
+  port?: number;
   password?: string;
   db?: number;
 }

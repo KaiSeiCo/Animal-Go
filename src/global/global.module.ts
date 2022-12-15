@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { ClsModule } from 'nestjs-cls';
 import { RepositoryModule } from 'src/model/repository/repository.module';
+import { WebsocketModule } from 'src/module/socket/ws.module';
 import { JwtUtil } from 'src/util/jwt.util';
 import { UserContext } from './context/user.context';
 import { ConsumerModule } from './kafka/consumer/consumer.module';
@@ -13,7 +14,13 @@ import { RedisModule } from './redis/redis.module';
 import { RedisService } from './redis/redis.service';
 
 // global context
-const providers = [RedisService, UserContext, JwtUtil, RepositoryModule];
+const providers = [
+  RedisService,
+  UserContext,
+  JwtUtil,
+  RepositoryModule,
+  WebsocketModule
+];
 // global modules
 const global_modules = [
   JwtModule,
@@ -24,6 +31,7 @@ const global_modules = [
   HttpModule,
   CacheModule,
   RepositoryModule,
+  WebsocketModule,
 ];
 
 /**
@@ -76,6 +84,7 @@ const global_modules = [
     }),
     // dao
     RepositoryModule,
+    WebsocketModule,
   ],
   providers: [...providers],
   exports: [...providers, ...global_modules],
