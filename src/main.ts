@@ -4,6 +4,7 @@ import {
   UnprocessableEntityException,
   ValidationPipe,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { FastifyAdapter } from '@nestjs/platform-fastify/adapters';
@@ -59,7 +60,8 @@ async function bootstrap() {
   setupSwagger(app);
 
   // socket adapter
-  const redisIoAdapter = new RedisIoAdapter(app);
+  const configService = app.get(ConfigService)
+  const redisIoAdapter = new RedisIoAdapter(app, configService);
   await redisIoAdapter.connectToRedis();
   app.useWebSocketAdapter(redisIoAdapter);
 
