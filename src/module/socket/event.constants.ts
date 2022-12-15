@@ -1,6 +1,6 @@
-const SOCKET_EVENTS = {
+const SocketEvents = {
   TEST: 'test',
-  MESSAGES: 'messages',
+  MessagePublish: 'message_pub',
 }
 
-export default SOCKET_EVENTS
+export default SocketEvents

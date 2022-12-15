@@ -13,27 +13,34 @@ import { UserService } from './user/user.service';
 import { MessageService } from './message/message.service';
 import { MessageController } from './message/message.controller';
 import { CampController } from './camp/camp.controller';
+import { CampService } from './camp/camp.service';
+
+const services = [
+  UserService,
+  ArticleService,
+  TagService,
+  CommentService,
+  ArticleProducer,
+  MessageService,
+  CampService,
+];
+const controllers = [
+  AuthController,
+  CommentController,
+  ArticleController,
+  TagController,
+  MessageController,
+  CampController,
+];
 
 @Module({
   providers: [
-    UserService,
-    ArticleService,
-    TagService,
-    CommentService,
-    ArticleProducer,
-    MessageService,
+    ...services,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
   ],
-  controllers: [
-    AuthController,
-    CommentController,
-    ArticleController,
-    TagController,
-    MessageController,
-    CampController,
-  ],
+  controllers: [...controllers],
 })
 export class ApiModule {}

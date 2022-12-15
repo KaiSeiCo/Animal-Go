@@ -13,7 +13,8 @@ const handleSubmitNewMessage = () => {
   socket.emit("tests", message.value);
 };
 
-socket.on("tests", ({ code, message, data }) => {
+socket.on("message_pub", ({ code, message, data }) => {
+  console.log(socket.sids, socket.rooms)
   console.log(code, message, data);
   if (code === 1) {
     handleNewMessage(data.message);
