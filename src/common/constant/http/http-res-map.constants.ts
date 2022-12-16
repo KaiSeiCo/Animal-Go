@@ -18,6 +18,7 @@ export const HttpResponseKeyMap = {
   COMMENT_NOT_EXISTS: 'COMMENT_NOT_EXISTS',
   CAMP_NOT_EXISTS: 'CAMP_NOT_EXISTS',
   MESSAGE_NOT_EXISTS: 'MESSAGE_NOT_EXISTS',
+  ALREADY_JOINED: 'ALREADY_JOINED',
   /* 500 */
   INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
 };
@@ -107,6 +108,11 @@ export const HttpResponse: HttpResMap = {
     status: HttpStatusCode.BAD_REQUEST,
     code: 40404,
     message: 'Message Not Exists',
+  },
+  ALREADY_JOINED: {
+    status: HttpStatusCode.BAD_REQUEST,
+    code: 41001,
+    message: 'User Already Joined Camp'
   },
   /* 500 */
   INTERNAL_SERVER_ERROR: {

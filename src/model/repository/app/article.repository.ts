@@ -7,7 +7,7 @@ import {
   ArticleListSqlResult,
   ArticleQueryDto,
 } from 'src/module/api/article/article.dto';
-import { buildDynamicSqlAppendWhere } from 'src/util/typeorm.util';
+import { buildDynamicSqlAppendWhere } from 'src/util/sql.util';
 import { Repository } from 'typeorm';
 
 @Injectable()

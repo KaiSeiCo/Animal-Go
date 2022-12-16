@@ -38,11 +38,4 @@ export class Message extends BaseEntity {
     comment: '回复消息id',
   })
   reply_to: string;
-
-  @Column({
-    type: 'tinyint',
-    default: false,
-    comment: '是否删除',
-  })
-  deleted: boolean;
 }

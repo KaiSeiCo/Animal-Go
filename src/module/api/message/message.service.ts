@@ -17,9 +17,12 @@ import { UserInfoVo } from 'src/model/vo/user.vo';
 import SocketEvents from 'src/module/socket/event.constants';
 import {
   MessageHistoryDto,
-  MessagePayload,
+  MessageRecallDto,
   MessageSendDto,
+  WsPayload,
 } from './message.dto';
+import { omitSqlResult } from 'src/util/sql.util';
+import { CampUserRepository } from 'src/model/repository/app/camp_user.repository';
 
 @Injectable()
 export class MessageService {
@@ -27,64 +30,94 @@ export class MessageService {
     private readonly messageRepository: MessageRepository,
     private readonly userRepository: UserRepository,
     private readonly campRepository: CampRepository,
+    private readonly campUserRepository: CampUserRepository,
     private readonly messageProducer: MessageProducer,
   ) {}
 
   async test(msg: string) {
-    const payload: MessagePayload = {
+    const payload: WsPayload = {
       event: 'tests',
       data: {
         message: msg,
       },
     };
-    this.messageProducer.sendMessage(payload);
+    this.messageProducer.sendWsEvent(payload);
   }
- 
+
   /**
    * 发送消息
-   * @param user_id 
-   * @param dto 
+   * @param user_id
+   * @param dto
    */
   async sendMessageToCamp(user_id: string, dto: MessageSendDto) {
-    const { camp_id, message_content, reply_to } = dto
-    
-    const [camp, reply_to_message] = await Promise.all([
+    const { camp_id, message_content, reply_to } = dto;
+
+    const [camp, reply_to_message, joined] = await Promise.all([
       this.campRepository.findOneBy({ id: camp_id }),
-      reply_to ? this.messageRepository.findOneBy({ id: reply_to, deleted: false }) : undefined
-    ])
+      reply_to ? this.messageRepository.findOneBy({ id: reply_to }) : undefined,
+      this.campUserRepository.findOneBy({ user_id, camp_id, deleted: false }),
+    ]);
     if (isEmpty(camp)) {
       throw new ApiException(HttpResponseKeyMap.CAMP_NOT_EXISTS);
     }
     if (!!reply_to && isEmpty(reply_to_message)) {
       throw new ApiException(HttpResponseKeyMap.MESSAGE_NOT_EXISTS);
     }
+    if (!joined) {
+      throw new ApiException(HttpResponseKeyMap.PERMS_NOT_ALLOWED);
+    }
 
     // filter content
     // contentFilter(message_content)
-    
-    const message: Message = await this.messageRepository.save({
-      message_content,
-      user_id,
-      camp_id,
-      reply_to,
-    })
 
-    this.messageProducer.sendMessage({
-      event: SocketEvents.MessagePublish,
-      data: {
-        message_id: message.id,
+    const [message, user, reply_message] = await Promise.all([
+      this.messageRepository.save({
         message_content,
         user_id,
+        camp_id,
+        reply_to,
+      }),
+      this.userRepository.findOneBy({ id: user_id }),
+      reply_to ? this.messageRepository.findOneBy({ id: reply_to }) : undefined,
+    ]);
+
+    // ws event
+    this.messageProducer.sendWsEvent({
+      event: SocketEvents.MessagePublish,
+      data: {
+        message: omitSqlResult(message),
+        user: omitSqlResult(user, 'password'),
+        reply_message: omitSqlResult(reply_message),
       },
       room: camp_id,
-    })
+    });
+  }
+
+  /**
+   * 撤回消息
+   * @param dto
+   */
+  async recallMessage(user_id: string, message_id: string) {
+    const message = await this.messageRepository.findOneBy({
+      id: message_id,
+    });
+    if (!message || message.user_id !== user_id) {
+      throw new ApiException(HttpResponseKeyMap.OPERATION_FAILED);
+    }
+    await this.messageRepository.remove(message);
+
+    this.messageProducer.sendWsEvent({
+      event: SocketEvents.MessageDelete,
+      data: omitSqlResult(message),
+      room: message.camp_id,
+    });
   }
 
   /**
    * 消息历史
-   * @param camp_id 
-   * @param dto 
-   * @returns 
+   * @param camp_id
+   * @param dto
+   * @returns
    */
   async getHistoryMessage(
     camp_id: string,
@@ -102,8 +135,7 @@ export class MessageService {
           m.reply_to as reply_to
         `,
       )
-      .where('camp_id = :camp_id', { camp_id })
-      .andWhere('deleted = :deleted', { deleted: 0 });
+      .where('camp_id = :camp_id', { camp_id });
 
     if (!!prev) {
       basicQuery.andWhere('m.id < :prev', { prev });

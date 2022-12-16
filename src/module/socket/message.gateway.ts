@@ -46,7 +46,6 @@ export class MessageGateway
     const uid = socket.handshake.query.uid as string;
     socket.uid = uid
     socket.join(uid)
-    console.log(socket.rooms)
     this.logger.log(`WebSocket client connected: ${socket.uid}`);
   }
 

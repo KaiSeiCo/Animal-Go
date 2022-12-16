@@ -35,6 +35,15 @@ export class MessageSendDto {
   reply_to: string
 }
 
+export class MessageRecallDto {
+  @ApiProperty({
+    description: '消息id',
+    required: true
+  })
+  @IsNotEmpty()
+  id: string;
+}
+
 export class MessageHistoryDto {
   @ApiProperty({
     description: '当前页包含数量',
@@ -50,12 +59,13 @@ export class MessageHistoryDto {
     description: '',
     required: false,
   })
+  @IsOptional()
   readonly prev: string;
 }
 
 /* kafka payload */
-export type MessagePayload = {
+export type WsPayload<T = any> = {
   event: string;
-  data: any;
+  data: T;
   room?: string;
 }

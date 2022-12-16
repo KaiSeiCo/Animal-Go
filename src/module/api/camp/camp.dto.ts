@@ -28,3 +28,11 @@ export class BuildCampDto {
   @IsOptional()
   personal: boolean
 }
+
+export class JoinCampDto {
+  @ApiProperty({
+    description: '营地id',
+  })
+  @IsNotEmpty()
+  camp_id: string
+}

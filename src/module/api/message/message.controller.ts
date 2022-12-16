@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
 import { OnlyRequireLogin, OpenApi } from 'src/common/decorator/auth.decorator';
 import { UserContext } from 'src/global/context/user.context';
-import { MessageHistoryDto, MessageSendDto } from './message.dto';
+import { MessageHistoryDto, MessageRecallDto, MessageSendDto } from './message.dto';
 import { MessageService } from './message.service';
 
 @ApiTags('聊天消息模块')
@@ -37,6 +37,14 @@ export class MessageController {
   async sendMessage(@Body() dto: MessageSendDto) {
     const user = this.userCtx.get('user');
     await this.messageService.sendMessageToCamp(user.id, dto);
+    return Result.success();
+  }
+
+  @OnlyRequireLogin()
+  @Delete('/:id')
+  async recallMessage(@Param('id') message_id: string) {
+    const user = this.userCtx.get('user');
+    await this.messageService.recallMessage(user.id, message_id);
     return Result.success();
   }
 }

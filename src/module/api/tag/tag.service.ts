@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TagCreateDto, TagPageQueryDto } from 'src/module/api/tag/tag.dto';
 import { TagRepository } from 'src/model/repository/app/tag.repository';
 import { Tag } from 'src/model/entity/app/tag.entity';
-import { buildDynamicSqlAppendWhere } from 'src/util/typeorm.util';
+import { buildDynamicSqlAppendWhere } from 'src/util/sql.util';
 import { TagVo } from 'src/model/vo/article.vo';
 
 @Injectable()
