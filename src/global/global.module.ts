@@ -19,7 +19,7 @@ const providers = [
   UserContext,
   JwtUtil,
   RepositoryModule,
-  WebsocketModule
+  WebsocketModule,
 ];
 // global modules
 const global_modules = [

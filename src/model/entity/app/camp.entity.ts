@@ -42,12 +42,12 @@ export class Camp {
   @Column({
     type: 'varchar',
     length: 128,
-    comment: '营地代码'
+    comment: '营地代码',
   })
   @Index('camp-code-index', {
     unique: true,
   })
-  camp_code: string
+  camp_code: string;
 
   @Column({
     type: 'tinyint',

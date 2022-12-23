@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
+import { HttpResponseKeyMap } from 'src/common/constant/http-res-map.constants';
 import { ApiException } from 'src/common/exception/api.exception';
 import {
   CreateMenuDto,

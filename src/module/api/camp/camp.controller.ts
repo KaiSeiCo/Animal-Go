@@ -1,5 +1,8 @@
 import { Controller, Post } from '@nestjs/common';
-import { Body, Param } from '@nestjs/common/decorators/http/route-params.decorator';
+import {
+  Body,
+  Param,
+} from '@nestjs/common/decorators/http/route-params.decorator';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
 import { OnlyRequireLogin } from 'src/common/decorator/auth.decorator';
@@ -28,18 +31,18 @@ export class CampController {
   }
 
   @ApiOperation({
-    summary: '加入营地'
+    summary: '加入营地',
   })
   @OnlyRequireLogin()
   @Post('join')
   async joinCamp(@Body() dto: JoinCampDto) {
     const user = this.userCtx.get('user');
     const data = await this.campService.joinCamp(user.id, dto);
-    return Result.success(data)
+    return Result.success(data);
   }
 
   @ApiOperation({
-    summary: '退出营地'
+    summary: '退出营地',
   })
   @OnlyRequireLogin()
   @Post('/:id/leaves')

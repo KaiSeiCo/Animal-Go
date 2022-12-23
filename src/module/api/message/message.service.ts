@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { isEmpty, uniq } from 'lodash';
-import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
+import { HttpResponseKeyMap } from 'src/common/constant/http-res-map.constants';
 import { ApiException } from 'src/common/exception/api.exception';
 import { UserContext } from 'src/global/context/user.context';
 import { MessageProducer } from 'src/global/kafka/producer/message-producer.service';

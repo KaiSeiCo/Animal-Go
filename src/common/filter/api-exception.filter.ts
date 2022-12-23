@@ -41,7 +41,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
 
     if (status >= 500) {
       // record error log
-      console.error(exception)
+      console.error(exception);
     }
     const result = new Result(null, message, code);
     response.status(status).send(result);

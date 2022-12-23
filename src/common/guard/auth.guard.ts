@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 import { getLoginRecordKey } from 'src/global/redis/redis.key';
 import { RedisService } from 'src/global/redis/redis.service';
 import { JwtUtil } from 'src/util/jwt.util';
-import { HttpResponseKeyMap } from '../constant/http/http-res-map.constants';
+import { HttpResponseKeyMap } from '../constant/http-res-map.constants';
 import {
   ADMIN_ROUTER_PREFIX,
   API_V1_ROUTER_PREFIX,

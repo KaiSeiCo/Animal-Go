@@ -22,7 +22,7 @@ import { difference, filter, includes, toNumber } from 'lodash';
 import { ArticleRepository } from 'src/model/repository/app/article.repository';
 import { LikeDetailRepository } from 'src/model/repository/app/like_detail.repository';
 import { ApiException } from 'src/common/exception/api.exception';
-import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
+import { HttpResponseKeyMap } from 'src/common/constant/http-res-map.constants';
 import { ArticleTagRepository } from 'src/model/repository/app/article_tag.repository';
 import { EntityManager } from 'typeorm';
 import { InjectEntityManager } from '@nestjs/typeorm';

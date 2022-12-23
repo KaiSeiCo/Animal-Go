@@ -11,7 +11,7 @@ import { Snowflake } from 'nodejs-snowflake';
 import { isEmpty } from 'lodash';
 import { LoginVo, UserInfoVo } from 'src/model/vo/user.vo';
 import { buildDynamicSqlAppendWhere } from 'src/util/sql.util';
-import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
+import { HttpResponseKeyMap } from 'src/common/constant/http-res-map.constants';
 import { Menu } from 'src/model/entity/sys/menu.entity';
 import { JwtUtil } from 'src/util/jwt.util';
 import { RedisService } from 'src/global/redis/redis.service';

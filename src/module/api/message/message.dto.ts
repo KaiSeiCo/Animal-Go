@@ -4,12 +4,12 @@ import { IsInt, IsNotEmpty, IsOptional, Min } from 'class-validator';
 import { PageOptionsDto } from 'src/model/dto/page.dto';
 
 // export class MessagePageQueryDto extends PageOptionsDto {
-  // @ApiProperty({
-  //   description: '消息内容',
-  //   required: false,
-  // })
-  // @IsOptional()
-  // message_content: string;
+// @ApiProperty({
+//   description: '消息内容',
+//   required: false,
+// })
+// @IsOptional()
+// message_content: string;
 // }
 
 export class MessageSendDto {
@@ -22,7 +22,7 @@ export class MessageSendDto {
 
   @ApiProperty({
     description: '营地id',
-    required: true
+    required: true,
   })
   @IsNotEmpty()
   camp_id: string;
@@ -32,13 +32,13 @@ export class MessageSendDto {
     required: false,
   })
   @IsOptional()
-  reply_to: string
+  reply_to: string;
 }
 
 export class MessageRecallDto {
   @ApiProperty({
     description: '消息id',
-    required: true
+    required: true,
   })
   @IsNotEmpty()
   id: string;
@@ -68,4 +68,4 @@ export type WsPayload<T = any> = {
   event: string;
   data: T;
   room?: string;
-}
+};

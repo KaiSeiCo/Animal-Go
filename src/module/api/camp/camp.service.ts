@@ -5,7 +5,7 @@ import { UUIDGenerator } from 'src/util/uuid.util';
 import { BuildCampDto, JoinCampDto } from './camp.dto';
 import { CampUserRepository } from 'src/model/repository/app/camp_user.repository';
 import { ApiException } from 'src/common/exception/api.exception';
-import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
+import { HttpResponseKeyMap } from 'src/common/constant/http-res-map.constants';
 import { omitSqlResult } from 'src/util/sql.util';
 import { CampUser } from 'src/model/entity/app/camp_user.entity';
 
@@ -92,7 +92,7 @@ export class CampService {
           id: camp_id,
         }),
       ]);
-      return null
+      return null;
     }
 
     if (!joined) {

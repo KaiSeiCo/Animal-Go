@@ -17,15 +17,14 @@ export class MessageConsumer {
   @Subscribe(ConsumerTopics.MESSAGE_TOPIC)
   @OnEvent(KafkaConsumeEvents.MESSAGE_SEND)
   async sendMessage(payload: WsPayload) {
-    this.logger.log('[🚥 Message-Consumer-Event] start send message websocket event');
-    const { event, data } = payload
-    this.messageGateway.emit(
-      event,
-      {
-        code: WssCode.OK,
-        message: 'OK',
-        data: data
-      }
-    )
+    this.logger.log(
+      '[🚥 Message-Consumer-Event] start send message websocket event',
+    );
+    const { event, data } = payload;
+    this.messageGateway.emit(event, {
+      code: WssCode.OK,
+      message: 'OK',
+      data: data,
+    });
   }
 }

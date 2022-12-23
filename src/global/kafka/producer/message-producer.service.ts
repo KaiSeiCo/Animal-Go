@@ -15,10 +15,10 @@ export class MessageProducer {
       messageId: new Date().getTime().toString(),
       messageType: MessageType.SOCKET,
       topicName: ConsumerTopics.MESSAGE_TOPIC,
-    }
+    };
     return this.kafkaService.sendMessage<WsPayload>(
       ConsumerTopics.MESSAGE_TOPIC,
       payload,
-    )
+    );
   }
 }

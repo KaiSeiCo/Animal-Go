@@ -44,8 +44,8 @@ export class MessageGateway
 
   async handleConnection(socket: ExSocket) {
     const uid = socket.handshake.query.uid as string;
-    socket.uid = uid
-    socket.join(uid)
+    socket.uid = uid;
+    socket.join(uid);
     this.logger.log(`WebSocket client connected: ${socket.uid}`);
   }
 
