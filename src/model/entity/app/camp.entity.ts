@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
 
 @Entity({ name: 'tb_camp' })
 export class Camp {
@@ -14,6 +14,7 @@ export class Camp {
     length: '128',
     comment: '营地名称',
   })
+  @Index('campname-index', { unique: true })
   camp_name: string;
 
   @Column({
@@ -37,6 +38,16 @@ export class Camp {
     comment: '营地所属人',
   })
   owner: string;
+
+  @Column({
+    type: 'varchar',
+    length: 128,
+    comment: '营地代码',
+  })
+  @Index('camp-code-index', {
+    unique: true,
+  })
+  camp_code: string;
 
   @Column({
     type: 'tinyint',

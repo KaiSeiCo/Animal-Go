@@ -1,36 +1,54 @@
-import { Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Param,
+} from '@nestjs/common/decorators/http/route-params.decorator';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
-import { OpenApi } from 'src/common/decorator/auth.decorator';
-import { CampMessageListVo } from 'src/model/vo/message.vo';
-import { MessagePageQueryDto } from '../message/message.dto';
-import { MessageService } from '../message/message.service';
+import { OnlyRequireLogin } from 'src/common/decorator/auth.decorator';
+import { UserContext } from 'src/global/context/user.context';
+import { BuildCampDto, JoinCampDto } from './camp.dto';
+import { CampService } from './camp.service';
 
 @ApiTags('营地模块')
 @ApiBearerAuth()
 @Controller('camps')
 export class CampController {
-  constructor(private readonly messageService: MessageService) {}
+  constructor(
+    private readonly campService: CampService,
+    private readonly userCtx: UserContext,
+  ) {}
 
   @ApiOperation({
-    summary: '查询营地消息',
+    summary: '创建营地',
   })
-  @OpenApi()
-  @Get('/:id')
-  async getCampMessages(
-    @Param('id') camp_id: string,
-    @Query() dto: MessagePageQueryDto,
-  ): Promise<Result<CampMessageListVo>> {
-    const data = await this.messageService.page(camp_id, dto);
+  @OnlyRequireLogin()
+  @Post('build')
+  async buildCamp(@Body() dto: BuildCampDto) {
+    const user = this.userCtx.get('user');
+    const camp = await this.campService.createCampByUser(user.id, dto);
+    return Result.success(camp);
+  }
+
+  @ApiOperation({
+    summary: '加入营地',
+  })
+  @OnlyRequireLogin()
+  @Post('join')
+  async joinCamp(@Body() dto: JoinCampDto) {
+    const user = this.userCtx.get('user');
+    const data = await this.campService.joinCamp(user.id, dto);
     return Result.success(data);
   }
 
   @ApiOperation({
-    summary: '发送消息到营地',
+    summary: '退出营地',
   })
-  @OpenApi()
-  @Post('/message')
-  async sendMessage() {
-    return Result.success();
+  @OnlyRequireLogin()
+  @Post('/:id/leaves')
+  async leaveCamp(@Param('id') camp_id: string) {
+    const user = this.userCtx.get('user');
+    const data = await this.campService.leaveCamp(user.id, camp_id);
+    return Result.success(data);
   }
 }

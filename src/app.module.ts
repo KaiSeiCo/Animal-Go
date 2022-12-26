@@ -119,7 +119,6 @@ import { ServiceManagerModule } from './module/admin/service-manager/service-man
     AdminModule,
     // common api
     ApiModule,
-    // websocket
   ],
   providers: [
     {

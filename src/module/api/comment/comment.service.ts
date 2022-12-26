@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { uniqBy } from 'lodash';
-import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
+import { HttpResponseKeyMap } from 'src/common/constant/http-res-map.constants';
 import { ApiException } from 'src/common/exception/api.exception';
 import { PageOptionsDto } from 'src/model/dto/page.dto';
 import { Comment } from 'src/model/entity/app/comment.entity';

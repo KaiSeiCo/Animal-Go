@@ -18,7 +18,7 @@ import Task from 'src/model/entity/sys/task.entity';
 import { LoggerService } from 'src/global/logger/logger.service';
 import { RedisService } from 'src/global/redis/redis.service';
 import { toString, isEmpty } from 'lodash';
-import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
+import { HttpResponseKeyMap } from 'src/common/constant/http-res-map.constants';
 import { TaskRepository } from 'src/model/repository/sys/task.repository';
 
 @Injectable()

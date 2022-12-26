@@ -1,4 +1,6 @@
 import { isNotEmpty } from 'class-validator';
+import { isArray, isEmpty, omit } from 'lodash';
+import { BaseEntity } from 'src/model/entity/base.entity';
 import { SelectQueryBuilder } from 'typeorm';
 
 /**
@@ -38,4 +40,23 @@ export function buildDynamicSqlAppendWhere<T>(
     });
 
   return queryBase;
+}
+
+/**
+ * 去除结果集无用和敏感字段
+ * @param result
+ * @param fields
+ * @returns
+ */
+export function omitSqlResult<T extends BaseEntity>(
+  result: T | Array<T>,
+  ...fields: string[]
+): Partial<T> | Partial<T>[] | undefined {
+  if (isEmpty(result)) {
+    return undefined;
+  }
+  if (isArray(result)) {
+    return result.map((r) => omit<T>(r, ['createdAt', 'updatedAt', ...fields]));
+  }
+  return omit<T>(result, ['createdAt', 'updatedAt', ...fields]);
 }

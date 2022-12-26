@@ -2,7 +2,7 @@ import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
 import { BaseEntity } from '../base.entity';
 
 @Entity({ name: 'tb_camp_user' })
-@Index('camp-user-index', ['camp_id', 'user_id'])
+@Index('camp-user-index', ['camp_id', 'user_id'], { unique: true })
 export class CampUser extends BaseEntity {
   @PrimaryColumn({
     type: 'bigint',

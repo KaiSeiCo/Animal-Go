@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 import { isDev } from 'src/config/env/env';
+import { LoggerService } from 'src/global/logger/logger.service';
 import { Result } from '../class/result.class';
 import { ApiException } from '../exception/api.exception';
 
@@ -40,6 +41,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
 
     if (status >= 500) {
       // record error log
+      console.error(exception);
     }
     const result = new Result(null, message, code);
     response.status(status).send(result);

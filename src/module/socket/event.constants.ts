@@ -1,6 +1,7 @@
-const SOCKET_EVENTS = {
+const SocketEvents = {
   TEST: 'test',
-  MESSAGES: 'messages',
-}
+  MessagePublish: 'message_publish',
+  MessageDelete: 'message_delete',
+};
 
-export default SOCKET_EVENTS
+export default SocketEvents;

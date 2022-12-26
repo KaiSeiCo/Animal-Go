@@ -3,7 +3,7 @@ import { WsException } from '@nestjs/websockets';
 import { getLoginRecordKey } from 'src/global/redis/redis.key';
 import { RedisService } from 'src/global/redis/redis.service';
 import { JwtUtil } from 'src/util/jwt.util';
-import { HttpResponseKeyMap } from '../constant/http/http-res-map.constants';
+import { HttpResponseKeyMap } from '../constant/http-res-map.constants';
 import { BEARER_TOKEN_PREFIX } from '../constant/system.constant';
 import { ApiException } from '../exception/api.exception';
 

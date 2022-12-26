@@ -50,6 +50,7 @@
     "kafkajs": "^2.2.2",
     "lodash": "^4.17.21",
     "mysql2": "^2.3.3",
+    "nanoid": "^3.3.4",
     "nestjs-cls": "^3.0.4",
     "nodejs-snowflake": "^2.0.1",
     "redis": "^4.5.1",

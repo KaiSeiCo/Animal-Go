@@ -60,8 +60,9 @@ async function bootstrap() {
   setupSwagger(app);
 
   // socket adapter
-  const configService = app.get(ConfigService)
-  const redisIoAdapter = new RedisIoAdapter(app, configService);
+  const configService = app.get(ConfigService);
+  const loggerService = app.get(LoggerService);
+  const redisIoAdapter = new RedisIoAdapter(app, configService, loggerService);
   await redisIoAdapter.connectToRedis();
   app.useWebSocketAdapter(redisIoAdapter);
 

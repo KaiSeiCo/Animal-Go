@@ -10,7 +10,7 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { isEmpty } from 'lodash';
 import { PageResult, Result } from 'src/common/class/result.class';
-import { HttpResponseKeyMap } from 'src/common/constant/http/http-res-map.constants';
+import { HttpResponseKeyMap } from 'src/common/constant/http-res-map.constants';
 import { OpenApi } from 'src/common/decorator/auth.decorator';
 import { ApiException } from 'src/common/exception/api.exception';
 import { PageOptionsDto } from 'src/model/dto/page.dto';
