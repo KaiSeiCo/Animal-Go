@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
+  TokenDto,
   UpdateUserDto,
   UserLoginDto,
   UserQueryDto,
@@ -22,6 +23,7 @@ import { UserRoleRepository } from 'src/model/repository/sys/user_role.repositor
 import { RoleRepository } from 'src/model/repository/sys/role.repository';
 import { RoleMenuRepository } from 'src/model/repository/sys/role_menu.repository';
 import { MenuRepository } from 'src/model/repository/sys/menu.repository';
+import { userInfo } from 'os';
 
 @Injectable()
 export class UserService {
@@ -178,7 +180,7 @@ export class UserService {
   async update(dto: UpdateUserDto): Promise<void> {
     const { id, role_id, username, password, email, status } = dto;
     const bcryPassword = password ? bcryptPassword(password) : undefined;
-    const [_, role] = await Promise.all([
+    const [, role] = await Promise.all([
       this.userRepository.update(id, {
         username,
         password: bcryPassword,
@@ -203,5 +205,11 @@ export class UserService {
     // [TODO-RECORD-221023]
     // flush token in redis
     return;
+  }
+
+  async parseUserInfo(dto: TokenDto) {
+    const { token } = dto;
+    const userinfo = this.jwtUtil.parseToken(token);
+    return userinfo;
   }
 }

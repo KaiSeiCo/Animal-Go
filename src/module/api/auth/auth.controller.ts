@@ -2,8 +2,12 @@ import { Controller } from '@nestjs/common';
 import { Body, Post } from '@nestjs/common/decorators';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
-import { OpenApi } from 'src/common/decorator/auth.decorator';
-import { UserLoginDto, UserRegisterDto } from 'src/module/api/user/user.dto';
+import { OnlyRequireLogin, OpenApi } from 'src/common/decorator/auth.decorator';
+import {
+  TokenDto,
+  UserLoginDto,
+  UserRegisterDto,
+} from 'src/module/api/user/user.dto';
 import { LoginVo } from 'src/model/vo/user.vo';
 import { UserService } from '../user/user.service';
 
@@ -41,5 +45,15 @@ export class AuthController {
   async register(@Body() waitToReg: UserRegisterDto): Promise<Result<boolean>> {
     await this.userService.register(waitToReg);
     return Result.success();
+  }
+
+  @ApiOperation({
+    summary: '获取用户信息',
+  })
+  @OnlyRequireLogin()
+  @Post('userinfo')
+  async userinfo(@Body() dto: TokenDto) {
+    const userinfo = await this.userService.parseUserInfo(dto);
+    return Result.success(userinfo);
   }
 }

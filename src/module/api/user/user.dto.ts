@@ -93,3 +93,9 @@ export class UpdateUserDto {
   @IsOptional()
   role_id?: number;
 }
+
+export class TokenDto {
+  @ApiProperty({ description: 'token', required: true })
+  @IsNotEmpty()
+  token: string;
+}
