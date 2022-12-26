@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { Body, Post } from '@nestjs/common/decorators';
+import { Body, Param, Post } from '@nestjs/common/decorators';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Result } from 'src/common/class/result.class';
 import { OnlyRequireLogin, OpenApi } from 'src/common/decorator/auth.decorator';
@@ -55,5 +55,15 @@ export class AuthController {
   async userinfo(@Body() dto: TokenDto) {
     const userinfo = await this.userService.parseUserInfo(dto);
     return Result.success(userinfo);
+  }
+
+  @ApiOperation({
+    summary: '退出登录',
+  })
+  @OnlyRequireLogin()
+  @Post('/logout/:id')
+  async logout(@Param('id') id: string) {
+    await this.userService.logout(id);
+    return Result.success();
   }
 }

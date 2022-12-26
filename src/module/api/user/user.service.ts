@@ -207,9 +207,24 @@ export class UserService {
     return;
   }
 
+  /**
+   * get user info from token
+   * @param dto
+   * @returns
+   */
   async parseUserInfo(dto: TokenDto) {
     const { token } = dto;
     const userinfo = this.jwtUtil.parseToken(token);
     return userinfo;
+  }
+
+  /**
+   * logout
+   * @param id
+   * @returns
+   */
+  async logout(id: string) {
+    await this.redisService.getRedis().del(getLoginRecordKey(id));
+    return;
   }
 }
