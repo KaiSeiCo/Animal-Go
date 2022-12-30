@@ -8,7 +8,6 @@ import {
   ArticleQueryDto,
   ArticleUpdateDto,
 } from 'src/module/api/article/article.dto';
-import { ArticleDetailVo, ArticleListVo } from 'src/model/vo/article.vo';
 import { ArticleService } from './article.service';
 import { Delete, Put, Query } from '@nestjs/common/decorators';
 
@@ -26,10 +25,18 @@ export class ArticleController {
   })
   @OpenApi()
   @Get('')
-  async catfoods(
-    @Query() dto: ArticleQueryDto,
-  ): Promise<Result<ArticleListVo[]>> {
+  async catfoods(@Query() dto: ArticleQueryDto) {
     const articles = await this.articleService.listArticles(dto);
+    return Result.success(articles);
+  }
+
+  @ApiOperation({
+    summary: '首页滚动推荐'
+  })
+  @OpenApi()
+  @Get('/index/recommend')
+  async indexCarousel() {
+    const articles = await this.articleService.getRecommendArticles();
     return Result.success(articles);
   }
 
@@ -38,9 +45,7 @@ export class ArticleController {
   })
   @OpenApi()
   @Get('/:id')
-  async commnets(
-    @Param('id') article_id: string,
-  ): Promise<Result<ArticleDetailVo>> {
+  async commnets(@Param('id') article_id: string) {
     const article = await this.articleService.getArticleDetail(article_id);
     return Result.success(article);
   }
@@ -52,7 +57,7 @@ export class ArticleController {
   })
   @OnlyRequireLogin()
   @Post('publish')
-  async publish(@Body() dto: ArticlePublishDto): Promise<Result<void>> {
+  async publish(@Body() dto: ArticlePublishDto) {
     const user = this.userCtx.get('user');
     await this.articleService.publishArticle(user.id, dto);
     return Result.success();
@@ -63,7 +68,7 @@ export class ArticleController {
   })
   @OnlyRequireLogin()
   @Put('/users/@me')
-  async editMyArticle(@Body() dto: ArticleUpdateDto): Promise<Result<void>> {
+  async editMyArticle(@Body() dto: ArticleUpdateDto) {
     const user = this.userCtx.get('user');
     await this.articleService.editArticleBySelf(user.id, dto);
     return Result.success();
@@ -74,9 +79,7 @@ export class ArticleController {
   })
   @OnlyRequireLogin()
   @Delete('/:id/users/@me')
-  async deleteMyArticle(
-    @Param('id') article_id: string,
-  ): Promise<Result<void>> {
+  async deleteMyArticle(@Param('id') article_id: string) {
     const user = this.userCtx.get('user');
     await this.articleService.deleteArticleBySelf(user.id, article_id);
     return Result.success();
@@ -87,9 +90,7 @@ export class ArticleController {
   })
   @OnlyRequireLogin()
   @Get('/users/@me')
-  async listMyArticle(
-    @Query() dto: ArticleQueryDto,
-  ): Promise<Result<ArticleListVo[]>> {
+  async listMyArticle(@Query() dto: ArticleQueryDto) {
     const user = this.userCtx.get('user');
     const result = await this.articleService.listArticleBySelf(user.id, dto);
     return Result.success(result);
@@ -100,7 +101,7 @@ export class ArticleController {
   })
   @OnlyRequireLogin()
   @Post('/:id/like')
-  async like(@Param('id') article_id: string): Promise<Result<void>> {
+  async like(@Param('id') article_id: string) {
     const user = this.userCtx.get('user');
     await this.articleService.like(user.id, article_id);
     return Result.success();
@@ -111,7 +112,7 @@ export class ArticleController {
   })
   @OnlyRequireLogin()
   @Post('/:id/favor')
-  async favor(@Param('id') article_id: string): Promise<Result<void>> {
+  async favor(@Param('id') article_id: string) {
     const user = this.userCtx.get('user');
     await this.articleService.favor(user.id, article_id);
     return Result.success();

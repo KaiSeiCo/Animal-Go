@@ -113,3 +113,10 @@ export type ArticleListSqlResult = {
   tag_name?: string;
   user_id?: string;
 };
+
+export type RecommendArticleSqlResult = {
+  article_id: string;
+  article_title: string;
+  article_cover: string;
+  article_desc: string;
+}

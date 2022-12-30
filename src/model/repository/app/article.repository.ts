@@ -6,6 +6,7 @@ import { Tag } from 'src/model/entity/app/tag.entity';
 import {
   ArticleListSqlResult,
   ArticleQueryDto,
+  RecommendArticleSqlResult,
 } from 'src/module/api/article/article.dto';
 import { buildDynamicSqlAppendWhere } from 'src/util/sql.util';
 import { Repository } from 'typeorm';
@@ -74,5 +75,21 @@ export class ArticleRepository extends Repository<Article> {
     );
     basicSql.skip((page - 1) * limit).take(limit);
     return await basicSql.getRawMany();
+  }
+
+  async queryRecommendArticles(): Promise<RecommendArticleSqlResult[]> {
+    return await this.createQueryBuilder('a')
+      .select(
+        `
+          a.id as article_id,
+          a.article_title as article_title,
+          a.article_cover as article_cover,
+          a.article_desc as article_desc
+        `,
+      )
+      .andWhere('a.deleted = 0')
+      .andWhere('a.status = 0')
+      .orderBy('a.created_at', 'DESC')
+      .getRawMany();
   }
 }

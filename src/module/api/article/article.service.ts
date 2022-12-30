@@ -18,7 +18,7 @@ import {
   PostType,
 } from 'src/global/redis/redis.key';
 import { ArticleProducer } from 'src/global/kafka/producer/article-producer.service';
-import { difference, filter, includes, toNumber } from 'lodash';
+import { difference, filter, includes, toNumber, uniqBy } from 'lodash';
 import { ArticleRepository } from 'src/model/repository/app/article.repository';
 import { LikeDetailRepository } from 'src/model/repository/app/like_detail.repository';
 import { ApiException } from 'src/common/exception/api.exception';
@@ -59,6 +59,32 @@ export class ArticleService {
     const articles = await this.articleRepository.getArticleListSqlResult(dto);
     // build article vo list
     const result = await this.buildAricleListVo(articles);
+    return result;
+  }
+
+  async getRecommendArticles() {
+    const articles = await this.articleRepository.queryRecommendArticles();
+    const result = await Promise.all(
+      articles.map(async (a) => {
+        const atgs = await this.articleTagRepository.findBy({
+          article_id: a.article_id,
+        });
+        const tags = (await this.tagRepository
+          .createQueryBuilder('tag')
+          .select(
+            `
+              tag.id as tag_id,
+              tag.tag_name as tag_name
+            `,
+          )
+          .whereInIds(atgs.map((at) => at.tag_id))
+          .getRawMany()) as TagVo[];
+        return {
+          ...a,
+          tags: [...tags],
+        };
+      }),
+    );
     return result;
   }
 
@@ -362,7 +388,7 @@ export class ArticleService {
    */
   async buildAricleListVo(
     sqlResult: ArticleListSqlResult[],
-    self: boolean = false,
+    self = false,
   ): Promise<ArticleListVo[]> {
     // build article vo list
     const articleEntries: Record<number, ArticleListVo> = {};
